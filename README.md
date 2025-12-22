@@ -36,7 +36,7 @@
 
 ## SENSORES
 
-
+a rellenar
 
 ## FUNCIONALIDADES EXTRA
 
@@ -48,7 +48,7 @@ las formas de acceder a las salas (no es como tal (unity)) son dos:
 * mapa inicial cualquiera en el que se indiquen las salas y clickando sobre una de ellas, nos lleva a esta en la app (forma indirecta)
 * escanear qr real en el museo
   
-* KAHOOT (sincronizacion con kahoot - unity -> firebase):
+### KAHOOT:
    * SOLAMENTE las respuestas van a aparecer en la pantalla del movil
    * permitir solicitar pistas (se puede introducir el chatbot de voiceflow)
    * permitir microfono para seleccionar la respuesta correcta
