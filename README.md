@@ -27,3 +27,4 @@
     * ademas, se deberia trackear el recorrido del cliente y su experiencia en los juegos, ademas de la capacidad de poder valorar las salas (comentarios/estrellas)
     * cambio de idioma (ingles/español)
 * calendario de eventos del real madrid donde el dia que haya partido, se marque en rojo y si se pincha, muestr informacion del partido, la hora, y si es copa no es copa...
+* escanear con un qr un jugador y que, cuando te acerques el movil al oido, se reproduzca un audio suyo (existe un sensor para eso)
