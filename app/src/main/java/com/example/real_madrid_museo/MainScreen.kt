@@ -26,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.real_madrid_museo.ui.map.MapScreen
+
 
 // Colores oficiales para un diseño valorado positivamente [cite: 27]
 val MadridBlue = Color(0xFF002D72)
@@ -76,7 +78,7 @@ fun MainScreen() {
 
                 when (selectedItem) {
                     0 -> DashboardInicio() // La pantalla estética de noticias/partidos
-                    //1 -> PantallaMapa()
+                    1 -> MapScreen()
                     //2 -> PantallaScanner()
                     3 -> PerfilContent()
                 }

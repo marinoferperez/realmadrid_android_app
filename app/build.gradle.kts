@@ -66,4 +66,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("com.hbb20:ccp:2.7.3")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material:material-icons-extended")
+
 }
