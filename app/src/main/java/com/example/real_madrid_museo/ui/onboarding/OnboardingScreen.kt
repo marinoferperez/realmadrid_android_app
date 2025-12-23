@@ -36,7 +36,7 @@ fun OnboardingScreen(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f),
-            pageSpacing = 16.dp,            // 👈 ESTO ES LA CLAVE
+            pageSpacing = 16.dp,
             contentPadding = PaddingValues(horizontal = 8.dp)
         ) { page ->
 
@@ -77,25 +77,30 @@ fun OnboardingScreen(
             }
         }
 
-        // INDICADORES PUNTITOS
+        // BOTÓN FIJO
+        Spacer(modifier = Modifier.height(24.dp))
+
         IndicadorPagina(
             totalDots = slides.size,
             selectedIndex = pagerState.currentPage
         )
 
-        // BOTÓN FIJO
-        Button(
-            onClick = onFinish,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(
-                text = "COMENZAR",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+        Spacer(modifier = Modifier.height(32.dp))
+
+        if (pagerState.currentPage > 0) {
+            Button(
+                onClick = onFinish,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "COMENZAR",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
