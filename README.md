@@ -8,7 +8,7 @@
   
 ## interfaz
 
-* onboarding con slides previo al login que explique que ofrece la app MUY BREVEMENTE (una imagen, dos lineas) y aumente la probabilidad de que el usuario acepte los permisos de camara, micro...
+* onboarding con OnboardingSlides previo al login que explique que ofrece la app MUY BREVEMENTE (una imagen, dos lineas) y aumente la probabilidad de que el usuario acepte los permisos de camara, micro...
   * primer slide: ¡bienvenido al museo del real madrid! (que es la app, que va descubrir el visitante)
   * segundo slide: escanea los qrs del museo (info camisetas, trofeos, partidos, historia -- justificar el uso de la camara)
   * tercer slide: descubre el futuro, presente y pasado del club (calendario, fechas históricas...)
