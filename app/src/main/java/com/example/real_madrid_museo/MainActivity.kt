@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigationevent.NavigationEventInfo
 import com.example.real_madrid_museo.ui.LoginActivity
 import com.example.real_madrid_museo.ui.comun.aplicarIdioma
@@ -18,6 +19,7 @@ import com.example.real_madrid_museo.ui.onboarding.OnboardingScreen
 // cambiar idioma
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
