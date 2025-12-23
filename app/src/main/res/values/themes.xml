@@ -13,4 +13,17 @@
     <style name="BotonesMorados" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/mi_morado</item>
     </style>
+
+    <style name="Theme.RealMadrid.Splash" parent="Theme.SplashScreen">
+        <!-- Color de fondo -->
+        <item name="windowSplashScreenBackground">@color/rm_white</item>
+        <!-- Logo -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_rm3</item>
+
+        <!-- Duración animación -->
+        <item name="windowSplashScreenAnimationDuration">800</item>
+
+        <!-- Tema real después -->
+        <item name="postSplashScreenTheme">@style/Theme.Real_madrid_museo</item>
+    </style>
 </resources>
