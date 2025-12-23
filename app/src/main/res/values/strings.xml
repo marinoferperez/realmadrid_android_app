@@ -18,5 +18,6 @@
         Participa en juegos, consulta eventos y explora el pasado, presente y futuro del club.
     </string>
 
+    <string name="onboarding_where_is">¿Dónde se ubica el museo?</string>
     <string name="start">COMENZAR</string>
 </resources>

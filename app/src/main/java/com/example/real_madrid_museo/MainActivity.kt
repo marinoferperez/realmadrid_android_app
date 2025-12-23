@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigationevent.NavigationEventInfo
 import com.example.real_madrid_museo.ui.LoginActivity
 import com.example.real_madrid_museo.ui.comun.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme

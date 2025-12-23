@@ -17,7 +17,8 @@ import com.example.real_madrid_museo.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.example.real_madrid_museo.ui.RegisterActivity
-
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

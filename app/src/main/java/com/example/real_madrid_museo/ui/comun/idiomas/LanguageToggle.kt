@@ -26,8 +26,7 @@ fun LanguageToggle(
         ),
         contentDescription = "Change language",
         modifier = modifier
-            .size(36.dp)
-            .clip(CircleShape)
+            .size(40.dp) // puedes ajustar tamaño si quieres
             .clickable { onToggle() }
     )
 }
