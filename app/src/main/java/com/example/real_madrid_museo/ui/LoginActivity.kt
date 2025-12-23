@@ -17,6 +17,7 @@ import com.example.real_madrid_museo.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import androidx.compose.ui.platform.ComposeView
+import com.example.real_madrid_museo.home.AppActivity
 import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
 import com.example.real_madrid_museo.ui.RegisterActivity
 import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
@@ -53,8 +54,8 @@ class LoginActivity : AppCompatActivity() {
                     lanzarNotificacion()
                     Toast.makeText(this, "Login Correcto", Toast.LENGTH_SHORT).show()
                     // Aquí iríamos al MainActivity:
-                    // startActivity(Intent(this, MainActivity::class.java)) 
-                }, 1500)
+                    startActivity(Intent(this, AppActivity::class.java))
+                    finish()                }, 1500)
             }
         }
 
