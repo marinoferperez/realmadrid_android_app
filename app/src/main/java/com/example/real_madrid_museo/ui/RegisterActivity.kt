@@ -11,6 +11,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.hbb20.CountryCodePicker // Importamos la librería de banderas
 import java.util.Calendar
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
+import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -22,6 +26,16 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        val fondoCompose = findViewById<ComposeView>(R.id.fondoAnimadoCompose)
+
+        fondoCompose.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+
+        fondoCompose.setContent {
+            FondoAnimado()
+        }
 
         val etDate = findViewById<TextInputEditText>(R.id.etDate)
         val etName = findViewById<TextInputEditText>(R.id.etName)

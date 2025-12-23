@@ -16,13 +16,21 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.real_madrid_museo.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import androidx.compose.ui.platform.ComposeView
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
 import com.example.real_madrid_museo.ui.RegisterActivity
-
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
+import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
+
+        val composeFondo = findViewById<ComposeView>(R.id.composeFondo)
+        composeFondo.setContent {
+            FondoAnimado()
+        }
 
         crearCanalNotificacion()
 

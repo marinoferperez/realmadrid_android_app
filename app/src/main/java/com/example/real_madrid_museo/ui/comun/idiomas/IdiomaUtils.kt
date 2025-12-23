@@ -2,6 +2,7 @@ package com.example.real_madrid_museo.ui.comun
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import java.util.Locale
 
@@ -34,7 +35,17 @@ fun aplicarIdioma(context: Context) {
     )
 }
 
+// 🔥 ENCUENTRA LA ACTIVITY REAL DESDE LocalContext
+fun Context.findActivity(): Activity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is Activity) return currentContext
+        currentContext = currentContext.baseContext
+    }
+    return null
+}
+
 fun cambiarIdioma(context: Context, language: String) {
     guardarIdioma(context, language)
-    (context as? Activity)?.recreate()
+    context.findActivity()?.recreate()
 }

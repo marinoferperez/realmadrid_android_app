@@ -2,14 +2,13 @@ package com.example.real_madrid_museo.ui.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +24,8 @@ import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.ui.comun.LanguageToggle
 import com.example.real_madrid_museo.ui.comun.cambiarIdioma
 import com.example.real_madrid_museo.ui.comun.obtenerIdioma
+import com.example.real_madrid_museo.ui.onboarding.abrirMapaBernabeu
+
 
 @Composable
 fun OnboardingScreen(
@@ -37,18 +38,8 @@ fun OnboardingScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
+        // Fondo decorativo
         FondoAnimado()
-
-        LanguageToggle(
-            currentLanguage = currentLanguage,
-            onToggle = {
-                val newLanguage = if (currentLanguage == "es") "en" else "es"
-                cambiarIdioma(context, newLanguage)
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.TopEnd)
-        )
 
         Column(
             modifier = Modifier
@@ -57,6 +48,19 @@ fun OnboardingScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
+            // ───── FILA SUPERIOR (bandera alineada con la imagen) ─────
+            Box(modifier = Modifier.fillMaxWidth()) {
+                LanguageToggle(
+                    currentLanguage = currentLanguage,
+                    onToggle = {
+                        val newLanguage = if (currentLanguage == "es") "en" else "es"
+                        cambiarIdioma(context, newLanguage)
+                    },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                )
+            }
+
+            // ───── SLIDES ─────
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.weight(1f),
@@ -101,6 +105,7 @@ fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // ───── INDICADOR ─────
             IndicadorPagina(
                 totalDots = slides.size,
                 selectedIndex = pagerState.currentPage
@@ -108,6 +113,29 @@ fun OnboardingScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ───── BOTÓN UBICACIÓN (SOLO SLIDE 0) ─────
+            AnimatedVisibility(visible = pagerState.currentPage == 0) {
+                Button(
+                    onClick = {
+                        abrirMapaBernabeu(context)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.onboarding_where_is),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
+
+            // ───── BOTÓN COMENZAR ─────
             AnimatedVisibility(visible = pagerState.currentPage > 1) {
                 Button(
                     onClick = onFinish,
