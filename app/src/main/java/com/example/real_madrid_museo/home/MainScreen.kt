@@ -1,5 +1,6 @@
 package com.example.real_madrid_museo.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,12 +13,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.ui.map.MapScreen
 
 
@@ -117,16 +122,23 @@ fun DashboardInicio() {
             Spacer(modifier = Modifier.height(12.dp))
         }
 
+        // Creamos una lista con los IDs de las fotos que acabas de guardar
+        val listaImagenes = listOf(
+            R.drawable.bernabeu, // Asegúrate de que estos nombres coinciden con tus archivos
+            R.drawable.vitrina,
+            R.drawable.vestuario
+        )
+
         items(3) { index ->
-            NewsCard(index)
+            NewsCard(index, listaImagenes.getOrElse(index) { R.drawable.ic_launcher_background })
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
-fun NewsCard(index: Int) {
-    val titles = listOf("El nuevo Bernabéu abre sus puertas", "15 Champions: La vitrina se actualiza", "Tour VIP: Descubre los vestuarios")
+fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la imagen
+    val titles = listOf("El nuevo Bernabéu abre sus puertas", "Mbappé visita el museo", "Nueva camiseta edición especial")
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -135,172 +147,193 @@ fun NewsCard(index: Int) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(80.dp).clip(RoundedCornerShape(15.dp)).background(Color.LightGray)) // Espacio para imagen
+
+            Image(
+                painter = painterResource(id = imageRes), // Carga la imagen desde drawable
+                contentDescription = "Imagen noticia",
+                contentScale = ContentScale.Crop, // Recorta la imagen para llenar el cuadrado sin deformarse
+                modifier = Modifier
+                    .size(80.dp) // Tamaño fijo cuadrado
+                    .clip(RoundedCornerShape(15.dp)) // Bordes redondeados
+            )
+
             Spacer(modifier = Modifier.width(16.dp))
+
             Column {
-                Text(titles[index], fontWeight = FontWeight.Bold, maxLines = 2, color = MadridBlue)
+                Text(titles.getOrElse(index) { "Noticia Real Madrid" }, fontWeight = FontWeight.Bold, maxLines = 2, color = MadridBlue)
+                Spacer(modifier = Modifier.height(4.dp))
                 Text("Hace 2 horas", fontSize = 12.sp, color = Color.Gray)
             }
         }
     }
 }
 
-/*
 @Composable
-fun PantallaMapa() {
+fun PerfilContent() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
+            .padding(bottom = 20.dp) // Espacio extra al final
     ) {
+        // 1. CABECERA DEL PERFIL
         item {
             Spacer(modifier = Modifier.height(20.dp))
-            Text("Mapa del Museo", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
-            Text("Encuentra salas y servicios rápidamente", color = Color.Gray)
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // CONTENEDOR DEL MAPA (Aquí iría la API de OpenStreetMap más adelante)
-            ElevatedCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = CardDefaults.elevatedCardColors(containerColor = Color.LightGray.copy(alpha = 0.3f))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Icon(Icons.Default.Map, contentDescription = null, size = 60.dp, tint = MadridBlue.copy(alpha = 0.5f))
-                    Text("Cargando Mapa Interactivo...", modifier = Modifier.padding(top = 80.dp))
+                // Avatar (Usamos un icono por defecto para evitar errores, pero podrías poner una foto)
+                Surface(
+                    shape = CircleShape,
+                    color = MadridBlue.copy(alpha = 0.1f),
+                    modifier = Modifier.size(80.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Avatar",
+                        tint = MadridBlue,
+                        modifier = Modifier.padding(15.dp).fillMaxSize()
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column {
+                    Text("Javier Madridista", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MadridBlue)
+                    Text("Socio Nº 1902", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    // Etiqueta de Nivel
+                    Surface(
+                        color = MadridGold,
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Text(
+                            text = " NIVEL EXPERTO ",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MadridBlue,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
-
-            Text("Servicios del Museo", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
-            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // Lista de servicios obligatorios por el guion
-        val servicios = listOf(
-            "Sala de Trofeos" to Icons.Default.EmojiEvents,
-            "Tienda Oficial" to Icons.Default.ShoppingBag,
-            "Cafetería Bernabéu" to Icons.Default.Coffee,
-            "Aseos y Ascensores" to Icons.Default.Accessible
-        )
-
-        items(servicios) { servicio ->
+        // 2. RESUMEN DE ESTADÍSTICAS (Gamificación)
+        item {
             Card(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MadridBlue),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    EstadisticaItem("Visitas", "12")
+                    EstadisticaItem("Puntos", "850")
+                    EstadisticaItem("Ranking", "#45")
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // 3. LOGROS (Diseño Visual)
+        item {
+            Text("Tus Logros", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(2.dp)
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(servicio.second, contentDescription = null, tint = MadridGold)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(servicio.first, fontWeight = FontWeight.Medium)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                        LogroItem(Icons.Default.EmojiEvents, "Copas", true)
+                        LogroItem(Icons.Default.Star, "MVP", true)
+                        LogroItem(Icons.Default.Map, "Explorador", false) // Bloqueado
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    // Barra de progreso del museo
+                    Text("Progreso del Museo: 65%", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LinearProgressIndicator(
+                        progress = 0.65f,
+                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
+                        color = MadridGold,
+                        trackColor = Color.LightGray.copy(alpha = 0.3f)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // 4. CUPÓN DESCUENTO (Estilo Ticket Dorado)
+        item {
+            Text("Recompensas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth().height(100.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MadridGold) // Fondo dorado llamativo
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("10% DTO.", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black, color = MadridBlue)
+                        Text("TIENDA OFICIAL", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.White)
+                    }
+                    Icon(
+                        imageVector = Icons.Default.ShoppingBag,
+                        contentDescription = null,
+                        tint = MadridBlue,
+                        modifier = Modifier.size(40.dp)
+                    )
                 }
             }
         }
     }
 }
 
+// Sub-componente para las estadísticas (Numeritos blancos arriba)
 @Composable
-fun PantallaScanner() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Simulación de fondo de cámara
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-            Text(
-                "Escaneando...",
-                color = Color.White.copy(alpha = 0.5f),
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-
-        // INTERFAZ SOBREPUESTA (Overlay)
-        Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                "Enfoca el código QR del tótem",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 40.dp)
-            )
-
-            // Cuadro de enfoque estético
-            Box(
-                modifier = Modifier
-                    .size(250.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(Color.Transparent)
-                    .padding(2.dp)
-            ) {
-                // Aquí iría el visor de la cámara real
-            }
-
-            // BOTONES DE CONTROL (Sensores/Accesibilidad)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 100.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                // Botón de Linterna/Flash
-                FilledIconButton(
-                    onClick = { /* Acción sensor luz */ },
-                    modifier = Modifier.size(64.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = MadridGold)
-                ) {
-                    Icon(Icons.Default.FlashOn, contentDescription = "Encender Flash", tint = MadridBlue)
-                }
-
-                // Ayuda Oral (Requisito de sistema de diálogo)
-                FilledIconButton(
-                    onClick = { /* Activar audio-guía */ },
-                    modifier = Modifier.size(64.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = MadridBlue)
-                ) {
-                    Icon(Icons.Default.Hearing, contentDescription = "Ayuda por voz", tint = Color.White)
-                }
-            }
-        }
+fun EstadisticaItem(titulo: String, valor: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(valor, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridGold)
+        Text(titulo, style = MaterialTheme.typography.bodySmall, color = Color.White)
     }
 }
-*/
+
+// Sub-componente para los iconos de logros
 @Composable
-fun PerfilContent() {
-    Column {
-        Text("Mi Perfil", style = MaterialTheme.typography.headlineMedium, color = MadridBlue)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tarjeta de logros (fomenta volver al museo )
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MadridGold.copy(alpha = 0.1f))
+fun LogroItem(icono: androidx.compose.ui.graphics.vector.ImageVector, nombre: String, desbloqueado: Boolean) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(50.dp)
+                .background(
+                    color = if (desbloqueado) MadridBlue.copy(alpha = 0.1f) else Color.LightGray.copy(alpha = 0.2f),
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("🏆 Logros Desbloqueados", style = MaterialTheme.typography.titleMedium)
-                Text("• Visitante Estrella: 5 salas escaneadas")
-                Text("• Experto en Trofeos: 100% Vitrina")
-            }
+            Icon(
+                imageVector = icono,
+                contentDescription = nombre,
+                tint = if (desbloqueado) MadridBlue else Color.Gray
+            )
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Sección de descuentos (requisito de vuestro índice)
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MadridBlue.copy(alpha = 0.1f))
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("🎫 Mis Descuentos", style = MaterialTheme.typography.titleMedium)
-                Text("Tienes un 10% de descuento en la tienda oficial")
-            }
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(nombre, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = if(desbloqueado) Color.Black else Color.Gray)
     }
 }
 
@@ -308,5 +341,6 @@ fun PerfilContent() {
 @Composable
 fun MainScreenPreview() {
     // Aquí llamamos a tu función para que la IA la dibuje
-    MainScreen()
+    //MainScreen()
+    PerfilContent()
 }
