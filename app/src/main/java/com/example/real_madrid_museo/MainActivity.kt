@@ -1,9 +1,11 @@
 package com.example.real_madrid_museo
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.real_madrid_museo.ui.LoginActivity
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 // onboarding
@@ -41,7 +43,8 @@ class MainActivity : ComponentActivity() {
                 OnboardingScreen(
                     slides = slides,
                     onFinish = {
-                        // Aquí irá el login más adelante
+                        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                        finish()
                     }
                 )
             }
