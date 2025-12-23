@@ -67,3 +67,19 @@ las formas de acceder a las salas (no es como tal (unity)) son dos:
       * solo revisable si es usuario registrado (no sirve para invitado)
       * añadir una grafica de evolucion (meter un grafico que represente la misma informacion (mpandroichart)
    * habria que aumentar el numero de preugntas
+
+### VITRINA:
+  * POSIBLES SENSORES:
+      - Cámara: el usuario escanea un QR, desbloqueando la ficha técnica del trofeo en el móvil.
+      - Giroscopio: una vez seleccionado un trofeo, el usuario puede mover el móvil para rotar el modelo 3D en la pantalla.
+      - Sensor de luz: si la sala está oscura, activar el "Modo Contraste Alto".
+   
+  * Selector de perfil de usuario: nivel niños (historia contada por un "avatar" de un jugador), nivel adulto (datos técnicos).
+  * Multilingüismo: botón rápido para cambiar de idioma entre Español o Inglés.
+  * Accesibilidad visual: activar el modo oscuro.
+  * COLECCIONISMO:
+      - Se escanea un trofeo y se añade a la "Vitrina Personal" del usuario en la aplicación.
+      - Reto: conseguir llenar el álbum digital.
+      - Si se consigue el reto, se hace un descuento en la tienda.
+
+  * Realidad aumentada: que el usuario se haga un selfie con el trofeo 2D a su lado.
