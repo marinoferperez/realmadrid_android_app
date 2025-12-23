@@ -1,6 +1,10 @@
 package com.example.real_madrid_museo
 
+<<<<<<< HEAD
 import android.content.Intent
+=======
+import android.content.Context
+>>>>>>> fcc78a2 (onboarding funcional)
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,8 +16,19 @@ import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 import com.example.real_madrid_museo.ui.onboarding.OnboardingSlide
 import com.example.real_madrid_museo.ui.onboarding.OnboardingScreen
 
+// cambiar idioma
+import com.example.real_madrid_museo.ui.comun.obtenerIdioma
+import com.example.real_madrid_museo.ui.comun.updateLocale
+
 
 class MainActivity : ComponentActivity() {
+
+    // 🔥 ESTO ES LA CLAVE: Se ejecuta antes que onCreate
+    override fun attachBaseContext(newBase: Context) {
+        val lang = obtenerIdioma(newBase)
+        super.attachBaseContext(updateLocale(newBase, lang))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,18 +39,18 @@ class MainActivity : ComponentActivity() {
                 // 1. onboarding
                 val slides = listOf(
                     OnboardingSlide(
-                        title = "¡Bienvenido al Museo!",
-                        description = "Descubre la historia y los momentos más legendarios del Real Madrid.",
+                        title = R.string.onboarding_title_1,
+                        description = R.string.onboarding_desc_1,
                         imageRes = R.drawable.onboarding_1
                     ),
                     OnboardingSlide(
-                        title = "Escanea y descubre",
-                        description = "Escanea códigos QR del museo para acceder a contenido exclusivo.",
+                        title = R.string.onboarding_title_2,
+                        description = R.string.onboarding_desc_2,
                         imageRes = R.drawable.onboarding_2
                     ),
                     OnboardingSlide(
-                        title = "Vive el club",
-                        description = "Participa en juegos, consulta eventos y explora el pasado, presente y futuro del club.",
+                        title = R.string.onboarding_title_3,
+                        description = R.string.onboarding_desc_3,
                         imageRes = R.drawable.onboarding_3
                     )
                 )

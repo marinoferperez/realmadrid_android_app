@@ -1,4 +1,26 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">real_madrid_museo</string>
     <string name="continue_as_guest">Continuar como Invitado</string>
+=======
+    <string name="app_name">Museo Real Madrid</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">¡Bienvenido al Museo!</string>
+    <string name="onboarding_desc_1">
+        Descubre la historia y los momentos más legendarios del Real Madrid.
+    </string>
+
+    <string name="onboarding_title_2">Escanea y descubre</string>
+    <string name="onboarding_desc_2">
+        Escanea códigos QR del museo para acceder a contenido exclusivo.
+    </string>
+
+    <string name="onboarding_title_3">Vive el club</string>
+    <string name="onboarding_desc_3">
+        Participa en juegos, consulta eventos y explora el pasado, presente y futuro del club.
+    </string>
+
+    <string name="start">COMENZAR</string>
+>>>>>>> fcc78a2 (onboarding funcional)
 </resources>

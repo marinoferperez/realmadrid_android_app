@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.real_madrid_museo.ui.theme.RealMadridGold
 
 @Composable
 fun IndicadorPagina(
@@ -46,7 +47,7 @@ private fun Dot(isSelected: Boolean) {
             .clip(CircleShape)
             .background(
                 if (isSelected)
-                    MaterialTheme.colorScheme.primary
+                    RealMadridGold
                 else
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
             )

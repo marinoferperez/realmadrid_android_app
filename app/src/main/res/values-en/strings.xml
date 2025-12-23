@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Real Madrid Museum</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Welcome to the Museum!</string>
+    <string name="onboarding_desc_1">
+        Discover the history and most legendary moments of Real Madrid.
+    </string>
+
+    <string name="onboarding_title_2">Scan and Discover</string>
+    <string name="onboarding_desc_2">
+        Scan museum QR codes to access exclusive content.
+    </string>
+
+    <string name="onboarding_title_3">Live the Club</string>
+    <string name="onboarding_desc_3">
+        Take part in games, check events and explore the club’s past, present and future.
+    </string>
+
+    <string name="start">START NOW</string>
+</resources>
