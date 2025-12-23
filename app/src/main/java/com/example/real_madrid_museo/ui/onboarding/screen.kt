@@ -2,10 +2,13 @@ package com.example.real_madrid_museo.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +34,11 @@ fun screen(
         Image(
             painter = painterResource(id = slide.imageRes),
             contentDescription = null,
-            modifier = Modifier.height(220.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentScale = ContentScale.Crop
         )
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

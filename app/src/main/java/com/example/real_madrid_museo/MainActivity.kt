@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                 // 1. onboarding
                 val slides = listOf(
                     slide(
-                        title = "Bienvenido al Museo",
+                        title = "¡Bienvenido al Museo!",
                         description = "Descubre la historia y los momentos más legendarios del Real Madrid.",
                         imageRes = R.drawable.onboarding_1
                     ),
