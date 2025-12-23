@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.real_madrid_museo.ui.LoginActivity
+import com.example.real_madrid_museo.ui.comun.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 // onboarding
@@ -14,21 +15,12 @@ import com.example.real_madrid_museo.ui.onboarding.OnboardingSlide
 import com.example.real_madrid_museo.ui.onboarding.OnboardingScreen
 
 // cambiar idioma
-import com.example.real_madrid_museo.ui.comun.obtenerIdioma
-import com.example.real_madrid_museo.ui.comun.updateLocale
-
-
 class MainActivity : ComponentActivity() {
-
-    // 🔥 ESTO ES LA CLAVE: Se ejecuta antes que onCreate
-    override fun attachBaseContext(newBase: Context) {
-        val lang = obtenerIdioma(newBase)
-        super.attachBaseContext(updateLocale(newBase, lang))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        aplicarIdioma(this)
 
         setContent {
             Real_madrid_museoTheme {

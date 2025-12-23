@@ -1,15 +1,15 @@
 package com.example.real_madrid_museo.ui.onboarding
 
-import androidx.compose.runtime.Composable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,12 +32,7 @@ fun OnboardingScreen(
     onFinish: () -> Unit
 ) {
     val context = LocalContext.current
-
-    // 🔥 FUENTE DE VERDAD DEL IDIOMA
-    val currentLanguage by remember {
-        mutableStateOf(obtenerIdioma(context))
-    }
-
+    val currentLanguage = obtenerIdioma(context)
     val pagerState = rememberPagerState { slides.size }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -46,13 +41,13 @@ fun OnboardingScreen(
 
         LanguageToggle(
             currentLanguage = currentLanguage,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(16.dp),
             onToggle = {
                 val newLanguage = if (currentLanguage == "es") "en" else "es"
                 cambiarIdioma(context, newLanguage)
-            }
+            },
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.TopEnd)
         )
 
         Column(
