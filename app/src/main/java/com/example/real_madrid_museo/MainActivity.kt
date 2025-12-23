@@ -1,10 +1,7 @@
 package com.example.real_madrid_museo
 
-<<<<<<< HEAD
 import android.content.Intent
-=======
 import android.content.Context
->>>>>>> fcc78a2 (onboarding funcional)
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

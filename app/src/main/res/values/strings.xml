@@ -1,8 +1,5 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">real_madrid_museo</string>
-    <string name="continue_as_guest">Continuar como Invitado</string>
-=======
+
     <string name="app_name">Museo Real Madrid</string>
 
     <!-- Onboarding -->
@@ -22,5 +19,4 @@
     </string>
 
     <string name="start">COMENZAR</string>
->>>>>>> fcc78a2 (onboarding funcional)
 </resources>

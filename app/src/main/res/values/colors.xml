@@ -5,5 +5,6 @@
     <color name="rm_white">#FFFFFF</color>
     <color name="rm_blue_dark">#0E316D</color>
     <color name="rm_gold">#FEBE10</color>
-    <color name="rm_grey_bg">#F5F5F5</color>
+
+    <color name="mi_morado">#F5F5F5</color>
 </resources>

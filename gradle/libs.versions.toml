@@ -8,16 +8,16 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.2"
 composeBom = "2024.09.00"
-<<<<<<< HEAD
+
 appcompat = "1.6.1"
 material = "1.10.0"
 activity = "1.12.2"
 constraintlayout = "2.1.4"
 navigationCompose = "2.9.6"
 remoteCreationCore = "1.0.0-alpha01"
-=======
+
 animation = "1.10.0"
->>>>>>> fcc78a2 (onboarding funcional)
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,16 +34,13 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-<<<<<<< HEAD
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-compose-remote-creation-core = { group = "androidx.compose.remote", name = "remote-creation-core", version.ref = "remoteCreationCore" }
-=======
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
->>>>>>> fcc78a2 (onboarding funcional)
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
