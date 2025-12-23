@@ -100,20 +100,6 @@ fun OnboardingScreen(
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center
                     )
-
-                    // ───── SOLO EN EL PRIMER SLIDE ─────
-                    if (page == 0) {
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            text = stringResource(R.string.onboarding_where_is),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.clickable {
-                                abrirMapaBernabeu(context)
-                            }
-                        )
-                    }
                 }
             }
 
@@ -126,6 +112,28 @@ fun OnboardingScreen(
             )
 
             Spacer(modifier = Modifier.height(32.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ───── BOTÓN UBICACIÓN (SOLO SLIDE 0) ─────
+            AnimatedVisibility(visible = pagerState.currentPage == 0) {
+                Button(
+                    onClick = {
+                        abrirMapaBernabeu(context)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.onboarding_where_is),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+                }
+            }
 
             // ───── BOTÓN COMENZAR ─────
             AnimatedVisibility(visible = pagerState.currentPage > 1) {

@@ -19,7 +19,7 @@ fun FondoAnimado() {
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 15000, // MUY lento
+                durationMillis = 10000, // MUY lento
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Reverse
@@ -32,7 +32,7 @@ fun FondoAnimado() {
             Color.White,
             Color.White,
             Color(0xFF5B73AF).copy(alpha = 0.08f), // azul MUY sutil
-            Color(0xFFFFF3C4).copy(alpha = 0.15f)  // dorado suave
+            Color(0xFFFFF2BF).copy(alpha = 0.15f)  // dorado suave
         ),
         start = androidx.compose.ui.geometry.Offset(0f, offset),
         end = androidx.compose.ui.geometry.Offset(offset, 0f)
