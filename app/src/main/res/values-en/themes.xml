@@ -2,11 +2,6 @@
 <resources>
 
     <style name="Theme.Real_madrid_museo" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
-    <style name="Theme.RealMadrid.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-
     <style name="CalendarioMorado" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorAccent">@color/mi_morado</item>
         <item name="colorPrimary">@color/mi_morado</item>
