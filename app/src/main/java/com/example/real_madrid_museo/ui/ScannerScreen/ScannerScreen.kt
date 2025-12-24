@@ -1,9 +1,10 @@
-package com.example.real_madrid_museo.ui.camera
+package com.example.real_madrid_museo.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -16,14 +17,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -34,33 +29,44 @@ import com.example.real_madrid_museo.home.MadridGold
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
+import androidx.compose.ui.graphics.drawscope.Stroke
 
+
+@OptIn(ExperimentalGetImage::class)
 @Composable
-fun ScannerScreen() {
+fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
-    // 1. ESTADOS: Cámara y Permisos
     var lensFacing by remember { mutableStateOf(CameraSelector.LENS_FACING_BACK) }
+    var hasScanned by remember { mutableStateOf(false) }
+
     var hasCameraPermission by remember {
         mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
         )
     }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { granted -> hasCameraPermission = granted }
-    )
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasCameraPermission = granted
+    }
 
     LaunchedEffect(Unit) {
-        if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
+        if (!hasCameraPermission) {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
         if (hasCameraPermission) {
-            // 2. VISTA DE LA CÁMARA (Se reinicia cuando cambia lensFacing)
+
             AndroidView(
                 factory = { ctx ->
                     PreviewView(ctx).apply {
@@ -70,7 +76,9 @@ fun ScannerScreen() {
                 modifier = Modifier.fillMaxSize(),
                 update = { previewView ->
                     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
                     cameraProviderFuture.addListener({
+
                         val cameraProvider = cameraProviderFuture.get()
 
                         val preview = Preview.Builder().build().also {
@@ -82,13 +90,34 @@ fun ScannerScreen() {
                             .build()
 
                         val scanner = BarcodeScanning.getClient()
+
                         imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
                             val mediaImage = imageProxy.image
-                            if (mediaImage != null) {
-                                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+
+                            if (mediaImage != null && !hasScanned) {
+
+                                val image = InputImage.fromMediaImage(
+                                    mediaImage,
+                                    imageProxy.imageInfo.rotationDegrees
+                                )
+
                                 scanner.process(image)
-                                    .addOnSuccessListener { /* Lógica de éxito */ }
-                                    .addOnCompleteListener { imageProxy.close() }
+                                    .addOnSuccessListener { barcodes ->
+                                        for (barcode in barcodes) {
+                                            val value = barcode.rawValue ?: continue
+                                            val numero = value.toIntOrNull()
+
+                                            if (numero == 7) {
+                                                hasScanned = true
+                                                onNavigateToPrueba()
+                                            }
+                                        }
+                                    }
+                                    .addOnCompleteListener {
+                                        imageProxy.close()
+                                    }
+                            } else {
+                                imageProxy.close()
                             }
                         }
 
@@ -96,47 +125,44 @@ fun ScannerScreen() {
                             .requireLensFacing(lensFacing)
                             .build()
 
-                        try {
-                            cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview,
-                                imageAnalysis
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        cameraProvider.unbindAll()
+                        cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageAnalysis
+                        )
+
                     }, ContextCompat.getMainExecutor(context))
                 }
             )
 
-            // 3. RECUADRO DE AJUSTE
             QRScannerOverlay()
 
-            // 4. BOTÓN PARA GIRAR CÁMARA
             FloatingActionButton(
                 onClick = {
-                    lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK) {
-                        CameraSelector.LENS_FACING_FRONT
-                    } else {
-                        CameraSelector.LENS_FACING_BACK
-                    }
+                    lensFacing =
+                        if (lensFacing == CameraSelector.LENS_FACING_BACK)
+                            CameraSelector.LENS_FACING_FRONT
+                        else
+                            CameraSelector.LENS_FACING_BACK
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = 100.dp, end = 24.dp), // Separado de la barra inferior
+                    .padding(24.dp),
                 containerColor = MadridGold,
                 contentColor = MadridBlue,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.FlipCameraAndroid, contentDescription = "Girar cámara")
+                Icon(Icons.Default.FlipCameraAndroid, contentDescription = null)
             }
 
         } else {
-            // Mensaje si no hay permisos
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Se requiere permiso de cámara", color = MadridBlue)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Permiso de cámara denegado", color = MadridBlue)
             }
         }
     }
@@ -145,25 +171,26 @@ fun ScannerScreen() {
 @Composable
 fun QRScannerOverlay() {
     Canvas(modifier = Modifier.fillMaxSize()) {
+
         val boxSize = 250.dp.toPx()
         val left = (size.width - boxSize) / 2
         val top = (size.height - boxSize) / 2
+
         val rect = Rect(left, top, left + boxSize, top + boxSize)
 
-        val backgroundPath = Path().apply {
-            addRect(Rect(0f, 0f, size.width, size.height))
-        }
-        val holePath = Path().apply {
-            addRoundRect(RoundRect(rect, CornerRadius(20.dp.toPx())))
-        }
-
-        drawPath(backgroundPath, color = Color.Black.copy(alpha = 0.6f))
-        drawPath(holePath, color = Color.Transparent, blendMode = BlendMode.Clear)
+        drawRect(Color.Black.copy(alpha = 0.6f))
+        drawRoundRect(
+            color = Color.Transparent,
+            topLeft = Offset(left, top),
+            size = Size(boxSize, boxSize),
+            cornerRadius = CornerRadius(20.dp.toPx()),
+            blendMode = BlendMode.Clear
+        )
 
         drawRoundRect(
             color = Color.White,
             topLeft = Offset(left, top),
-            size = androidx.compose.ui.geometry.Size(boxSize, boxSize),
+            size = Size(boxSize, boxSize),
             cornerRadius = CornerRadius(20.dp.toPx()),
             style = Stroke(width = 3.dp.toPx())
         )

@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
-import com.example.real_madrid_museo.ui.camera.ScannerScreen
+import com.example.real_madrid_museo.ui.ScannerScreen
 import com.example.real_madrid_museo.ui.map.MapScreen
 
 
