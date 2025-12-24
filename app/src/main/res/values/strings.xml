@@ -64,4 +64,48 @@
     <string name="notification_discount_text_long">Gracias por suscribirte. Tienes un 10% de descuento en tu entrada al museo y en la tienda oficial.</string>
     <string name="notification_channel_name">Ofertas y Promociones</string>
     <string name="notification_channel_description">Descuentos del museo</string>
+
+    <!-- Main Screen -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_map">Mapa</string>
+    <string name="nav_camera">Cámara</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_hello">¡Hola, %1$s!</string>
+    <string name="dashboard_subtitle">Prepárate para tu visita nivel Experto</string>
+    <string name="dashboard_next_match">Próximo Encuentro</string>
+    <string name="dashboard_team_1">Real Madrid</string>
+    <string name="dashboard_team_2">Villacarrillo</string>
+    <string name="dashboard_latest_news">Últimas Noticias</string>
+    <string name="news_title_1">El nuevo Bernabéu abre sus puertas</string>
+    <string name="news_title_2">Mbappé visita el museo</string>
+    <string name="news_title_3">Nueva camiseta edición especial</string>
+    <string name="news_time">Hace 2 horas</string>
+
+    <!-- Profile -->
+    <string name="profile_guest_title">Visitante del Museo</string>
+    <string name="profile_member_title">Socio Madridista</string>
+    <string name="profile_register_prompt">Registrate para desbloquear tus estadísticas, logros y premios exclusivos.</string>
+    <string name="stats_visits">Visitas</string>
+    <string name="stats_points">Puntos</string>
+    <string name="stats_ranking">Ranking</string>
+    <string name="achievements_title">Tus Logros</string>
+    <string name="achievement_welcome">Bienvenida</string>
+    <string name="achievement_first_qr">Primer QR</string>
+    <string name="achievement_explorer">Explorador</string>
+    <string name="rewards_title">Recompensas</string>
+    <string name="reward_coming_soon">PROXIMAMENTE</string>
+    <string name="reward_discount">10% DTO.</string>
+    <string name="reward_store">TIENDA OFICIAL</string>
+
+    <!-- Map Screen -->
+    <string name="map_hall">Pasillo</string>
+    <string name="map_entrance">Entrada</string>
+    <string name="map_exit">Salida</string>
+    <string name="map_showcase">Vitrina</string>
+    <string name="map_history">Historia</string>
+    <string name="map_stadium">Estadio</string>
+    <string name="map_game">Juego</string>
+    <string name="map_players">Jugadores</string>
 </resources>

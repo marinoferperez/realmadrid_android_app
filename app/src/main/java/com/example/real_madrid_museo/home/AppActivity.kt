@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.real_madrid_museo.ui.DatabaseHelper
+import com.example.real_madrid_museo.ui.comun.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 class AppActivity : ComponentActivity() {
@@ -12,6 +13,8 @@ class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        aplicarIdioma(this)
 
         // 1. Recuperamos los datos del Intent (enviados desde LoginActivity)
         val tipoUsuario = intent.getStringExtra("TIPO_USUARIO") ?: "INVITADO"

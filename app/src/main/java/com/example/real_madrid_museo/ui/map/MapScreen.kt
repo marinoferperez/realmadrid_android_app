@@ -16,7 +16,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.real_madrid_museo.R
+
 // --- Modelos de Datos ---
 data class Point2D(val x: Float, val y: Float)
 data class RoomShape(val name: String, val vertices2D: List<Point2D>, val roofColor: Color, val wallColor: Color)
@@ -47,7 +50,21 @@ fun MapScreen() {
     val exitRedWall = Color(0xFFB71C1C)
     val groundColor = Color(0xFFF5F5F5)
 
-    val mapStructure = remember { getMegaMapStructure(blueRoof, blueWall, exitRed, exitRedWall) }
+    // Obtenemos los textos traducidos
+    val roomNames = listOf(
+        stringResource(R.string.map_hall),
+        stringResource(R.string.map_entrance),
+        stringResource(R.string.map_exit),
+        stringResource(R.string.map_showcase),
+        stringResource(R.string.map_history),
+        stringResource(R.string.map_stadium),
+        stringResource(R.string.map_game),
+        stringResource(R.string.map_players)
+    )
+
+    val mapStructure = remember(roomNames) { // Recrea la estructura si los nombres cambian
+        getMegaMapStructure(roomNames, blueRoof, blueWall, exitRed, exitRedWall)
+    }
 
     Box(
         modifier = Modifier
@@ -139,26 +156,26 @@ fun twoDToIso(point: Point2D): Offset = Offset(point.x - point.y, (point.x + poi
 
 // --- Estructura del Museo ---
 
-fun getMegaMapStructure(blue: Color, blueDark: Color, red: Color, redDark: Color): List<RoomShape> {
+fun getMegaMapStructure(names: List<String>, blue: Color, blueDark: Color, red: Color, redDark: Color): List<RoomShape> {
     val u = 500f
     val hw = 0.4f * u
     val gap = 1.3f * u
     val pw = 0.25f * u
 
-    val pasillo = RoomShape("Pasillo", listOf(Point2D(-hw, 8f*u), Point2D(hw, 8f*u), Point2D(hw, -8f*u), Point2D(-hw, -8f*u)), blue, blueDark)
+    val pasillo = RoomShape(names[0], listOf(Point2D(-hw, 8f*u), Point2D(hw, 8f*u), Point2D(hw, -8f*u), Point2D(-hw, -8f*u)), blue, blueDark)
 
     // Entrada (Fondo)
-    val entrada = RoomShape("Entrada", listOf(Point2D(-hw, 10f*u), Point2D(hw, 10f*u), Point2D(hw, 8f*u), Point2D(-hw, 8f*u)), blue, blueDark)
+    val entrada = RoomShape(names[1], listOf(Point2D(-hw, 10f*u), Point2D(hw, 10f*u), Point2D(hw, 8f*u), Point2D(-hw, 8f*u)), blue, blueDark)
 
     // Salida (Frente/Abajo) - Color Rojo
-    val salida = RoomShape("Salida", listOf(Point2D(-hw, -8f*u), Point2D(hw, -8f*u), Point2D(hw, -10f*u), Point2D(-hw, -10f*u)), red, redDark)
+    val salida = RoomShape(names[2], listOf(Point2D(-hw, -8f*u), Point2D(hw, -8f*u), Point2D(hw, -10f*u), Point2D(-hw, -10f*u)), red, redDark)
 
     // Salas Principales
-    val vitrina = RoomShape("Vitrina", listOf(Point2D(-3.5f*u, 7f*u), Point2D(-gap, 7f*u), Point2D(-gap, 4.5f*u), Point2D(-3.5f*u, 4.5f*u)), blue, blueDark)
-    val historia = RoomShape("Historia", listOf(Point2D(gap, 7f*u), Point2D(3.5f*u, 7f*u), Point2D(3.5f*u, 4.5f*u), Point2D(gap, 4.5f*u)), blue, blueDark)
-    val estadio = RoomShape("Estadio", listOf(Point2D(-4.5f*u, 2.5f*u), Point2D(-gap, 2.5f*u), Point2D(-gap, -1.5f*u), Point2D(-4.5f*u, -1.5f*u)), blue, blueDark)
-    val juego = RoomShape("Juego", listOf(Point2D(-3.5f*u, -3f*u), Point2D(-gap, -3f*u), Point2D(-gap, -5.5f*u), Point2D(-3.5f*u, -5.5f*u)), blue, blueDark)
-    val jugadores = RoomShape("Jugadores", listOf(Point2D(gap, -3f*u), Point2D(3.5f*u, -3f*u), Point2D(3.5f*u, -5.5f*u), Point2D(gap, -5.5f*u)), blue, blueDark)
+    val vitrina = RoomShape(names[3], listOf(Point2D(-3.5f*u, 7f*u), Point2D(-gap, 7f*u), Point2D(-gap, 4.5f*u), Point2D(-3.5f*u, 4.5f*u)), blue, blueDark)
+    val historia = RoomShape(names[4], listOf(Point2D(gap, 7f*u), Point2D(3.5f*u, 7f*u), Point2D(3.5f*u, 4.5f*u), Point2D(gap, 4.5f*u)), blue, blueDark)
+    val estadio = RoomShape(names[5], listOf(Point2D(-4.5f*u, 2.5f*u), Point2D(-gap, 2.5f*u), Point2D(-gap, -1.5f*u), Point2D(-4.5f*u, -1.5f*u)), blue, blueDark)
+    val juego = RoomShape(names[6], listOf(Point2D(-3.5f*u, -3f*u), Point2D(-gap, -3f*u), Point2D(-gap, -5.5f*u), Point2D(-3.5f*u, -5.5f*u)), blue, blueDark)
+    val jugadores = RoomShape(names[7], listOf(Point2D(gap, -3f*u), Point2D(3.5f*u, -3f*u), Point2D(3.5f*u, -5.5f*u), Point2D(gap, -5.5f*u)), blue, blueDark)
 
     // Pasillitos (Puentes)
     val puentes = listOf(

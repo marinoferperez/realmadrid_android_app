@@ -55,4 +55,49 @@
     <string name="notification_discount_text_long">Thanks for subscribing. You have a 10% discount on your museum ticket and in the official store.</string>
     <string name="notification_channel_name">Offers and Promotions</string>
     <string name="notification_channel_description">Museum discounts</string>
+
+    <!-- Main Screen -->
+    <string name="nav_home">Home</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_camera">Camera</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_hello">Hi, %1$s!</string>
+    <string name="dashboard_subtitle">Get ready for your Expert level visit</string>
+    <string name="dashboard_next_match">Next Match</string>
+    <string name="dashboard_team_1">Real Madrid</string>
+    <string name="dashboard_team_2">Villacarrillo</string>
+    <string name="dashboard_latest_news">Latest News</string>
+    <string name="news_title_1">The new Bernabéu opens its doors</string>
+    <string name="news_title_2">Mbappé visits the museum</string>
+    <string name="news_title_3">New special edition jersey</string>
+    <string name="news_time">2 hours ago</string>
+
+    <!-- Profile -->
+    <string name="profile_guest_title">Museum Visitor</string>
+    <string name="profile_member_title">Madridista Member</string>
+    <string name="profile_register_prompt">Register to unlock your stats, achievements, and exclusive rewards.</string>
+    <string name="stats_visits">Visits</string>
+    <string name="stats_points">Points</string>
+    <string name="stats_ranking">Ranking</string>
+    <string name="achievements_title">Your Achievements</string>
+    <string name="achievement_welcome">Welcome</string>
+    <string name="achievement_first_qr">First QR</string>
+    <string name="achievement_explorer">Explorer</string>
+    <string name="rewards_title">Rewards</string>
+    <string name="reward_coming_soon">COMING SOON</string>
+    <string name="reward_discount">10% OFF</string>
+    <string name="reward_store">OFFICIAL STORE</string>
+    
+    <!-- Map Screen -->
+    <string name="map_hall">Hall</string>
+    <string name="map_entrance">Entrance</string>
+    <string name="map_exit">Exit</string>
+    <string name="map_showcase">Showcase</string>
+    <string name="map_history">History</string>
+    <string name="map_stadium">Stadium</string>
+    <string name="map_game">Game</string>
+    <string name="map_players">Players</string>
+
 </resources>
