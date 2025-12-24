@@ -1,39 +1,26 @@
 package com.example.real_madrid_museo.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.home.AppActivity // <--- AHORA APUNTA A TU HOME
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import androidx.compose.ui.platform.ComposeView
-import com.example.real_madrid_museo.home.AppActivity
-import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
-import com.example.real_madrid_museo.ui.RegisterActivity
-import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
-import com.example.real_madrid_museo.ui.onboarding.FondoAnimado
+
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var databaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
 
-        val composeFondo = findViewById<ComposeView>(R.id.composeFondo)
-        composeFondo.setContent {
-            FondoAnimado()
-        }
-
-        crearCanalNotificacion()
+        databaseHelper = DatabaseHelper(this)
 
         val etEmail = findViewById<TextInputEditText>(R.id.etEmail)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
@@ -41,26 +28,35 @@ class LoginActivity : AppCompatActivity() {
         val btnGuest = findViewById<MaterialButton>(R.id.btnGuest)
         val tvRegister = findViewById<TextView>(R.id.tvRegister)
 
+        // LOGIN
         btnLogin.setOnClickListener {
-            if (etEmail.text.isNullOrEmpty() || etPassword.text.isNullOrEmpty()) {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
             } else {
-                btnLogin.text = "Conectando..."
+                btnLogin.text = "Verificando..."
                 btnLogin.isEnabled = false
-                
+
                 Handler(Looper.getMainLooper()).postDelayed({
-                    btnLogin.text = "ENTRAR"
-                    btnLogin.isEnabled = true
-                    lanzarNotificacion()
-                    Toast.makeText(this, "Login Correcto", Toast.LENGTH_SHORT).show()
-                    // Aquí iríamos al MainActivity:
-                    startActivity(Intent(this, AppActivity::class.java))
-                    finish()                }, 1500)
+                    val existe = databaseHelper.checkUser(email, password)
+                    if (existe) {
+                        Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                        irAlHome("USUARIO")
+                    } else {
+                        Toast.makeText(this, "Datos incorrectos", Toast.LENGTH_LONG).show()
+                        btnLogin.text = "ENTRAR"
+                        btnLogin.isEnabled = true
+                    }
+                }, 1000)
             }
         }
 
+        // INVITADO
         btnGuest.setOnClickListener {
-            Toast.makeText(this, "Modo Invitado Activo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Entrando como Invitado...", Toast.LENGTH_SHORT).show()
+            irAlHome("INVITADO")
         }
 
         tvRegister.setOnClickListener {
@@ -68,27 +64,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun lanzarNotificacion() {
-        val builder = NotificationCompat.Builder(this, "ofertas_real_madrid")
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("¡Bienvenido de nuevo!")
-            .setContentText("Tienes un 10% de descuento en la tienda.")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
+    private fun irAlHome(tipoUsuario: String) {
         try {
-            with(NotificationManagerCompat.from(this)) {
-                notify(100, builder.build())
-            }
-        } catch (e: SecurityException) {
+            // AQUÍ ESTÁ EL CAMBIO: Vamos a AppActivity (que contiene tu MainScreen)
+            val intent = Intent(this, AppActivity::class.java)
+            intent.putExtra("TIPO_USUARIO", tipoUsuario)
+            startActivity(intent)
+            finish()
+        } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun crearCanalNotificacion() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel("ofertas_real_madrid", "Ofertas", NotificationManager.IMPORTANCE_DEFAULT)
-            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel(channel)
+            Toast.makeText(this, "Error al abrir Home: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 }

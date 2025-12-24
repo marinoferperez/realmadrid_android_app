@@ -1,21 +1,51 @@
 package com.example.real_madrid_museo.ui
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
+import com.example.real_madrid_museo.ui.onboarding.OnboardingSlide
+import com.example.real_madrid_museo.ui.onboarding.OnboardingScreen
 
-class OnboardingActivity : AppCompatActivity() {
+class OnboardingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_onboarding)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        setContent {
+            Real_madrid_museoTheme {
+                // Definimos las diapositivas
+                val slides = listOf(
+                    OnboardingSlide(
+                        title = R.string.onboarding_title_1,
+                        description = R.string.onboarding_desc_1,
+                        imageRes = R.drawable.onboarding_1
+                    ),
+                    OnboardingSlide(
+                        title = R.string.onboarding_title_2,
+                        description = R.string.onboarding_desc_2,
+                        imageRes = R.drawable.onboarding_2
+                    ),
+                    OnboardingSlide(
+                        title = R.string.onboarding_title_3,
+                        description = R.string.onboarding_desc_3,
+                        imageRes = R.drawable.onboarding_3
+                    )
+                )
+
+                // Mostramos la pantalla y definimos qué pasa al terminar
+                OnboardingScreen(
+                    slides = slides,
+                    onFinish = {
+                        // Al terminar, vamos al LOGIN y cerramos esta pantalla
+                        startActivity(Intent(this@OnboardingActivity, LoginActivity::class.java))
+                        finish()
+                    }
+                )
+            }
         }
     }
 }

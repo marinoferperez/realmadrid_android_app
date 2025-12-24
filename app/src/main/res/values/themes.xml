@@ -2,10 +2,12 @@
 <resources>
 
     <style name="Theme.Real_madrid_museo" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
-    <style name="CalendarioMorado" parent="Theme.MaterialComponents.Light.Dialog">
+    <style name="CalendarioMorado" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorAccent">@color/mi_morado</item>
         <item name="colorPrimary">@color/mi_morado</item>
-        <item name="android:textColorPrimary">@color/black</item>
+
+        <item name="android:headerBackground">@color/mi_morado</item>
+
         <item name="buttonBarPositiveButtonStyle">@style/BotonesMorados</item>
         <item name="buttonBarNegativeButtonStyle">@style/BotonesMorados</item>
     </style>
