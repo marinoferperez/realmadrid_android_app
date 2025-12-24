@@ -162,7 +162,7 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Permiso de cámara denegado", color = MadridBlue)
+                Text("Permiso de cÃ¡mara denegado", color = MadridBlue)
             }
         }
     }
