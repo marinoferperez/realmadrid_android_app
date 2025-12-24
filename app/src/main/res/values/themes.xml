@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Real_madrid_museo" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
-    <style name="Theme.RealMadrid.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
+    <!-- Tema principal de la app, heredando de un tema de Material 3 sin barra de acción -->
+    <style name="Theme.Real_madrid_museo" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="CalendarioMorado" parent="Theme.MaterialComponents.Light.Dialog">
+    <style name="CalendarioMorado" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorAccent">@color/mi_morado</item>
         <item name="colorPrimary">@color/mi_morado</item>
-        <item name="android:textColorPrimary">@color/black</item>
+
+        <item name="android:headerBackground">@color/mi_morado</item>
+
         <item name="buttonBarPositiveButtonStyle">@style/BotonesMorados</item>
         <item name="buttonBarNegativeButtonStyle">@style/BotonesMorados</item>
     </style>
@@ -30,5 +29,9 @@
 
         <!-- Tema real después -->
         <item name="postSplashScreenTheme">@style/Theme.Real_madrid_museo</item>
+
+        <!-- Asegurar que no haya barra de acción -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>

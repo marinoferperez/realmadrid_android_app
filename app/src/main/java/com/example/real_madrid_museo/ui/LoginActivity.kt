@@ -7,10 +7,16 @@ import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import com.example.real_madrid_museo.R
-import com.example.real_madrid_museo.home.AppActivity // <--- AHORA APUNTA A TU HOME
+import com.example.real_madrid_museo.home.AppActivity
+import com.example.real_madrid_museo.ui.comun.LanguageToggle
+import com.example.real_madrid_museo.ui.comun.aplicarIdioma
+import com.example.real_madrid_museo.ui.comun.cambiarIdioma
+import com.example.real_madrid_museo.ui.comun.obtenerIdioma
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity() {
 
@@ -20,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
 
+        aplicarIdioma(this)
+
         databaseHelper = DatabaseHelper(this)
 
         val etEmail = findViewById<TextInputEditText>(R.id.etEmail)
@@ -27,6 +35,32 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
         val btnGuest = findViewById<MaterialButton>(R.id.btnGuest)
         val tvRegister = findViewById<TextView>(R.id.tvRegister)
+        val composeBandera = findViewById<ComposeView>(R.id.composeBandera)
+        
+        // Elementos adicionales para traducir (títulos, hints)
+        val titleWelcome = findViewById<TextView>(R.id.titleWelcome)
+        val inputLayoutEmail = findViewById<TextInputLayout>(R.id.inputLayoutEmail)
+        val inputLayoutPassword = findViewById<TextInputLayout>(R.id.inputLayoutPassword)
+
+        // Configurar textos dinámicos desde resources (para que se aplique la traducción)
+        titleWelcome.text = getString(R.string.login_title)
+        inputLayoutEmail.hint = getString(R.string.login_email_hint)
+        inputLayoutPassword.hint = getString(R.string.login_password_hint)
+        btnLogin.text = getString(R.string.login_button_enter)
+        btnGuest.text = getString(R.string.login_button_guest)
+        tvRegister.text = getString(R.string.login_register_prompt)
+
+        // Configurar el ComposeView para la bandera
+        composeBandera.setContent {
+            val currentLanguage = obtenerIdioma(this)
+            LanguageToggle(
+                currentLanguage = currentLanguage,
+                onToggle = {
+                    val newLanguage = if (currentLanguage == "es") "en" else "es"
+                    cambiarIdioma(this, newLanguage)
+                }
+            )
+        }
 
         // LOGIN
         btnLogin.setOnClickListener {
@@ -34,20 +68,19 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_fill_fields), Toast.LENGTH_SHORT).show()
             } else {
-                btnLogin.text = "Verificando..."
+                btnLogin.text = getString(R.string.login_button_verifying)
                 btnLogin.isEnabled = false
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     val existe = databaseHelper.checkUser(email, password)
                     if (existe) {
-                        Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                        // Pasamos el email del campo de texto
-                        irAlHome("USUARIO", email)
+                        Toast.makeText(this, getString(R.string.toast_welcome), Toast.LENGTH_SHORT).show()
+                        irAlHome("USUARIO")
                     } else {
-                        Toast.makeText(this, "Datos incorrectos", Toast.LENGTH_LONG).show()
-                        btnLogin.text = "ENTRAR"
+                        Toast.makeText(this, getString(R.string.toast_wrong_data), Toast.LENGTH_LONG).show()
+                        btnLogin.text = getString(R.string.login_button_enter)
                         btnLogin.isEnabled = true
                     }
                 }, 1000)
@@ -56,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
 
         // INVITADO
         btnGuest.setOnClickListener {
-            Toast.makeText(this, "Entrando como Invitado...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_guest_entry), Toast.LENGTH_SHORT).show()
             irAlHome("INVITADO")
         }
 
@@ -65,16 +98,18 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun irAlHome(tipoUsuario: String, email: String? = null) {
-        try{
+    private fun irAlHome(tipoUsuario: String) {
+        try {
+            // AQUÍ ESTÁ EL CAMBIO: Vamos a AppActivity (que contiene tu MainScreen)
             val intent = Intent(this, AppActivity::class.java)
             intent.putExtra("TIPO_USUARIO", tipoUsuario)
-            intent.putExtra("USER_EMAIL", email) // <--- Pasamos el email
             startActivity(intent)
             finish()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Error al abrir Home: ${e.message}", Toast.LENGTH_LONG).show()
+            // Usamos getString con format args para el mensaje de error
+            val errorMsg = getString(R.string.toast_home_error, e.message)
+            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
         }
     }
 }

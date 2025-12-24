@@ -35,7 +35,7 @@ fun aplicarIdioma(context: Context) {
     )
 }
 
-// 🔥 ENCUENTRA LA ACTIVITY REAL DESDE LocalContext
+// Función auxiliar para encontrar la Activity desde un Contexto (muy útil en Jetpack Compose)
 fun Context.findActivity(): Activity? {
     var currentContext = this
     while (currentContext is ContextWrapper) {
@@ -47,5 +47,6 @@ fun Context.findActivity(): Activity? {
 
 fun cambiarIdioma(context: Context, language: String) {
     guardarIdioma(context, language)
+    // Reinicia la actividad actual para aplicar los nuevos recursos de idioma
     context.findActivity()?.recreate()
 }

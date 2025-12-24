@@ -24,6 +24,14 @@
             android:layout_height="wrap_content"
             android:padding="32dp">
 
+            <!-- 🇪🇸🇬🇧 CONTENEDOR PARA LA BANDERA -->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/composeBandera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
             <ImageView
                 android:id="@+id/logoImage"
                 android:layout_width="120dp"
@@ -39,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Bienvenido Madridista"
+                android:text="@string/login_title"
                 android:textColor="@color/rm_blue_dark"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -53,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:hint="Correo Electrónico"
+                android:hint="@string/login_email_hint"
                 app:boxCornerRadiusBottomEnd="20dp"
                 app:boxCornerRadiusBottomStart="20dp"
                 app:boxCornerRadiusTopEnd="20dp"
@@ -74,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Contraseña"
+                android:hint="@string/login_password_hint"
                 app:boxCornerRadiusBottomEnd="20dp"
                 app:boxCornerRadiusBottomStart="20dp"
                 app:boxCornerRadiusTopEnd="20dp"
@@ -95,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="32dp"
-                android:text="ENTRAR"
+                android:text="@string/login_button_enter"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/rm_blue_dark"
@@ -107,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="12dp"
-                android:text="Continuar como Invitado"
+                android:text="@string/login_button_guest"
                 android:textColor="@color/rm_blue_dark"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:strokeColor="@color/rm_blue_dark"
@@ -119,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="¿No tienes cuenta? Regístrate aquí"
+                android:text="@string/login_register_prompt"
                 android:textColor="@color/rm_gold"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -41,7 +41,7 @@ class RegisterActivity : AppCompatActivity() {
             // Permiso concedido. No hacemos nada ahora, pero ya podremos enviar la notificación al final.
         } else {
             // Permiso denegado.
-            Toast.makeText(this, "Sin permiso, no recibirás el descuento", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_no_permission_notifications), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -88,22 +88,22 @@ class RegisterActivity : AppCompatActivity() {
 
             if (name.isEmpty() || etPhone.text.isNullOrEmpty() || 
                 email.isEmpty() || password.isEmpty() || !dateSelected) {
-                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_fill_all_fields_register), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etEmail.error = "Email inválido"
+                etEmail.error = getString(R.string.error_invalid_email)
                 return@setOnClickListener
             }
 
             if (!cbTerms.isChecked) {
-                Toast.makeText(this, "Debes aceptar los términos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_accept_terms), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             
             if (databaseHelper.checkEmailExists(email)) {
-                Toast.makeText(this, "Este correo ya está registrado", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.toast_email_exists), Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
@@ -123,10 +123,10 @@ class RegisterActivity : AppCompatActivity() {
                     lanzarNotificacionDescuento()
                 }
 
-                Toast.makeText(this, "¡Cuenta creada con éxito!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.toast_account_created), Toast.LENGTH_LONG).show()
                 finish()
             } else {
-                Toast.makeText(this, "Error al guardar usuario", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_user_save_error), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -150,10 +150,10 @@ class RegisterActivity : AppCompatActivity() {
     private fun lanzarNotificacionDescuento() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info) 
-            .setContentTitle("¡Bienvenido al Real Madrid!")
-            .setContentText("Tienes un 10% de descuento en tu entrada.")
+            .setContentTitle(getString(R.string.notification_welcome_title))
+            .setContentText(getString(R.string.notification_discount_text_short))
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Gracias por suscribirte. Tienes un 10% de descuento en tu entrada al museo y en la tienda oficial."))
+                .bigText(getString(R.string.notification_discount_text_long)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 
@@ -171,8 +171,8 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun crearCanalNotificacion() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Ofertas y Promociones"
-            val descriptionText = "Descuentos del museo"
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText

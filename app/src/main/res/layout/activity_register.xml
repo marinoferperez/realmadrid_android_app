@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Crear Cuenta"
+            android:text="@string/register_title"
             android:textColor="@color/rm_blue_dark"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:hint="Nombre Completo"
+            android:hint="@string/register_name_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
@@ -61,7 +61,7 @@
                 android:id="@+id/inputPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nº Móvil"
+                android:hint="@string/register_phone_hint"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxCornerRadiusBottomEnd="20dp"
                 app:boxCornerRadiusBottomStart="20dp"
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Fecha de Nacimiento"
+            android:hint="@string/register_dob_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Email"
+            android:hint="@string/register_email_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Contraseña"
+            android:hint="@string/register_password_hint"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Quiero recibir ofertas y descuentos exclusivos"
+            android:text="@string/register_notifications_checkbox"
             android:textColor="@color/rm_blue_dark"/>
 
         <CheckBox
@@ -148,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Acepto los términos y condiciones"
+            android:text="@string/register_terms_checkbox"
             android:textColor="#757575"/>
 
         <com.google.android.material.button.MaterialButton
@@ -156,7 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="24dp"
-            android:text="REGISTRARSE"
+            android:text="@string/register_button_register"
             android:textStyle="bold"
             app:backgroundTint="@color/rm_blue_dark"
             app:cornerRadius="20dp"/>
@@ -167,7 +167,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:text="Volver al Login"
+            android:text="@string/register_go_to_login"
             android:textColor="@color/rm_gold"
             android:textStyle="bold"/>
     </LinearLayout>
