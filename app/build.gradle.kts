@@ -70,5 +70,13 @@ dependencies {
     implementation("com.hbb20:ccp:2.7.3")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.material:material-icons-extended")
+    // CameraX
+    val cameraxVersion = "1.3.0"
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+
+    // ML Kit QR Scanning
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
 }

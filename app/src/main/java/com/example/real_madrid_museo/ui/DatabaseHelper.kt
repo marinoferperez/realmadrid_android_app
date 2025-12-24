@@ -76,4 +76,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return count > 0
     }
+
+    fun getUserDetails(email: String): Map<String, String>? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", arrayOf(email))
+
+        return if (cursor.moveToFirst()) {
+            val userData = mapOf(
+                "name" to cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                "profile" to cursor.getString(cursor.getColumnIndexOrThrow("profile"))
+            )
+            cursor.close()
+            userData
+        } else {
+            cursor.close()
+            null
+        }
+    }
 }
+
+// Función para obtener los datos completos de un usuario por su email

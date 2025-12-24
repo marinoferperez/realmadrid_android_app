@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
-
+import androidx.compose.ui.tooling.preview.Preview
 // --- Modelos de Datos ---
 data class Point2D(val x: Float, val y: Float)
 data class RoomShape(val name: String, val vertices2D: List<Point2D>, val roofColor: Color, val wallColor: Color)
@@ -170,4 +170,12 @@ fun getMegaMapStructure(blue: Color, blueDark: Color, red: Color, redDark: Color
     )
 
     return listOf(pasillo, entrada, salida, vitrina, historia, estadio, juego, jugadores) + puentes
+}
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun MapPreview() {
+    // Aquí envolvemos el mapa para que se vea como en la app real
+    Box(modifier = Modifier.fillMaxSize()) {
+        MapScreen()
+    }
 }

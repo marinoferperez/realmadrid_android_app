@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.ui.camera.ScannerScreen
 import com.example.real_madrid_museo.ui.map.MapScreen
 
 
@@ -31,7 +32,7 @@ val MadridBlue = Color(0xFF002D72)
 val MadridGold = Color(0xFFFEBE10)
 
 @Composable
-fun MainScreen() {
+fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf("Inicio", "Mapa", "Cámara", "Perfil")
     val icons = listOf(Icons.Default.Home, Icons.Default.Map, Icons.Default.QrCodeScanner, Icons.Default.Person)
@@ -74,10 +75,10 @@ fun MainScreen() {
                 .fillMaxSize()) {
 
                 when (selectedItem) {
-                    0 -> DashboardInicio() // La pantalla estética de noticias/partidos
+                    0 -> DashboardInicio(nombre) // Pasamos el nombre
                     1 -> MapScreen()
-                    //2 -> PantallaScanner()
-                    3 -> PerfilContent()
+                    2 -> ScannerScreen()
+                    3 -> PerfilContent(nombre, perfil, esInvitado) // Pasamos todo
                 }
             }
         }
@@ -85,12 +86,13 @@ fun MainScreen() {
 }
 
 @Composable
-fun DashboardInicio() {
+fun DashboardInicio(nombre: String) {
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
-            Text("¡Hola, Madridista!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
-            Text("Prepárate para tu visita nivel Experto", style = MaterialTheme.typography.bodyLarge, color = Color.Gray) // Basado en
+            // USAMOS EL NOMBRE REAL
+            Text("¡Hola, $nombre!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
+            Text("Prepárate para tu visita nivel Experto", style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
             Spacer(modifier = Modifier.height(24.dp))
         }
 
@@ -169,21 +171,20 @@ fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la image
 }
 
 @Composable
-fun PerfilContent() {
+fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
-            .padding(bottom = 20.dp) // Espacio extra al final
+            .padding(bottom = 20.dp)
     ) {
-        // 1. CABECERA DEL PERFIL
+        // 1. CABECERA DINÁMICA
         item {
             Spacer(modifier = Modifier.height(20.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Avatar (Usamos un icono por defecto para evitar errores, pero podrías poner una foto)
                 Surface(
                     shape = CircleShape,
                     color = MadridBlue.copy(alpha = 0.1f),
@@ -192,7 +193,7 @@ fun PerfilContent() {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Avatar",
-                        tint = MadridBlue,
+                        tint = if (esInvitado) Color.Gray else MadridBlue,
                         modifier = Modifier.padding(15.dp).fillMaxSize()
                     )
                 }
@@ -200,17 +201,26 @@ fun PerfilContent() {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column {
-                    Text("Javier Madridista", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MadridBlue)
-                    Text("Socio Nº 1902", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    // Muestra el nombre real del usuario
+                    Text(nombre, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MadridBlue)
+
+                    // Subtítulo dinámico según tipo de acceso
+                    Text(
+                        text = if (esInvitado) "Visitante del Museo" else "Socio Madridista",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+
                     Spacer(modifier = Modifier.height(4.dp))
-                    // Etiqueta de Nivel
+
+                    // Etiqueta de Perfil (Dorado para socios, Gris para invitados)
                     Surface(
-                        color = MadridGold,
+                        color = if (esInvitado) Color.LightGray else MadridGold,
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.height(24.dp)
                     ) {
                         Text(
-                            text = " NIVEL EXPERTO ",
+                            text = " $perfil ",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
                             color = MadridBlue,
@@ -222,58 +232,69 @@ fun PerfilContent() {
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // 2. RESUMEN DE ESTADÍSTICAS (Gamificación)
-        item {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MadridBlue),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+        // LÓGICA CONDICIONAL: Si es invitado, mostramos un aviso de registro
+        if (esInvitado) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MadridBlue.copy(alpha = 0.05f))
                 ) {
-                    EstadisticaItem("Visitas", "12")
-                    EstadisticaItem("Puntos", "850")
-                    EstadisticaItem("Ranking", "#45")
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        // 3. LOGROS (Diseño Visual)
-        item {
-            Text("Tus Logros", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                        LogroItem(Icons.Default.EmojiEvents, "Copas", true)
-                        LogroItem(Icons.Default.Star, "MVP", true)
-                        LogroItem(Icons.Default.Map, "Explorador", false) // Bloqueado
+                    Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.Lock, contentDescription = null, tint = MadridBlue)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Registrate para desbloquear tus estadísticas, logros y premios exclusivos.",
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MadridBlue
+                        )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    // Barra de progreso del museo
-                    Text("Progreso del Museo: 65%", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = 0.65f,
-                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
-                        color = MadridGold,
-                        trackColor = Color.LightGray.copy(alpha = 0.3f)
-                    )
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+        } else {
+            // 2. ESTADÍSTICAS REALES (Solo para usuarios registrados)
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MadridBlue),
+                    elevation = CardDefaults.cardElevation(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        EstadisticaItem("Visitas", "1")
+                        EstadisticaItem("Puntos", "100")
+                        EstadisticaItem("Ranking", "--")
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            // 3. LOGROS
+            item {
+                Text("Tus Logros", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+                Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                            LogroItem(Icons.Default.EmojiEvents, "Bienvenida", true)
+                            LogroItem(Icons.Default.Star, "Primer QR", false)
+                            LogroItem(Icons.Default.Map, "Explorador", false)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
-        // 4. CUPÓN DESCUENTO (Estilo Ticket Dorado)
+        // 4. RECOMPENSAS (Visible para todos, pero con un toque diferente si es invitado)
         item {
             Text("Recompensas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
@@ -281,7 +302,7 @@ fun PerfilContent() {
             Card(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MadridGold) // Fondo dorado llamativo
+                colors = CardDefaults.cardColors(containerColor = if(esInvitado) Color.LightGray else MadridGold)
             ) {
                 Row(
                     modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
@@ -289,15 +310,15 @@ fun PerfilContent() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("10% DTO.", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black, color = MadridBlue)
-                        Text("TIENDA OFICIAL", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = if(esInvitado) "PROXIMAMENTE" else "10% DTO.",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Black,
+                            color = MadridBlue
+                        )
+                        Text("TIENDA OFICIAL", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if(esInvitado) MadridBlue else Color.White)
                     }
-                    Icon(
-                        imageVector = Icons.Default.ShoppingBag,
-                        contentDescription = null,
-                        tint = MadridBlue,
-                        modifier = Modifier.size(40.dp)
-                    )
+                    Icon(Icons.Default.ShoppingBag, contentDescription = null, tint = MadridBlue, modifier = Modifier.size(40.dp))
                 }
             }
         }
@@ -337,10 +358,24 @@ fun LogroItem(icono: androidx.compose.ui.graphics.vector.ImageVector, nombre: St
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, name = "Vista Socio")
 @Composable
-fun MainScreenPreview() {
-    // Aquí llamamos a tu función para que la IA la dibuje
-    //MainScreen()
-    PerfilContent()
+fun MainScreenSocioPreview() {
+    // Simulamos un usuario registrado (Socio)
+    MainScreen(
+        nombre = "Javier Madridista",
+        perfil = "ADULTO",
+        esInvitado = false
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Vista Invitado")
+@Composable
+fun MainScreenInvitadoPreview() {
+    // Simulamos un acceso como invitado
+    MainScreen(
+        nombre = "Visitante",
+        perfil = "INVITADO",
+        esInvitado = true
+    )
 }

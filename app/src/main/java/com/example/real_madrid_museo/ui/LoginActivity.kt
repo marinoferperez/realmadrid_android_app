@@ -43,7 +43,8 @@ class LoginActivity : AppCompatActivity() {
                     val existe = databaseHelper.checkUser(email, password)
                     if (existe) {
                         Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-                        irAlHome("USUARIO")
+                        // Pasamos el email del campo de texto
+                        irAlHome("USUARIO", email)
                     } else {
                         Toast.makeText(this, "Datos incorrectos", Toast.LENGTH_LONG).show()
                         btnLogin.text = "ENTRAR"
@@ -64,14 +65,14 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun irAlHome(tipoUsuario: String) {
-        try {
-            // AQUÍ ESTÁ EL CAMBIO: Vamos a AppActivity (que contiene tu MainScreen)
+    private fun irAlHome(tipoUsuario: String, email: String? = null) {
+        try{
             val intent = Intent(this, AppActivity::class.java)
             intent.putExtra("TIPO_USUARIO", tipoUsuario)
+            intent.putExtra("USER_EMAIL", email) // <--- Pasamos el email
             startActivity(intent)
             finish()
-        } catch (e: Exception) {
+        }catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Error al abrir Home: ${e.message}", Toast.LENGTH_LONG).show()
         }
