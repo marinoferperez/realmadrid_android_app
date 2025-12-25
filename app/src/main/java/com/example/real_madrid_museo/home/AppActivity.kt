@@ -16,26 +16,31 @@ class AppActivity : ComponentActivity() {
 
         aplicarIdioma(this)
 
-        // 1. Recuperamos los datos del Intent (enviados desde LoginActivity)
         val tipoUsuario = intent.getStringExtra("TIPO_USUARIO") ?: "INVITADO"
         val userEmail = intent.getStringExtra("USER_EMAIL") ?: ""
 
-        // 2. Buscamos los datos en la base de datos ANTES del setContent
         val db = DatabaseHelper(this)
         val userData = if (tipoUsuario == "USUARIO") db.getUserDetails(userEmail) else null
 
-        // 3. Extraemos las variables para pasarlas a la interfaz
-        val nombreFinal = userData?.get("name") ?: "Visitante"
-        val perfilFinal = userData?.get("profile") ?: "INVITADO"
+        // Extraemos los datos, con valores por defecto si es nulo
+        val nombreFinal = userData?.get("name") as? String ?: "Visitante"
+        val perfilFinal = userData?.get("profile") as? String ?: "INVITADO"
+        val visitas = userData?.get("visits") as? Int ?: 1
+        val puntos = userData?.get("points") as? Int ?: 0
+        val ranking = userData?.get("ranking") as? Int ?: 0 // Si es 0 o nulo, mostraremos "--"
+        
         val esInvitado = (tipoUsuario == "INVITADO")
 
-        // 4. Lanzamos la interfaz una sola vez
         setContent {
             Real_madrid_museoTheme {
                 MainScreen(
                     nombre = nombreFinal,
                     perfil = perfilFinal,
-                    esInvitado = esInvitado
+                    esInvitado = esInvitado,
+                    visitas = visitas,
+                    puntos = puntos,
+                    ranking = ranking, // PASAMOS EL RANKING INICIAL
+                    email = if (esInvitado) null else userEmail
                 )
             }
         }

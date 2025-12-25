@@ -29,20 +29,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.kahoot.KahootFlow
+import com.example.real_madrid_museo.ui.DatabaseHelper
+import com.example.real_madrid_museo.ui.ScannerScreen
 import com.example.real_madrid_museo.ui.comun.LanguageToggle
 import com.example.real_madrid_museo.ui.comun.cambiarIdioma
 import com.example.real_madrid_museo.ui.comun.obtenerIdioma
 import com.example.real_madrid_museo.ui.map.MapScreen
-/*import com.example.real_madrid_museo.ui.camera.ScannerScreen*/
 
-
-
-// Colores oficiales para un diseño valorado positivamente [cite: 27]
+// Colores oficiales
 val MadridBlue = Color(0xFF002D72)
 val MadridGold = Color(0xFFFEBE10)
 
 @Composable
-fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
+fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int, puntos: Int, ranking: Int, email: String?) {
     var selectedItem by remember { mutableIntStateOf(0) }
     val items = listOf(
         stringResource(R.string.nav_home),
@@ -54,7 +54,6 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
 
     Scaffold(
         bottomBar = {
-            // Barra inferior flotante y moderna
             Surface(
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 20.dp)
@@ -80,7 +79,6 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
             }
         }
     ) { paddingValues ->
-        // Fondo con degradado profesional
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Brush.verticalGradient(listOf(MadridBlue.copy(alpha = 0.1f), Color.White)))) {
@@ -90,10 +88,10 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
                 .fillMaxSize()) {
 
                 when (selectedItem) {
-                    0 -> DashboardInicio(nombre) // Pasamos el nombre
-                    1 -> MapScreen()
-                    /*2 -> ScannerScreen()*/
-                    3 -> PerfilContent(nombre, perfil, esInvitado) // Pasamos todo
+                    0 -> DashboardInicio(nombre)
+                    1 -> MapScreen() // Comentado temporalmente para debug
+                    2 -> ScannerScreen()
+                    3 -> PerfilContent(nombre, perfil, esInvitado, visitas, puntos, ranking, email) // PASAMOS RANKING
                 }
             }
         }
@@ -105,13 +103,11 @@ fun DashboardInicio(nombre: String) {
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
-            // USAMOS EL NOMBRE REAL
             Text(stringResource(R.string.dashboard_hello, nombre), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
             Text(stringResource(R.string.dashboard_subtitle), style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // SECCIÓN: PRÓXIMO PARTIDO (Card Estética)
         item {
             Text(stringResource(R.string.dashboard_next_match), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
@@ -133,15 +129,13 @@ fun DashboardInicio(nombre: String) {
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // SECCIÓN: NOTICIAS (Tarjetas con imágenes)
         item {
             Text(stringResource(R.string.dashboard_latest_news), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        // Creamos una lista con los IDs de las fotos que acabas de guardar
         val listaImagenes = listOf(
-            R.drawable.bernabeu, // Asegúrate de que estos nombres coinciden con tus archivos
+            R.drawable.bernabeu,
             R.drawable.vitrina,
             R.drawable.vestuario
         )
@@ -154,7 +148,7 @@ fun DashboardInicio(nombre: String) {
 }
 
 @Composable
-fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la imagen
+fun NewsCard(index: Int, imageRes: Int) {
     val titles = listOf(
         stringResource(R.string.news_title_1),
         stringResource(R.string.news_title_2),
@@ -170,12 +164,12 @@ fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la image
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
 
             Image(
-                painter = painterResource(id = imageRes), // Carga la imagen desde drawable
+                painter = painterResource(id = imageRes),
                 contentDescription = "Imagen noticia",
-                contentScale = ContentScale.Crop, // Recorta la imagen para llenar el cuadrado sin deformarse
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(80.dp) // Tamaño fijo cuadrado
-                    .clip(RoundedCornerShape(15.dp)) // Bordes redondeados
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(15.dp))
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -190,8 +184,42 @@ fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la image
 }
 
 @Composable
-fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
+fun PerfilContent(
+    nombre: String, 
+    perfil: String, 
+    esInvitado: Boolean, 
+    visitasIniciales: Int, 
+    puntosIniciales: Int, 
+    rankingInicial: Int, // Recibimos el ranking inicial
+    email: String?
+) {
     val context = LocalContext.current
+    
+    // Estados locales
+    var visitasActuales by remember { mutableIntStateOf(visitasIniciales) }
+    var puntosActuales by remember { mutableIntStateOf(puntosIniciales) }
+    var rankingActual by remember { mutableIntStateOf(rankingInicial) }
+
+    // Efecto para recargar datos (incluido el ranking)
+    LaunchedEffect(Unit) {
+        if (!esInvitado && email != null) {
+            val db = DatabaseHelper(context)
+            val userData = db.getUserDetails(email)
+            if (userData != null) {
+                visitasActuales = userData["visits"] as? Int ?: visitasIniciales
+                puntosActuales = userData["points"] as? Int ?: puntosIniciales
+                rankingActual = userData["ranking"] as? Int ?: rankingInicial
+            }
+        }
+    }
+
+    // Convertimos la string de perfil (ADULTO/NIÑO/INVITADO) a recurso localizado
+    val perfilLocalizado = when (perfil) {
+        "ADULTO" -> stringResource(R.string.profile_type_adult)
+        "NIÑO" -> stringResource(R.string.profile_type_child)
+        "INVITADO" -> stringResource(R.string.profile_type_guest)
+        else -> perfil
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -199,11 +227,10 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
             .padding(horizontal = 20.dp)
             .padding(bottom = 20.dp)
     ) {
-        // 1. CABECERA DINÁMICA
         item {
             Spacer(modifier = Modifier.height(20.dp))
             Row(
-                verticalAlignment = Alignment.Top, // Alineamos al top para la bandera
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
@@ -239,7 +266,7 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
                             modifier = Modifier.height(24.dp)
                         ) {
                             Text(
-                                text = " $perfil ",
+                                text = " $perfilLocalizado ",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MadridBlue,
@@ -249,7 +276,6 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
                     }
                 }
 
-                // Selector de idioma
                 val currentLanguage = obtenerIdioma(context)
                 LanguageToggle(
                     currentLanguage = currentLanguage,
@@ -262,7 +288,6 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // LÓGICA CONDICIONAL: Si es invitado, mostramos un aviso de registro
         if (esInvitado) {
             item {
                 Card(
@@ -283,7 +308,7 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
                 }
             }
         } else {
-            // 2. ESTADÍSTICAS REALES (Solo para usuarios registrados)
+            // ESTADÍSTICAS REALES
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -295,15 +320,15 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
                         modifier = Modifier.padding(20.dp).fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        EstadisticaItem(stringResource(R.string.stats_visits), "1")
-                        EstadisticaItem(stringResource(R.string.stats_points), "100")
-                        EstadisticaItem(stringResource(R.string.stats_ranking), "--")
+                        EstadisticaItem(stringResource(R.string.stats_visits), visitasActuales.toString())
+                        EstadisticaItem(stringResource(R.string.stats_points), puntosActuales.toString())
+                        // MOSTRAR EL RANKING ACTUAL
+                        EstadisticaItem(stringResource(R.string.stats_ranking), if (rankingActual > 0) "#$rankingActual" else "--")
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
             }
 
-            // 3. LOGROS
             item {
                 Text(stringResource(R.string.achievements_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
                 Spacer(modifier = Modifier.height(12.dp))
@@ -324,7 +349,6 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
             }
         }
 
-        // 4. RECOMPENSAS (Visible para todos, pero con un toque diferente si es invitado)
         item {
             Text(stringResource(R.string.rewards_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
@@ -355,7 +379,6 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
     }
 }
 
-// Sub-componente para las estadísticas (Numeritos blancos arriba)
 @Composable
 fun EstadisticaItem(titulo: String, valor: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -364,7 +387,6 @@ fun EstadisticaItem(titulo: String, valor: String) {
     }
 }
 
-// Sub-componente para los iconos de logros
 @Composable
 fun LogroItem(icono: ImageVector, nombre: String, desbloqueado: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -391,21 +413,27 @@ fun LogroItem(icono: ImageVector, nombre: String, desbloqueado: Boolean) {
 @Preview(showBackground = true, showSystemUi = true, name = "Vista Socio")
 @Composable
 fun MainScreenSocioPreview() {
-    // Simulamos un usuario registrado (Socio)
     MainScreen(
         nombre = "Javier Madridista",
         perfil = "ADULTO",
-        esInvitado = false
+        esInvitado = false,
+        visitas = 5,    
+        puntos = 250,
+        ranking = 1,
+        email = "javier@madrid.com"
     )
 }
 
 @Preview(showBackground = true, showSystemUi = true, name = "Vista Invitado")
 @Composable
 fun MainScreenInvitadoPreview() {
-    // Simulamos un acceso como invitado
     MainScreen(
         nombre = "Visitante",
         perfil = "INVITADO",
-        esInvitado = true
+        esInvitado = true,
+        visitas = 0,
+        puntos = 0,
+        ranking = 0,
+        email = null
     )
 }

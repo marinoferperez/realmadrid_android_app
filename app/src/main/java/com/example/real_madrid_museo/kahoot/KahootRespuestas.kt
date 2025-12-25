@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.graphicsLayer
@@ -37,10 +38,10 @@ fun pantallaRespuestas(
     Box(modifier = Modifier.fillMaxSize()) {
         FondoAnimadoKahoot()
 
-        // Barra de progreso fija en la parte inferior (bottom)
+        // CAMBIO: Barra de progreso fija en la parte SUPERIOR (top)
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
+            verticalArrangement = Arrangement.Top // Alinear al TOP
         ) {
             val progressTarget = if (totalQuestions > 0) ((currentQuestionIndex + 1).toFloat() / totalQuestions) else 0f
             val animatedProgress by animateFloatAsState(
@@ -52,7 +53,7 @@ fun pantallaRespuestas(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp, start = 24.dp, end = 24.dp)
+                    .padding(top = 24.dp, start = 24.dp, end = 24.dp) // Margen SUPERIOR
                     .height(14.dp)
                     .clip(RoundedCornerShape(50))
                     .background(RealMadridBlue.copy(alpha = 0.2f))
@@ -113,9 +114,10 @@ fun ContenidoPreguntaUnica(
     var timeLeft by remember { mutableStateOf(question.tiempoLimite) }
 
     /* ─────────────── 🔊 TTS ─────────────── */
+    val questionText = stringResource(question.pregunta)
     val lectorTTS = remember { LectorPreguntaTTS(context) }
     LaunchedEffect(Unit) {
-        lectorTTS.leer(question.pregunta)
+        lectorTTS.leer(questionText)
     }
 
     /* ─────────────── ⏱ TIMER LOGIC ─────────────── */
@@ -169,9 +171,10 @@ fun ContenidoPreguntaUnica(
 
     /* ─────────────── 🎨 UI DE LA PREGUNTA ─────────────── */
     Column {
-        question.respuestas.forEachIndexed { index, answer ->
+        question.respuestas.forEachIndexed { index, answerRes ->
             val isSelected = selectedIndex == index
             val isCorrect = index == question.respuestaCorrecta
+            val answerText = stringResource(answerRes)
 
             // Animaciones de color
             val targetColor = when {
@@ -252,7 +255,7 @@ fun ContenidoPreguntaUnica(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = answer,
+                            text = answerText,
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                             style = MaterialTheme.typography.titleLarge,

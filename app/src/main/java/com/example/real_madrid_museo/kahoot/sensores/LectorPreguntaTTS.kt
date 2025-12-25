@@ -16,7 +16,15 @@ class LectorPreguntaTTS(context: Context) {
             ready = status == TextToSpeech.SUCCESS
 
             if (ready) {
-                tts.language = Locale("es", "ES")
+                // Seleccionar idioma automáticamente según la configuración del dispositivo
+                val currentLocale = Locale.getDefault()
+                val result = tts.setLanguage(currentLocale)
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    // Fallback a español si el idioma no está disponible
+                    tts.language = Locale("es", "ES")
+                }
+                
                 tts.setSpeechRate(0.95f)
 
                 pendingText?.let {

@@ -79,10 +79,10 @@ fun MapScreen() {
                 detectTapGestures {
                     // Calculamos la posición en el mundo 2D
                     val worldPos = screenToWorld(it, size, offset, scale)
-                    
+
                     // Buscamos si el toque cae dentro del BOUNDING BOX de alguna sala
-                    val clickedRoom = mapStructure.find { room -> 
-                        isPointInBoundingBox(worldPos, room.vertices2D) 
+                    val clickedRoom = mapStructure.find { room ->
+                        isPointInBoundingBox(worldPos, room.vertices2D)
                     }
 
                     if (clickedRoom != null) {
@@ -194,18 +194,18 @@ fun isoToTwoD(isoPos: Offset): Point2D {
 // NUEVA FUNCIÓN: Detección por caja delimitadora (más robusta y fácil de acertar)
 fun isPointInBoundingBox(point: Point2D, vertices: List<Point2D>): Boolean {
     if (vertices.isEmpty()) return false
-    
+
     // Calculamos los límites de la sala
     val minX = vertices.minOf { it.x }
     val maxX = vertices.maxOf { it.x }
     val minY = vertices.minOf { it.y }
     val maxY = vertices.maxOf { it.y }
-    
+
     // Margen de tolerancia (padding) para hacer el click más fácil
-    val padding = 200f 
-    
+    val padding = 200f
+
     return point.x >= (minX - padding) && point.x <= (maxX + padding) &&
-           point.y >= (minY - padding) && point.y <= (maxY + padding)
+            point.y >= (minY - padding) && point.y <= (maxY + padding)
 }
 
 // --- Estructura del Museo ---

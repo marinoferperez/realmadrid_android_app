@@ -1,136 +1,136 @@
 package com.example.real_madrid_museo.kahoot
 
-import com.example.real_madrid_museo.kahoot.KahootPregunta
+import com.example.real_madrid_museo.R
 
 // Lista extendida de preguntas
 val todasLasPreguntasRealMadrid = listOf(
     // 1. Historia y Fundación
     KahootPregunta(
-        pregunta = "¿En qué año se fundó el Real Madrid?",
-        respuestas = listOf("1902", "1910", "1925", "1899"),
+        pregunta = R.string.kq1_question,
+        respuestas = listOf(R.string.kq1_a1, R.string.kq1_a2, R.string.kq1_a3, R.string.kq1_a4),
         respuestaCorrecta = 0
     ),
     KahootPregunta(
-        pregunta = "¿Cuál fue el primer nombre del club?",
-        respuestas = listOf("Real Madrid FC", "Madrid Foot-Ball Club", "Sociedad Deportiva Madrid", "Club Español de Madrid"),
+        pregunta = R.string.kq2_question,
+        respuestas = listOf(R.string.kq2_a1, R.string.kq2_a2, R.string.kq2_a3, R.string.kq2_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Quién fue el primer presidente del Real Madrid?",
-        respuestas = listOf("Santiago Bernabéu", "Juan Padrós", "Adolfo Meléndez", "Carlos Padrós"),
+        pregunta = R.string.kq3_question,
+        respuestas = listOf(R.string.kq3_a1, R.string.kq3_a2, R.string.kq3_a3, R.string.kq3_a4),
         respuestaCorrecta = 1
     ),
 
     // 2. Jugadores Leyenda
     KahootPregunta(
-        pregunta = "¿Quién es el máximo goleador histórico del Real Madrid?",
-        respuestas = listOf("Raúl", "Benzema", "Di Stéfano", "Cristiano Ronaldo"),
+        pregunta = R.string.kq4_question,
+        respuestas = listOf(R.string.kq4_a1, R.string.kq4_a2, R.string.kq4_a3, R.string.kq4_a4),
         respuestaCorrecta = 3
     ),
     KahootPregunta(
-        pregunta = "¿Qué jugador ganó 6 Copas de Europa con el club?",
-        respuestas = listOf("Alfredo Di Stéfano", "Paco Gento", "Ferenc Puskás", "Amancio"),
+        pregunta = R.string.kq5_question,
+        respuestas = listOf(R.string.kq5_a1, R.string.kq5_a2, R.string.kq5_a3, R.string.kq5_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Quién es el jugador con más partidos en la historia del Real Madrid?",
-        respuestas = listOf("Casillas", "Sergio Ramos", "Raúl", "Sanchís"),
+        pregunta = R.string.kq6_question,
+        respuestas = listOf(R.string.kq6_a1, R.string.kq6_a2, R.string.kq6_a3, R.string.kq6_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Qué dorsal mítico llevó Juanito?",
-        respuestas = listOf("7", "9", "10", "5"),
+        pregunta = R.string.kq7_question,
+        respuestas = listOf(R.string.kq7_a1, R.string.kq7_a2, R.string.kq7_a3, R.string.kq7_a4),
         respuestaCorrecta = 0
     ),
     KahootPregunta(
-        pregunta = "¿Quién era conocido como 'La Saeta Rubia'?",
-        respuestas = listOf("Di Stéfano", "Puskás", "Kopa", "Gento"),
+        pregunta = R.string.kq8_question,
+        respuestas = listOf(R.string.kq8_a1, R.string.kq8_a2, R.string.kq8_a3, R.string.kq8_a4),
         respuestaCorrecta = 0
     ),
 
     // 3. Champions League
     KahootPregunta(
-        pregunta = "¿Quién NO marcó en la final de la Champions 2014?",
-        respuestas = listOf("Cristiano Ronaldo", "Sergio Ramos", "Benzema", "Gareth Bale"),
+        pregunta = R.string.kq9_question,
+        respuestas = listOf(R.string.kq9_a1, R.string.kq9_a2, R.string.kq9_a3, R.string.kq9_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Quién fue capitán en la Décima?",
-        respuestas = listOf("Casillas", "Sergio Ramos", "Cristiano", "Modric"),
+        pregunta = R.string.kq10_question,
+        respuestas = listOf(R.string.kq10_a1, R.string.kq10_a2, R.string.kq10_a3, R.string.kq10_a4),
         respuestaCorrecta = 0
     ),
     KahootPregunta(
-        pregunta = "¿Cuántas Champions League ha ganado el Real Madrid hasta 2024?",
-        respuestas = listOf("13", "14", "15", "16"),
+        pregunta = R.string.kq11_question,
+        respuestas = listOf(R.string.kq11_a1, R.string.kq11_a2, R.string.kq11_a3, R.string.kq11_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Contra qué equipo ganó la 'Séptima'?",
-        respuestas = listOf("Bayer Leverkusen", "Valencia", "Juventus", "Liverpool"),
+        pregunta = R.string.kq12_question,
+        respuestas = listOf(R.string.kq12_a1, R.string.kq12_a2, R.string.kq12_a3, R.string.kq12_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Quién marcó el gol de la 'Novena'?",
-        respuestas = listOf("Raúl", "Zidane", "Morientes", "Roberto Carlos"),
+        pregunta = R.string.kq13_question,
+        respuestas = listOf(R.string.kq13_a1, R.string.kq13_a2, R.string.kq13_a3, R.string.kq13_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Cuántas veces consecutivas ganó el Real Madrid la Champions entre 2016 y 2018?",
-        respuestas = listOf("2", "3", "4", "5"),
+        pregunta = R.string.kq14_question,
+        respuestas = listOf(R.string.kq14_a1, R.string.kq14_a2, R.string.kq14_a3, R.string.kq14_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿En qué ciudad se ganó la 'Duodécima'?",
-        respuestas = listOf("Lisboa", "Milán", "Cardiff", "Kiev"),
+        pregunta = R.string.kq15_question,
+        respuestas = listOf(R.string.kq15_a1, R.string.kq15_a2, R.string.kq15_a3, R.string.kq15_a4),
         respuestaCorrecta = 2
     ),
 
     // 4. Entrenadores y Estadio
     KahootPregunta(
-        pregunta = "¿Quién fue entrenador del Real Madrid durante la Décima?",
-        respuestas = listOf("Mourinho", "Zidane", "Ancelotti", "Del Bosque"),
+        pregunta = R.string.kq16_question,
+        respuestas = listOf(R.string.kq16_a1, R.string.kq16_a2, R.string.kq16_a3, R.string.kq16_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿En qué año se inauguró el estadio Santiago Bernabéu?",
-        respuestas = listOf("1952", "1939", "1960", "1947"),
+        pregunta = R.string.kq17_question,
+        respuestas = listOf(R.string.kq17_a1, R.string.kq17_a2, R.string.kq17_a3, R.string.kq17_a4),
         respuestaCorrecta = 3
     ),
     KahootPregunta(
-        pregunta = "¿Qué entrenador ganó 3 Champions seguidas?",
-        respuestas = listOf("Del Bosque", "Mourinho", "Zidane", "Ancelotti"),
+        pregunta = R.string.kq18_question,
+        respuestas = listOf(R.string.kq18_a1, R.string.kq18_a2, R.string.kq18_a3, R.string.kq18_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Dónde se ubica la Ciudad Deportiva?",
-        respuestas = listOf("Valdebebas", "Las Rozas", "Alcorcón", "Getafe"),
+        pregunta = R.string.kq19_question,
+        respuestas = listOf(R.string.kq19_a1, R.string.kq19_a2, R.string.kq19_a3, R.string.kq19_a4),
         respuestaCorrecta = 0
     ),
 
     // 5. Curiosidades y Actualidad
     KahootPregunta(
-        pregunta = "¿Quién ganó el Balón de Oro 2018 siendo jugador del Madrid?",
-        respuestas = listOf("Cristiano Ronaldo", "Modric", "Benzema", "Kroos"),
+        pregunta = R.string.kq20_question,
+        respuestas = listOf(R.string.kq20_a1, R.string.kq20_a2, R.string.kq20_a3, R.string.kq20_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Cuál de estos jugadores NO jugó en el Real Madrid?",
-        respuestas = listOf("Beckham", "Zidane", "Ronaldinho", "Ronaldo Nazário"),
+        pregunta = R.string.kq21_question,
+        respuestas = listOf(R.string.kq21_a1, R.string.kq21_a2, R.string.kq21_a3, R.string.kq21_a4),
         respuestaCorrecta = 2
     ),
     KahootPregunta(
-        pregunta = "¿Qué apodo recibe la cantera del Real Madrid?",
-        respuestas = listOf("La Masía", "La Fábrica", "Lezama", "Valdebebas"),
+        pregunta = R.string.kq22_question,
+        respuestas = listOf(R.string.kq22_a1, R.string.kq22_a2, R.string.kq22_a3, R.string.kq22_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Quién es el portero titular en la final de la 14ª?",
-        respuestas = listOf("Keylor Navas", "Courtois", "Lunin", "Casillas"),
+        pregunta = R.string.kq23_question,
+        respuestas = listOf(R.string.kq23_a1, R.string.kq23_a2, R.string.kq23_a3, R.string.kq23_a4),
         respuestaCorrecta = 1
     ),
     KahootPregunta(
-        pregunta = "¿Cómo se llama el grupo de animación del fondo sur?",
-        respuestas = listOf("Ultras Sur", "Grada Fans", "Frente Atlético", "Biris Norte"),
+        pregunta = R.string.kq24_question,
+        respuestas = listOf(R.string.kq24_a1, R.string.kq24_a2, R.string.kq24_a3, R.string.kq24_a4),
         respuestaCorrecta = 1
     )
 )

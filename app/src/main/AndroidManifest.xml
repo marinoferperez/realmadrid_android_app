@@ -20,10 +20,10 @@
         android:theme="@style/Theme.Real_madrid_museo">
 
         <!-- Actividad del Kahoot -->
+
         <activity
             android:name=".kahoot.KahootActivity"
             android:exported="false" />
-        
         <activity
             android:name=".ui.OnboardingActivity"
             android:exported="true">

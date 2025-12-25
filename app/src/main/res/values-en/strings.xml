@@ -90,6 +90,10 @@
     <string name="reward_discount">10% OFF</string>
     <string name="reward_store">OFFICIAL STORE</string>
     
+    <string name="profile_type_adult">ADULT</string>
+    <string name="profile_type_child">CHILD</string>
+    <string name="profile_type_guest">GUEST</string>
+
     <!-- Map Screen -->
     <string name="map_hall">Hall</string>
     <string name="map_entrance">Entrance</string>
@@ -99,5 +103,179 @@
     <string name="map_stadium">Stadium</string>
     <string name="map_game">Game</string>
     <string name="map_players">Players</string>
+
+    <!-- Kahoot Instructions -->
+    <string name="kahoot_instructions_title">Game Instructions</string>
+    <string name="kahoot_instructions_touch_title">Touch Control</string>
+    <string name="kahoot_instructions_touch_desc">Tap on one of the options on the screen to select it.</string>
+    <string name="kahoot_instructions_voice_title">Voice Control</string>
+    <string name="kahoot_instructions_voice_desc">Say the letter (A, B, C, D) out loud to select your answer.</string>
+    <string name="kahoot_instructions_shake_title">Shake Control</string>
+    <string name="kahoot_instructions_shake_desc">Select an option and then SHAKE your device to confirm your answer.</string>
+    <string name="kahoot_instructions_start_button">PLAY!</string>
+
+    <!-- Kahoot Questions -->
+    <string name="kq1_question">In what year was Real Madrid founded?</string>
+    <string name="kq1_a1">1902</string>
+    <string name="kq1_a2">1910</string>
+    <string name="kq1_a3">1925</string>
+    <string name="kq1_a4">1899</string>
+
+    <string name="kq2_question">What was the club\'s first name?</string>
+    <string name="kq2_a1">Real Madrid FC</string>
+    <string name="kq2_a2">Madrid Foot-Ball Club</string>
+    <string name="kq2_a3">Sociedad Deportiva Madrid</string>
+    <string name="kq2_a4">Club Español de Madrid</string>
+
+    <string name="kq3_question">Who was the first president of Real Madrid?</string>
+    <string name="kq3_a1">Santiago Bernabéu</string>
+    <string name="kq3_a2">Juan Padrós</string>
+    <string name="kq3_a3">Adolfo Meléndez</string>
+    <string name="kq3_a4">Carlos Padrós</string>
+
+    <string name="kq4_question">Who is Real Madrid\'s all-time top scorer?</string>
+    <string name="kq4_a1">Raúl</string>
+    <string name="kq4_a2">Benzema</string>
+    <string name="kq4_a3">Di Stéfano</string>
+    <string name="kq4_a4">Cristiano Ronaldo</string>
+
+    <string name="kq5_question">Which player won 6 European Cups with the club?</string>
+    <string name="kq5_a1">Alfredo Di Stéfano</string>
+    <string name="kq5_a2">Paco Gento</string>
+    <string name="kq5_a3">Ferenc Puskás</string>
+    <string name="kq5_a4">Amancio</string>
+
+    <string name="kq6_question">Who has the most appearances in Real Madrid history?</string>
+    <string name="kq6_a1">Casillas</string>
+    <string name="kq6_a2">Sergio Ramos</string>
+    <string name="kq6_a3">Raúl</string>
+    <string name="kq6_a4">Sanchís</string>
+
+    <string name="kq7_question">What mythical number did Juanito wear?</string>
+    <string name="kq7_a1">7</string>
+    <string name="kq7_a2">9</string>
+    <string name="kq7_a3">10</string>
+    <string name="kq7_a4">5</string>
+
+    <string name="kq8_question">Who was known as \'The Blond Arrow\'?</string>
+    <string name="kq8_a1">Di Stéfano</string>
+    <string name="kq8_a2">Puskás</string>
+    <string name="kq8_a3">Kopa</string>
+    <string name="kq8_a4">Gento</string>
+
+    <string name="kq9_question">Who did NOT score in the 2014 Champions League final?</string>
+    <string name="kq9_a1">Cristiano Ronaldo</string>
+    <string name="kq9_a2">Sergio Ramos</string>
+    <string name="kq9_a3">Benzema</string>
+    <string name="kq9_a4">Gareth Bale</string>
+
+    <string name="kq10_question">Who was the captain in \'La Décima\'?</string>
+    <string name="kq10_a1">Casillas</string>
+    <string name="kq10_a2">Sergio Ramos</string>
+    <string name="kq10_a3">Cristiano</string>
+    <string name="kq10_a4">Modric</string>
+
+    <string name="kq11_question">How many Champions League titles has Real Madrid won up to 2024?</string>
+    <string name="kq11_a1">13</string>
+    <string name="kq11_a2">14</string>
+    <string name="kq11_a3">15</string>
+    <string name="kq11_a4">16</string>
+
+    <string name="kq12_question">Against which team was \'La Séptima\' won?</string>
+    <string name="kq12_a1">Bayer Leverkusen</string>
+    <string name="kq12_a2">Valencia</string>
+    <string name="kq12_a3">Juventus</string>
+    <string name="kq12_a4">Liverpool</string>
+
+    <string name="kq13_question">Who scored the goal of \'La Novena\'?</string>
+    <string name="kq13_a1">Raúl</string>
+    <string name="kq13_a2">Zidane</string>
+    <string name="kq13_a3">Morientes</string>
+    <string name="kq13_a4">Roberto Carlos</string>
+
+    <string name="kq14_question">How many times consecutively did Real Madrid win the Champions League between 2016 and 2018?</string>
+    <string name="kq14_a1">2</string>
+    <string name="kq14_a2">3</string>
+    <string name="kq14_a3">4</string>
+    <string name="kq14_a4">5</string>
+
+    <string name="kq15_question">In which city was \'La Duodécima\' won?</string>
+    <string name="kq15_a1">Lisbon</string>
+    <string name="kq15_a2">Milan</string>
+    <string name="kq15_a3">Cardiff</string>
+    <string name="kq15_a4">Kyiv</string>
+
+    <string name="kq16_question">Who was Real Madrid\'s coach during \'La Décima\'?</string>
+    <string name="kq16_a1">Mourinho</string>
+    <string name="kq16_a2">Zidane</string>
+    <string name="kq16_a3">Ancelotti</string>
+    <string name="kq16_a4">Del Bosque</string>
+
+    <string name="kq17_question">In what year was the Santiago Bernabéu stadium inaugurated?</string>
+    <string name="kq17_a1">1952</string>
+    <string name="kq17_a2">1939</string>
+    <string name="kq17_a3">1960</string>
+    <string name="kq17_a4">1947</string>
+
+    <string name="kq18_question">Which coach won 3 consecutive Champions League titles?</string>
+    <string name="kq18_a1">Del Bosque</string>
+    <string name="kq18_a2">Mourinho</string>
+    <string name="kq18_a3">Zidane</string>
+    <string name="kq18_a4">Ancelotti</string>
+
+    <string name="kq19_question">Where is the Real Madrid City (training ground) located?</string>
+    <string name="kq19_a1">Valdebebas</string>
+    <string name="kq19_a2">Las Rozas</string>
+    <string name="kq19_a3">Alcorcón</string>
+    <string name="kq19_a4">Getafe</string>
+
+    <string name="kq20_question">Who won the 2018 Ballon d\'Or as a Real Madrid player?</string>
+    <string name="kq20_a1">Cristiano Ronaldo</string>
+    <string name="kq20_a2">Modric</string>
+    <string name="kq20_a3">Benzema</string>
+    <string name="kq20_a4">Kroos</string>
+
+    <string name="kq21_question">Which of these players did NOT play for Real Madrid?</string>
+    <string name="kq21_a1">Beckham</string>
+    <string name="kq21_a2">Zidane</string>
+    <string name="kq21_a3">Ronaldinho</string>
+    <string name="kq21_a4">Ronaldo Nazário</string>
+
+    <string name="kq22_question">What nickname does the Real Madrid academy have?</string>
+    <string name="kq22_a1">La Masía</string>
+    <string name="kq22_a2">La Fábrica</string>
+    <string name="kq22_a3">Lezama</string>
+    <string name="kq22_a4">Valdebebas</string>
+
+    <string name="kq23_question">Who was the starting goalkeeper in the 14th Champions League final?</string>
+    <string name="kq23_a1">Keylor Navas</string>
+    <string name="kq23_a2">Courtois</string>
+    <string name="kq23_a3">Lunin</string>
+    <string name="kq23_a4">Casillas</string>
+
+    <string name="kq24_question">What is the name of the cheering group in the south end?</string>
+    <string name="kq24_a1">Ultras Sur</string>
+    <string name="kq24_a2">Grada Fans</string>
+    <string name="kq24_a3">Frente Atlético</string>
+    <string name="kq24_a4">Biris Norte</string>
+
+    <!-- Results/Solutions Strings -->
+    <string name="game_over_perfect">PERFECT!</string>
+    <string name="game_over">GAME OVER!</string>
+    <string name="final_score_title">Final Score</string>
+    <string name="view_solutions">View Solutions</string>
+    <string name="button_exit">Exit</string>
+    <string name="button_restart">Restart</string>
+    <string name="points_popup_text">POINTS</string>
+    
+    <string name="result_msg_perfect">Perfect, legendary Madridista! 🤍</string>
+    <string name="result_msg_good">Great visit to the museum! ⚽</string>
+    <string name="result_msg_retry">Nice try! Learn and play again 💪</string>
+    <string name="result_notif_title">Game Over! (%1$d/%2$d)</string>
+
+    <string name="solutions_title">Solutions</string>
+    <string name="solutions_timeout">Time\'s up</string>
+    <string name="solutions_play_again">Play Again</string>
+    <string name="solutions_finalize">Finish</string>
 
 </resources>

@@ -1,12 +1,9 @@
 package com.example.real_madrid_museo.kahoot
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -16,81 +13,81 @@ data class PreguntaFallada(
     val respuestaSeleccionada: Int // Índice de la respuesta que eligió el usuario (-1 si fue timeout)
 )
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun KahootFlow() {
-    var joined by remember { mutableStateOf(false) }
-    var index by remember { mutableStateOf(0) }
-    
-    // Lista de preguntas para esta sesión de juego
+    var gameStarted by rememberSaveable { mutableStateOf(false) }
+    var index by rememberSaveable { mutableIntStateOf(0) }
     var currentQuestions by remember { mutableStateOf(emptyList<KahootPregunta>()) }
-
-    // Estado para los resultados
-    var correctAnswers by remember { mutableStateOf(0) }
-    
-    // Lista de preguntas falladas con la respuesta del usuario
+    var correctAnswers by rememberSaveable { mutableIntStateOf(0) }
     val failedQuestions = remember { mutableStateListOf<PreguntaFallada>() }
-
-    if (!joined) {
-        KahootJoinScreen(onJoined = {
-            // AL UNIRSE: Seleccionamos 10 nuevas preguntas aleatorias
-            currentQuestions = todasLasPreguntasRealMadrid.shuffled().take(10)
-            
-            joined = true
-            index = 0
-            correctAnswers = 0
-            failedQuestions.clear()
-        })
-        return
-    }
-
-    if (index >= currentQuestions.size) {
-        PantallaResultados(
-            totalPreguntas = currentQuestions.size,
-            respuestasCorrectas = correctAnswers,
-            preguntasFalladas = failedQuestions,
-            onReiniciar = {
-                // AL REINICIAR: Seleccionamos OTRAS 10 preguntas nuevas
-                currentQuestions = todasLasPreguntasRealMadrid.shuffled().take(10)
-                
-                // Reiniciamos el juego
-                index = 0
-                correctAnswers = 0
-                failedQuestions.clear()
-            },
-            onFinalizar = {
-                // Volvemos a la pantalla de unirse
-                joined = false
-                index = 0
-                correctAnswers = 0
-                failedQuestions.clear()
-                currentQuestions = emptyList()
-            }
-        )
-        return
-    }
-
-    val current = currentQuestions[index]
     val scope = rememberCoroutineScope()
 
-    // Renderizamos directamente la pantalla de respuestas.
-    // La animación de transición interna se maneja ahora dentro de pantallaRespuestas
-    pantallaRespuestas(
-        question = current,
-        currentQuestionIndex = index,
-        totalQuestions = currentQuestions.size,
-        onAnswered = { isCorrect, selectedIndex ->
-            if (isCorrect) {
-                correctAnswers++
+    AnimatedContent(
+        targetState = gameStarted,
+        transitionSpec = {
+            // Si estamos empezando el juego (pasamos de false a true)
+            if (targetState) {
+                slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight }, 
+                    animationSpec = tween(600, delayMillis = 100)
+                ) + fadeIn(animationSpec = tween(600, delayMillis = 100)) togetherWith
+                slideOutVertically(
+                    targetOffsetY = { fullHeight -> -fullHeight }, 
+                    animationSpec = tween(600)
+                ) + fadeOut(animationSpec = tween(600))
             } else {
-                // Guardamos la pregunta y la respuesta que dio el usuario
-                failedQuestions.add(PreguntaFallada(current, selectedIndex))
+                // Si volvemos a las instrucciones (pasamos de true a false)
+                slideInVertically(
+                    initialOffsetY = { fullHeight -> -fullHeight }, 
+                    animationSpec = tween(600)
+                ) + fadeIn(animationSpec = tween(600)) togetherWith
+                slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight }, 
+                    animationSpec = tween(600, delayMillis = 100)
+                ) + fadeOut(animationSpec = tween(600, delayMillis = 100))
             }
+        },
+        label = "KahootFlowTransition"
+    ) { isGameStarted ->
+        if (!isGameStarted) {
+            KahootInstructionsScreen(onStart = {
+                currentQuestions = todasLasPreguntasRealMadrid.shuffled().take(10)
+                gameStarted = true
+                index = 0
+                correctAnswers = 0
+                failedQuestions.clear()
+            })
+        } else {
+            // --- Flujo del juego principal ---
+            if (index >= currentQuestions.size) {
+                PantallaResultados(
+                    totalPreguntas = currentQuestions.size,
+                    respuestasCorrectas = correctAnswers,
+                    preguntasFalladas = failedQuestions,
+                    onReiniciar = { gameStarted = false }, // Vuelve a instrucciones
+                    onFinalizar = { gameStarted = false }   // Vuelve a instrucciones
+                )
+            } else {
+                val current = currentQuestions[index]
+                pantallaRespuestas(
+                    question = current,
+                    currentQuestionIndex = index,
+                    totalQuestions = currentQuestions.size,
+                    onAnswered = { isCorrect, selectedIndex ->
+                        if (isCorrect) {
+                            correctAnswers++
+                        } else {
+                            failedQuestions.add(PreguntaFallada(current, selectedIndex))
+                        }
 
-            // Coroutine para manejar el tiempo entre preguntas
-            scope.launch {
-                delay(1000) // Delay breve para ver el feedback del botón antes de cambiar
-                index++
+                        scope.launch {
+                            delay(1000)
+                            index++
+                        }
+                    }
+                )
             }
         }
-    )
+    }
 }

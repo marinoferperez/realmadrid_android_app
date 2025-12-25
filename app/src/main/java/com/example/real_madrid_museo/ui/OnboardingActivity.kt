@@ -27,7 +27,7 @@ class OnboardingActivity : ComponentActivity() {
                     OnboardingSlide(
                         title = R.string.onboarding_title_1,
                         description = R.string.onboarding_desc_1,
-                        imageRes = R.drawable.bernabeu
+                        imageRes = R.drawable.onboarding_1
                     ),
                     OnboardingSlide(
                         title = R.string.onboarding_title_2,

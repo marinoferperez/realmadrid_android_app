@@ -1,5 +1,6 @@
 package com.example.real_madrid_museo.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -37,12 +38,10 @@ class LoginActivity : AppCompatActivity() {
         val tvRegister = findViewById<TextView>(R.id.tvRegister)
         val composeBandera = findViewById<ComposeView>(R.id.composeBandera)
         
-        // Elementos adicionales para traducir (títulos, hints)
         val titleWelcome = findViewById<TextView>(R.id.titleWelcome)
         val inputLayoutEmail = findViewById<TextInputLayout>(R.id.inputLayoutEmail)
         val inputLayoutPassword = findViewById<TextInputLayout>(R.id.inputLayoutPassword)
 
-        // Configurar textos dinámicos desde resources (para que se aplique la traducción)
         titleWelcome.text = getString(R.string.login_title)
         inputLayoutEmail.hint = getString(R.string.login_email_hint)
         inputLayoutPassword.hint = getString(R.string.login_password_hint)
@@ -50,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
         btnGuest.text = getString(R.string.login_button_guest)
         tvRegister.text = getString(R.string.login_register_prompt)
 
-        // Configurar el ComposeView para la bandera
         composeBandera.setContent {
             val currentLanguage = obtenerIdioma(this)
             LanguageToggle(
@@ -77,7 +75,18 @@ class LoginActivity : AppCompatActivity() {
                     val existe = databaseHelper.checkUser(email, password)
                     if (existe) {
                         Toast.makeText(this, getString(R.string.toast_welcome), Toast.LENGTH_SHORT).show()
-                        irAlHome("USUARIO")
+                        
+                        // 1. INCREMENTAR VISITA EN BBDD
+                        databaseHelper.incrementVisits(email)
+
+                        // 2. GUARDAR EMAIL EN PREFERENCIAS (Sesión global)
+                        val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                        with(sharedPref.edit()) {
+                            putString("current_email", email)
+                            apply()
+                        }
+
+                        irAlHome("USUARIO", email)
                     } else {
                         Toast.makeText(this, getString(R.string.toast_wrong_data), Toast.LENGTH_LONG).show()
                         btnLogin.text = getString(R.string.login_button_enter)
@@ -90,7 +99,15 @@ class LoginActivity : AppCompatActivity() {
         // INVITADO
         btnGuest.setOnClickListener {
             Toast.makeText(this, getString(R.string.toast_guest_entry), Toast.LENGTH_SHORT).show()
-            irAlHome("INVITADO")
+            
+            // Limpiamos sesión anterior si había
+            val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+            with(sharedPref.edit()) {
+                clear()
+                apply()
+            }
+
+            irAlHome("INVITADO", null)
         }
 
         tvRegister.setOnClickListener {
@@ -98,16 +115,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun irAlHome(tipoUsuario: String) {
+    private fun irAlHome(tipoUsuario: String, email: String?) {
         try {
-            // AQUÍ ESTÁ EL CAMBIO: Vamos a AppActivity (que contiene tu MainScreen)
             val intent = Intent(this, AppActivity::class.java)
             intent.putExtra("TIPO_USUARIO", tipoUsuario)
+            if (email != null) {
+                intent.putExtra("USER_EMAIL", email)
+            }
             startActivity(intent)
             finish()
         } catch (e: Exception) {
             e.printStackTrace()
-            // Usamos getString con format args para el mensaje de error
             val errorMsg = getString(R.string.toast_home_error, e.message)
             Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
         }
