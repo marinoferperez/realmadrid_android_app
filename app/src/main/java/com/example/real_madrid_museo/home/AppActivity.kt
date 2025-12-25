@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.real_madrid_museo.ui.DatabaseHelper
-import com.example.real_madrid_museo.ui.comun.aplicarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 class AppActivity : ComponentActivity() {

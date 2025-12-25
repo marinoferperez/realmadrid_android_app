@@ -1,4 +1,4 @@
-package com.example.real_madrid_museo.ui
+package com.example.real_madrid_museo.ui.ScannerScreen
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -31,10 +31,9 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import androidx.compose.ui.graphics.drawscope.Stroke
 
-
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
+fun ScannerScreen(onResultFound: (String) -> Unit) { // <-- CAMBIO: Ahora recibe un String genérico
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
@@ -44,10 +43,7 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
 
     var hasCameraPermission by remember {
         mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
         )
     }
 
@@ -64,9 +60,7 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
         if (hasCameraPermission) {
-
             AndroidView(
                 factory = { ctx ->
                     PreviewView(ctx).apply {
@@ -78,7 +72,6 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
                     val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
                     cameraProviderFuture.addListener({
-
                         val cameraProvider = cameraProviderFuture.get()
 
                         val preview = Preview.Builder().build().also {
@@ -95,7 +88,6 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
                             val mediaImage = imageProxy.image
 
                             if (mediaImage != null && !hasScanned) {
-
                                 val image = InputImage.fromMediaImage(
                                     mediaImage,
                                     imageProxy.imageInfo.rotationDegrees
@@ -105,12 +97,11 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
                                     .addOnSuccessListener { barcodes ->
                                         for (barcode in barcodes) {
                                             val value = barcode.rawValue ?: continue
-                                            val numero = value.toIntOrNull()
 
-                                            if (numero == 7) {
-                                                hasScanned = true
-                                                onNavigateToPrueba()
-                                            }
+                                            // ESCALABILIDAD:
+                                            // No preguntamos si es 7. Simplemente avisamos lo que hay.
+                                            hasScanned = true
+                                            onResultFound(value)
                                         }
                                     }
                                     .addOnCompleteListener {
@@ -125,13 +116,17 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
                             .requireLensFacing(lensFacing)
                             .build()
 
-                        cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            cameraSelector,
-                            preview,
-                            imageAnalysis
-                        )
+                        try {
+                            cameraProvider.unbindAll()
+                            cameraProvider.bindToLifecycle(
+                                lifecycleOwner,
+                                cameraSelector,
+                                preview,
+                                imageAnalysis
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
 
                     }, ContextCompat.getMainExecutor(context))
                 }
@@ -141,28 +136,32 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
 
             FloatingActionButton(
                 onClick = {
-                    lensFacing =
-                        if (lensFacing == CameraSelector.LENS_FACING_BACK)
-                            CameraSelector.LENS_FACING_FRONT
-                        else
-                            CameraSelector.LENS_FACING_BACK
+                    lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK)
+                        CameraSelector.LENS_FACING_FRONT
+                    else
+                        CameraSelector.LENS_FACING_BACK
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(24.dp),
+                    .padding(bottom = 110.dp, end = 24.dp),
                 containerColor = MadridGold,
                 contentColor = MadridBlue,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.FlipCameraAndroid, contentDescription = null)
+                Icon(Icons.Default.FlipCameraAndroid, contentDescription = "Girar Cámara")
             }
 
         } else {
-            Box(
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text("Permiso de cÃ¡mara denegado", color = MadridBlue)
+                Text("El permiso de cámara es necesario", color = MadridBlue)
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }) {
+                    Text("Conceder Permiso")
+                }
             }
         }
     }
@@ -170,13 +169,10 @@ fun ScannerScreen(onNavigateToPrueba: () -> Unit = {}) {
 
 @Composable
 fun QRScannerOverlay() {
-    Canvas(modifier = Modifier.fillMaxSize()) {
-
+    Canvas(modifier = Modifier.fillMaxSize().graphicsLayer(alpha = 0.99f)) {
         val boxSize = 250.dp.toPx()
         val left = (size.width - boxSize) / 2
         val top = (size.height - boxSize) / 2
-
-        val rect = Rect(left, top, left + boxSize, top + boxSize)
 
         drawRect(Color.Black.copy(alpha = 0.6f))
         drawRoundRect(
@@ -186,7 +182,6 @@ fun QRScannerOverlay() {
             cornerRadius = CornerRadius(20.dp.toPx()),
             blendMode = BlendMode.Clear
         )
-
         drawRoundRect(
             color = Color.White,
             topLeft = Offset(left, top),

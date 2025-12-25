@@ -3,7 +3,7 @@ package com.example.real_madrid_museo.kahoot
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.real_madrid_museo.ui.comun.aplicarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
 
 class KahootActivity : ComponentActivity() {

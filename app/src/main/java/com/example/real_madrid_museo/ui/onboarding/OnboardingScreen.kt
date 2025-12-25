@@ -21,10 +21,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
-import com.example.real_madrid_museo.ui.comun.LanguageToggle
-import com.example.real_madrid_museo.ui.comun.cambiarIdioma
-import com.example.real_madrid_museo.ui.comun.obtenerIdioma
-import com.example.real_madrid_museo.ui.onboarding.abrirMapaBernabeu
+import com.example.real_madrid_museo.ui.comun.idiomas.LanguageToggle
+import com.example.real_madrid_museo.ui.comun.idiomas.cambiarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 
 
 @Composable

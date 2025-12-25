@@ -1,4 +1,4 @@
-package com.example.real_madrid_museo
+package com.example.real_madrid_museo.ui.vitrina
 
 import android.content.Context
 import android.hardware.Sensor
@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.real_madrid_museo.R
+
 import androidx.compose.ui.unit.sp
 import androidx.navigationevent.NavigationEventInfo
 import com.example.real_madrid_museo.home.PerfilContent

@@ -11,10 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.home.AppActivity
-import com.example.real_madrid_museo.ui.comun.LanguageToggle
-import com.example.real_madrid_museo.ui.comun.aplicarIdioma
-import com.example.real_madrid_museo.ui.comun.cambiarIdioma
-import com.example.real_madrid_museo.ui.comun.obtenerIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.LanguageToggle
+import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.cambiarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout

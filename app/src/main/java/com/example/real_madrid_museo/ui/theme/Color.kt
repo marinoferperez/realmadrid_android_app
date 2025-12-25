@@ -11,4 +11,4 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 val RealMadridGold = Color(0xFFF5C400)
 val RealMadridBlue = Color(0xFF222C4B)
-val RealMadridGoldSoft = Color(0xFFFFF3C4) // dorado muy suave
+val RealMadridGoldSoft = Color(0xFFFFF3C4)

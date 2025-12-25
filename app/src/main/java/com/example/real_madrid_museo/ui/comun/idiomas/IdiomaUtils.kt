@@ -1,4 +1,4 @@
-package com.example.real_madrid_museo.ui.comun
+package com.example.real_madrid_museo.ui.comun.idiomas
 
 import android.app.Activity
 import android.content.Context
