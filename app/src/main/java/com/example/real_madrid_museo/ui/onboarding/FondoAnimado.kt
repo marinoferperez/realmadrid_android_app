@@ -2,6 +2,7 @@ package com.example.real_madrid_museo.ui.onboarding
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +20,7 @@ fun FondoAnimado() {
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
             animation = tween(
-                durationMillis = 10000, // MUY lento
+                durationMillis = 7000, // MUY lento
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Reverse
@@ -43,4 +44,32 @@ fun FondoAnimado() {
             .fillMaxSize()
             .background(brush)
     )
+}
+
+@Composable
+fun FondoAnimadoKahoot() {
+    val transition = rememberInfiniteTransition(label = "bg")
+    val animProgress by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(10000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = "progress"
+    )
+
+    val brush = Brush.radialGradient(
+        colors = listOf(
+            Color(0xFFFFD700).copy(alpha = 0.12f), // Oro Real Madrid
+            Color(0xFFFEFEFE),                    // Blanco Puro
+            Color(0xFF0033A0).copy(alpha = 0.05f)  // Azul Real Madrid muy sutil
+        ),
+        center = androidx.compose.ui.geometry.Offset(
+            x = 200f + (animProgress * 500f),
+            y = 300f + (animProgress * 800f)
+        ),
+        radius = 1200f
+    )
+
+    Box(modifier = Modifier.fillMaxSize().background(brush))
 }

@@ -1,22 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Real Madrid Museum</string>
 
     <!-- Onboarding -->
     <string name="onboarding_title_1">Welcome to the Museum!</string>
-    <string name="onboarding_desc_1">
-        Discover the history and most legendary moments of Real Madrid.
-    </string>
-
+    <string name="onboarding_desc_1">Discover the history and most legendary moments of Real Madrid.</string>
     <string name="onboarding_title_2">Scan and Discover</string>
-    <string name="onboarding_desc_2">
-        Scan museum QR codes to access exclusive content.
-    </string>
-
+    <string name="onboarding_desc_2">Scan QR codes in the museum to access exclusive content.</string>
     <string name="onboarding_title_3">Live the Club</string>
-    <string name="onboarding_desc_3">
-        Take part in games, check events and explore the club’s past, present and future.
-    </string>
-
+    <string name="onboarding_desc_3">Take part in games, check events, and explore the club\'s past, present, and future.</string>
     <string name="onboarding_where_is">Where is the museum located?</string>
-    <string name="start">START NOW</string>
+    <string name="start">START</string>
+
+    <!-- Login -->
+    <string name="login_title">Welcome Madridista</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_enter">LOG IN</string>
+    <string name="login_button_verifying">Verifying...</string>
+    <string name="login_button_guest">Continue as Guest</string>
+    <string name="login_register_prompt">Don\'t have an account? Sign up here</string>
+
+    <!-- Toasts / Login Messages -->
+    <string name="toast_fill_fields">Please fill all fields</string>
+    <string name="toast_welcome">Welcome!</string>
+    <string name="toast_wrong_data">Incorrect data</string>
+    <string name="toast_guest_entry">Entering as Guest...</string>
+    <string name="toast_home_error">Error opening Home: %1$s</string>
+
+    <!-- Register -->
+    <string name="register_title">Create Account</string>
+    <string name="register_name_hint">Full Name</string>
+    <string name="register_phone_hint">Mobile Number</string>
+    <string name="register_dob_hint">Date of Birth</string>
+    <string name="register_email_hint">Email</string>
+    <string name="register_password_hint">Password</string>
+    <string name="register_notifications_checkbox">I want to receive exclusive offers and discounts</string>
+    <string name="register_terms_checkbox">I accept the terms and conditions</string>
+    <string name="register_button_register">SIGN UP</string>
+    <string name="register_go_to_login">Back to Login</string>
+
+    <!-- Toasts / Register Messages -->
+    <string name="toast_no_permission_notifications">Without permission, you won\'t receive the discount</string>
+    <string name="toast_fill_all_fields_register">Please complete all fields</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="toast_accept_terms">You must accept the terms</string>
+    <string name="toast_email_exists">This email is already registered</string>
+    <string name="toast_account_created">Account created successfully!</string>
+    <string name="toast_user_save_error">Error saving user</string>
+
+    <!-- Register Notifications -->
+    <string name="notification_welcome_title">Welcome to Real Madrid!</string>
+    <string name="notification_discount_text_short">You have a 10% discount on your ticket.</string>
+    <string name="notification_discount_text_long">Thanks for subscribing. You have a 10% discount on your museum ticket and in the official store.</string>
+    <string name="notification_channel_name">Offers and Promotions</string>
+    <string name="notification_channel_description">Museum discounts</string>
+
+    <!-- Main Screen -->
+    <string name="nav_home">Home</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_camera">Camera</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_hello">Hi, %1$s!</string>
+    <string name="dashboard_subtitle">Get ready for your Expert level visit</string>
+    <string name="dashboard_next_match">Next Match</string>
+    <string name="dashboard_team_1">Real Madrid</string>
+    <string name="dashboard_team_2">Villacarrillo</string>
+    <string name="dashboard_latest_news">Latest News</string>
+    <string name="news_title_1">The new Bernabéu opens its doors</string>
+    <string name="news_title_2">Mbappé visits the museum</string>
+    <string name="news_title_3">New special edition jersey</string>
+    <string name="news_time">2 hours ago</string>
+
+    <!-- Profile -->
+    <string name="profile_guest_title">Museum Visitor</string>
+    <string name="profile_member_title">Madridista Member</string>
+    <string name="profile_register_prompt">Register to unlock your stats, achievements, and exclusive rewards.</string>
+    <string name="stats_visits">Visits</string>
+    <string name="stats_points">Points</string>
+    <string name="stats_ranking">Ranking</string>
+    <string name="achievements_title">Your Achievements</string>
+    <string name="achievement_welcome">Welcome</string>
+    <string name="achievement_first_qr">First QR</string>
+    <string name="achievement_explorer">Explorer</string>
+    <string name="rewards_title">Rewards</string>
+    <string name="reward_coming_soon">COMING SOON</string>
+    <string name="reward_discount">10% OFF</string>
+    <string name="reward_store">OFFICIAL STORE</string>
+    
+    <!-- Map Screen -->
+    <string name="map_hall">Hall</string>
+    <string name="map_entrance">Entrance</string>
+    <string name="map_exit">Exit</string>
+    <string name="map_showcase">Showcase</string>
+    <string name="map_history">History</string>
+    <string name="map_stadium">Stadium</string>
+    <string name="map_game">Game</string>
+    <string name="map_players">Players</string>
+
 </resources>

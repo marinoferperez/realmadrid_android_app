@@ -20,4 +20,92 @@
 
     <string name="onboarding_where_is">¿Dónde se ubica el museo?</string>
     <string name="start">COMENZAR</string>
+
+    <!-- Login -->
+    <string name="login_title">Bienvenido Madridista</string>
+    <string name="login_email_hint">Correo Electrónico</string>
+    <string name="login_password_hint">Contraseña</string>
+    <string name="login_button_enter">ENTRAR</string>
+    <string name="login_button_verifying">Verificando...</string>
+    <string name="login_button_guest">Continuar como Invitado</string>
+    <string name="login_register_prompt">¿No tienes cuenta? Regístrate aquí</string>
+
+    <!-- Toasts / Mensajes Login -->
+    <string name="toast_fill_fields">Rellena todos los campos</string>
+    <string name="toast_welcome">¡Bienvenido!</string>
+    <string name="toast_wrong_data">Datos incorrectos</string>
+    <string name="toast_guest_entry">Entrando como Invitado...</string>
+    <string name="toast_home_error">Error al abrir Home: %1$s</string>
+
+    <!-- Register -->
+    <string name="register_title">Crear Cuenta</string>
+    <string name="register_name_hint">Nombre Completo</string>
+    <string name="register_phone_hint">Nº Móvil</string>
+    <string name="register_dob_hint">Fecha de Nacimiento</string>
+    <string name="register_email_hint">Email</string>
+    <string name="register_password_hint">Contraseña</string>
+    <string name="register_notifications_checkbox">Quiero recibir ofertas y descuentos exclusivos</string>
+    <string name="register_terms_checkbox">Acepto los términos y condiciones</string>
+    <string name="register_button_register">REGISTRARSE</string>
+    <string name="register_go_to_login">Volver al Login</string>
+
+    <!-- Toasts / Mensajes Register -->
+    <string name="toast_no_permission_notifications">Sin permiso, no recibirás el descuento</string>
+    <string name="toast_fill_all_fields_register">Completa todos los campos</string>
+    <string name="error_invalid_email">Email inválido</string>
+    <string name="toast_accept_terms">Debes aceptar los términos</string>
+    <string name="toast_email_exists">Este correo ya está registrado</string>
+    <string name="toast_account_created">¡Cuenta creada con éxito!</string>
+    <string name="toast_user_save_error">Error al guardar usuario</string>
+
+    <!-- Notificaciones Register -->
+    <string name="notification_welcome_title">¡Bienvenido al Real Madrid!</string>
+    <string name="notification_discount_text_short">Tienes un 10% de descuento en tu entrada.</string>
+    <string name="notification_discount_text_long">Gracias por suscribirte. Tienes un 10% de descuento en tu entrada al museo y en la tienda oficial.</string>
+    <string name="notification_channel_name">Ofertas y Promociones</string>
+    <string name="notification_channel_description">Descuentos del museo</string>
+
+    <!-- Main Screen -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_map">Mapa</string>
+    <string name="nav_camera">Cámara</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_hello">¡Hola, %1$s!</string>
+    <string name="dashboard_subtitle">Prepárate para tu visita nivel Experto</string>
+    <string name="dashboard_next_match">Próximo Encuentro</string>
+    <string name="dashboard_team_1">Real Madrid</string>
+    <string name="dashboard_team_2">Villacarrillo</string>
+    <string name="dashboard_latest_news">Últimas Noticias</string>
+    <string name="news_title_1">El nuevo Bernabéu abre sus puertas</string>
+    <string name="news_title_2">Mbappé visita el museo</string>
+    <string name="news_title_3">Nueva camiseta edición especial</string>
+    <string name="news_time">Hace 2 horas</string>
+
+    <!-- Profile -->
+    <string name="profile_guest_title">Visitante del Museo</string>
+    <string name="profile_member_title">Socio Madridista</string>
+    <string name="profile_register_prompt">Registrate para desbloquear tus estadísticas, logros y premios exclusivos.</string>
+    <string name="stats_visits">Visitas</string>
+    <string name="stats_points">Puntos</string>
+    <string name="stats_ranking">Ranking</string>
+    <string name="achievements_title">Tus Logros</string>
+    <string name="achievement_welcome">Bienvenida</string>
+    <string name="achievement_first_qr">Primer QR</string>
+    <string name="achievement_explorer">Explorador</string>
+    <string name="rewards_title">Recompensas</string>
+    <string name="reward_coming_soon">PROXIMAMENTE</string>
+    <string name="reward_discount">10% DTO.</string>
+    <string name="reward_store">TIENDA OFICIAL</string>
+
+    <!-- Map Screen -->
+    <string name="map_hall">Pasillo</string>
+    <string name="map_entrance">Entrada</string>
+    <string name="map_exit">Salida</string>
+    <string name="map_showcase">Vitrina</string>
+    <string name="map_history">Historia</string>
+    <string name="map_stadium">Estadio</string>
+    <string name="map_game">Juego</string>
+    <string name="map_players">Jugadores</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.real_madrid_museo.home
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,17 +14,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.ui.comun.LanguageToggle
+import com.example.real_madrid_museo.ui.comun.cambiarIdioma
+import com.example.real_madrid_museo.ui.comun.obtenerIdioma
 import com.example.real_madrid_museo.ui.map.MapScreen
+/*import com.example.real_madrid_museo.ui.camera.ScannerScreen*/
+
 
 
 // Colores oficiales para un diseño valorado positivamente [cite: 27]
@@ -31,9 +42,14 @@ val MadridBlue = Color(0xFF002D72)
 val MadridGold = Color(0xFFFEBE10)
 
 @Composable
-fun MainScreen() {
+fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean) {
     var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Inicio", "Mapa", "Cámara", "Perfil")
+    val items = listOf(
+        stringResource(R.string.nav_home),
+        stringResource(R.string.nav_map),
+        stringResource(R.string.nav_camera),
+        stringResource(R.string.nav_profile)
+    )
     val icons = listOf(Icons.Default.Home, Icons.Default.Map, Icons.Default.QrCodeScanner, Icons.Default.Person)
 
     Scaffold(
@@ -74,10 +90,10 @@ fun MainScreen() {
                 .fillMaxSize()) {
 
                 when (selectedItem) {
-                    0 -> DashboardInicio() // La pantalla estética de noticias/partidos
+                    0 -> DashboardInicio(nombre) // Pasamos el nombre
                     1 -> MapScreen()
-                    //2 -> PantallaScanner()
-                    3 -> PerfilContent()
+                    /*2 -> ScannerScreen()*/
+                    3 -> PerfilContent(nombre, perfil, esInvitado) // Pasamos todo
                 }
             }
         }
@@ -85,18 +101,19 @@ fun MainScreen() {
 }
 
 @Composable
-fun DashboardInicio() {
+fun DashboardInicio(nombre: String) {
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
-            Text("¡Hola, Madridista!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
-            Text("Prepárate para tu visita nivel Experto", style = MaterialTheme.typography.bodyLarge, color = Color.Gray) // Basado en
+            // USAMOS EL NOMBRE REAL
+            Text(stringResource(R.string.dashboard_hello, nombre), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridBlue)
+            Text(stringResource(R.string.dashboard_subtitle), style = MaterialTheme.typography.bodyLarge, color = Color.Gray)
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         // SECCIÓN: PRÓXIMO PARTIDO (Card Estética)
         item {
-            Text("Próximo Encuentro", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
+            Text(stringResource(R.string.dashboard_next_match), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth().height(140.dp),
@@ -105,11 +122,11 @@ fun DashboardInicio() {
             ) {
                 Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Real Madrid", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.dashboard_team_1), color = Color.White, fontWeight = FontWeight.Bold)
                     }
                     Text("VS", color = MadridGold, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Villacarrillo", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.dashboard_team_2), color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -118,7 +135,7 @@ fun DashboardInicio() {
 
         // SECCIÓN: NOTICIAS (Tarjetas con imágenes)
         item {
-            Text("Últimas Noticias", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
+            Text(stringResource(R.string.dashboard_latest_news), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
         }
 
@@ -129,8 +146,8 @@ fun DashboardInicio() {
             R.drawable.vestuario
         )
 
-        items(3) { index ->
-            NewsCard(index, listaImagenes.getOrElse(index) { R.drawable.ic_launcher_background })
+        items(listaImagenes.size) { index ->
+            NewsCard(index, listaImagenes[index])
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -138,7 +155,11 @@ fun DashboardInicio() {
 
 @Composable
 fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la imagen
-    val titles = listOf("El nuevo Bernabéu abre sus puertas", "Mbappé visita el museo", "Nueva camiseta edición especial")
+    val titles = listOf(
+        stringResource(R.string.news_title_1),
+        stringResource(R.string.news_title_2),
+        stringResource(R.string.news_title_3)
+    )
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -162,126 +183,156 @@ fun NewsCard(index: Int, imageRes: Int) { // <--- Ahora recibe el ID de la image
             Column {
                 Text(titles.getOrElse(index) { "Noticia Real Madrid" }, fontWeight = FontWeight.Bold, maxLines = 2, color = MadridBlue)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Hace 2 horas", fontSize = 12.sp, color = Color.Gray)
+                Text(stringResource(R.string.news_time), fontSize = 12.sp, color = Color.Gray)
             }
         }
     }
 }
 
 @Composable
-fun PerfilContent() {
+fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean) {
+    val context = LocalContext.current
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
-            .padding(bottom = 20.dp) // Espacio extra al final
+            .padding(bottom = 20.dp)
     ) {
-        // 1. CABECERA DEL PERFIL
+        // 1. CABECERA DINÁMICA
         item {
             Spacer(modifier = Modifier.height(20.dp))
             Row(
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top, // Alineamos al top para la bandera
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Avatar (Usamos un icono por defecto para evitar errores, pero podrías poner una foto)
-                Surface(
-                    shape = CircleShape,
-                    color = MadridBlue.copy(alpha = 0.1f),
-                    modifier = Modifier.size(80.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = "Avatar",
-                        tint = MadridBlue,
-                        modifier = Modifier.padding(15.dp).fillMaxSize()
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MadridBlue.copy(alpha = 0.1f),
+                        modifier = Modifier.size(80.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Avatar",
+                            tint = if (esInvitado) Color.Gray else MadridBlue,
+                            modifier = Modifier.padding(15.dp).fillMaxSize()
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column {
+                        Text(nombre, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MadridBlue)
+
+                        Text(
+                            text = if (esInvitado) stringResource(R.string.profile_guest_title) else stringResource(R.string.profile_member_title),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Surface(
+                            color = if (esInvitado) Color.LightGray else MadridGold,
+                            shape = RoundedCornerShape(50),
+                            modifier = Modifier.height(24.dp)
+                        ) {
+                            Text(
+                                text = " $perfil ",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MadridBlue,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                // Selector de idioma
+                val currentLanguage = obtenerIdioma(context)
+                LanguageToggle(
+                    currentLanguage = currentLanguage,
+                    onToggle = { 
+                        val newLanguage = if (currentLanguage == "es") "en" else "es"
+                        cambiarIdioma(context, newLanguage)
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
 
-                Column {
-                    Text("Javier Madridista", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = MadridBlue)
-                    Text("Socio Nº 1902", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    // Etiqueta de Nivel
-                    Surface(
-                        color = MadridGold,
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier.height(24.dp)
-                    ) {
+        // LÓGICA CONDICIONAL: Si es invitado, mostramos un aviso de registro
+        if (esInvitado) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MadridBlue.copy(alpha = 0.05f))
+                ) {
+                    Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.Lock, contentDescription = null, tint = MadridBlue)
+                        Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = " NIVEL EXPERTO ",
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MadridBlue,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            stringResource(R.string.profile_register_prompt),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MadridBlue
                         )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        // 2. RESUMEN DE ESTADÍSTICAS (Gamificación)
-        item {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MadridBlue),
-                elevation = CardDefaults.cardElevation(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+        } else {
+            // 2. ESTADÍSTICAS REALES (Solo para usuarios registrados)
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MadridBlue),
+                    elevation = CardDefaults.cardElevation(8.dp)
                 ) {
-                    EstadisticaItem("Visitas", "12")
-                    EstadisticaItem("Puntos", "850")
-                    EstadisticaItem("Ranking", "#45")
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        // 3. LOGROS (Diseño Visual)
-        item {
-            Text("Tus Logros", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(4.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                        LogroItem(Icons.Default.EmojiEvents, "Copas", true)
-                        LogroItem(Icons.Default.Star, "MVP", true)
-                        LogroItem(Icons.Default.Map, "Explorador", false) // Bloqueado
+                    Row(
+                        modifier = Modifier.padding(20.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        EstadisticaItem(stringResource(R.string.stats_visits), "1")
+                        EstadisticaItem(stringResource(R.string.stats_points), "100")
+                        EstadisticaItem(stringResource(R.string.stats_ranking), "--")
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    // Barra de progreso del museo
-                    Text("Progreso del Museo: 65%", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = 0.65f,
-                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
-                        color = MadridGold,
-                        trackColor = Color.LightGray.copy(alpha = 0.3f)
-                    )
                 }
+                Spacer(modifier = Modifier.height(24.dp))
             }
-            Spacer(modifier = Modifier.height(24.dp))
+
+            // 3. LOGROS
+            item {
+                Text(stringResource(R.string.achievements_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+                Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+                            LogroItem(Icons.Default.EmojiEvents, stringResource(R.string.achievement_welcome), true)
+                            LogroItem(Icons.Default.Star, stringResource(R.string.achievement_first_qr), false)
+                            LogroItem(Icons.Default.Map, stringResource(R.string.achievement_explorer), false)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
-        // 4. CUPÓN DESCUENTO (Estilo Ticket Dorado)
+        // 4. RECOMPENSAS (Visible para todos, pero con un toque diferente si es invitado)
         item {
-            Text("Recompensas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+            Text(stringResource(R.string.rewards_title), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = MadridGold) // Fondo dorado llamativo
+                colors = CardDefaults.cardColors(containerColor = if(esInvitado) Color.LightGray else MadridGold)
             ) {
                 Row(
                     modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
@@ -289,15 +340,15 @@ fun PerfilContent() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("10% DTO.", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black, color = MadridBlue)
-                        Text("TIENDA OFICIAL", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = if(esInvitado) stringResource(R.string.reward_coming_soon) else stringResource(R.string.reward_discount),
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Black,
+                            color = MadridBlue
+                        )
+                        Text(stringResource(R.string.reward_store), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = if(esInvitado) MadridBlue else Color.White)
                     }
-                    Icon(
-                        imageVector = Icons.Default.ShoppingBag,
-                        contentDescription = null,
-                        tint = MadridBlue,
-                        modifier = Modifier.size(40.dp)
-                    )
+                    Icon(Icons.Default.ShoppingBag, contentDescription = null, tint = MadridBlue, modifier = Modifier.size(40.dp))
                 }
             }
         }
@@ -315,7 +366,7 @@ fun EstadisticaItem(titulo: String, valor: String) {
 
 // Sub-componente para los iconos de logros
 @Composable
-fun LogroItem(icono: androidx.compose.ui.graphics.vector.ImageVector, nombre: String, desbloqueado: Boolean) {
+fun LogroItem(icono: ImageVector, nombre: String, desbloqueado: Boolean) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
@@ -337,10 +388,24 @@ fun LogroItem(icono: androidx.compose.ui.graphics.vector.ImageVector, nombre: St
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, name = "Vista Socio")
 @Composable
-fun MainScreenPreview() {
-    // Aquí llamamos a tu función para que la IA la dibuje
-    //MainScreen()
-    PerfilContent()
+fun MainScreenSocioPreview() {
+    // Simulamos un usuario registrado (Socio)
+    MainScreen(
+        nombre = "Javier Madridista",
+        perfil = "ADULTO",
+        esInvitado = false
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Vista Invitado")
+@Composable
+fun MainScreenInvitadoPreview() {
+    // Simulamos un acceso como invitado
+    MainScreen(
+        nombre = "Visitante",
+        perfil = "INVITADO",
+        esInvitado = true
+    )
 }
