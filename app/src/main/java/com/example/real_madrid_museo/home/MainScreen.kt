@@ -1,6 +1,5 @@
 package com.example.real_madrid_museo.home
 
-import android.app.Activity
 import android.content.Intent
 import android.widget.Toast // Para avisos rápidos de códigos escaneados
 import androidx.compose.foundation.Image
@@ -15,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -37,9 +36,9 @@ import com.example.real_madrid_museo.ui.comun.idiomas.cambiarIdioma
 import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 import com.example.real_madrid_museo.ui.map.MapScreen
 import com.example.real_madrid_museo.kahoot.KahootActivity
-import com.example.real_madrid_museo.ui.vitrina.Trofeo
-import com.example.real_madrid_museo.ui.vitrina.TrofeoInfo
-import com.example.real_madrid_museo.ui.vitrina.listaTrofeos
+import com.example.real_madrid_museo.ui.vitrina.ColeccionTrofeos
+import com.example.real_madrid_museo.ui.vitrina.TrofeoActivity
+import com.example.real_madrid_museo.ui.vitrina.TrofeoManager
 
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
@@ -57,6 +56,8 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
         stringResource(R.string.nav_profile)
     )
     val icons = listOf(Icons.Default.Home, Icons.Default.Map, Icons.Default.QrCodeScanner, Icons.Default.Person)
+
+    var mostrarColeccion by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
@@ -102,8 +103,13 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                                     Toast.makeText(context, "Código $resultado detectado (Próximamente)", Toast.LENGTH_SHORT).show()
                                 }
                                 "11" -> {
-                                    val intent = Intent(context, com.example.real_madrid_museo.ui.vitrina.TrofeoActivity::class.java)
-                                    intent.putExtra("INDICE_TROFEO", 0) // Pasamos el 0 porque es la Champions (el primero de la lista)
+                                    // 1. Marcamos el trofeo como visto (índice 0 es Champions)
+                                    // Esto guardará el progreso y lanzará la notificación si completas todos
+                                    TrofeoManager.marcarTrofeoVisto(context, 0)
+
+                                    // 2. Abrimos la actividad (Tu código de antes)
+                                    val intent = Intent(context, TrofeoActivity::class.java)
+                                    intent.putExtra("INDICE_TROFEO", 0)
                                     context.startActivity(intent)
                                 }
                                 else -> {
@@ -113,7 +119,18 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                             }
                         })
                     }
-                    3 -> PerfilContent(nombre, perfil, esInvitado, visitas, puntos, ranking, email)
+                    3 -> {
+                        if (mostrarColeccion) {
+                            // Si la variable es true, mostramos el Álbum
+                            ColeccionTrofeos(onBack = { mostrarColeccion = false })
+                        } else {
+                            // Si no, mostramos el Perfil normal y le pasamos la función para abrir el álbum
+                            PerfilContent(
+                                nombre, perfil, esInvitado, visitas, puntos, ranking, email,
+                                onAbrirColeccion = { mostrarColeccion = true } // <--- Pasamos esto
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -201,7 +218,16 @@ fun NewsCard(index: Int, imageRes: Int) {
 }
 
 @Composable
-fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean, visitasIniciales: Int, puntosIniciales: Int, rankingInicial: Int, email: String?) {
+fun PerfilContent(
+    nombre: String,
+    perfil: String,
+    esInvitado: Boolean,
+    visitasIniciales: Int,
+    puntosIniciales: Int,
+    rankingInicial: Int,
+    email: String?,
+    onAbrirColeccion: () -> Unit
+) {
     val context = LocalContext.current
     var visitasActuales by remember { mutableIntStateOf(visitasIniciales) }
     var puntosActuales by remember { mutableIntStateOf(puntosIniciales) }
@@ -275,7 +301,18 @@ fun PerfilContent(nombre: String, perfil: String, esInvitado: Boolean, visitasIn
                 Card(colors = CardDefaults.cardColors(containerColor = Color.White), shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(4.dp)) {
                     Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceAround) {
                         LogroItem(Icons.Default.EmojiEvents, stringResource(R.string.achievement_welcome), true)
-                        LogroItem(Icons.Default.Star, stringResource(R.string.achievement_first_qr), false)
+                        Column(
+                            modifier = Modifier.clickable { onAbrirColeccion() },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            val tieneAlguno = remember { TrofeoManager.obtenerProgreso(context) > 0 }
+
+                            LogroItem(
+                                icono = Icons.Default.EmojiEvents, // O Icons.Default.Collections
+                                nombre = "Coleccionista", // O stringResource
+                                desbloqueado = tieneAlguno
+                            )
+                        }
                         LogroItem(Icons.Default.Map, stringResource(R.string.achievement_explorer), false)
                     }
                 }
