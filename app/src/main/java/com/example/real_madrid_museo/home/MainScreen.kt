@@ -37,6 +37,9 @@ import com.example.real_madrid_museo.ui.comun.idiomas.cambiarIdioma
 import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 import com.example.real_madrid_museo.ui.map.MapScreen
 import com.example.real_madrid_museo.kahoot.KahootActivity
+import com.example.real_madrid_museo.ui.vitrina.Trofeo
+import com.example.real_madrid_museo.ui.vitrina.TrofeoInfo
+import com.example.real_madrid_museo.ui.vitrina.listaTrofeos
 
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
@@ -97,6 +100,11 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                                 "1", "2", "3", "4", "5", "6", "8", "9", "10" -> {
                                     // Aquí puedes definir acciones para los otros números
                                     Toast.makeText(context, "Código $resultado detectado (Próximamente)", Toast.LENGTH_SHORT).show()
+                                }
+                                "11" -> {
+                                    val intent = Intent(context, com.example.real_madrid_museo.ui.vitrina.TrofeoActivity::class.java)
+                                    intent.putExtra("INDICE_TROFEO", 0) // Pasamos el 0 porque es la Champions (el primero de la lista)
+                                    context.startActivity(intent)
                                 }
                                 else -> {
                                     // Cualquier otro QR no registrado

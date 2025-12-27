@@ -51,6 +51,10 @@
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.RealMadrid.Splash"/>
+        <activity
+            android:name=".ui.vitrina.TrofeoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Real_madrid_museo" />
     </application>
 
 </manifest>

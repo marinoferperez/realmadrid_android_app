@@ -1,3 +1,5 @@
+import org.gradle.accessors.dm.LibrariesForLibs.AndroidxComposeLibraryAccessors
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.real_madrid_museo"
-        minSdk = 26
+        minSdk = 23
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
