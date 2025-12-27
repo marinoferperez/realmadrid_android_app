@@ -98,7 +98,7 @@
     <string name="reward_coming_soon">PROXIMAMENTE</string>
     <string name="reward_discount">10% DTO.</string>
     <string name="reward_store">TIENDA OFICIAL</string>
-    
+
     <string name="profile_type_adult">ADULTO</string>
     <string name="profile_type_child">NIÑO</string>
     <string name="profile_type_guest">INVITADO</string>
@@ -122,7 +122,7 @@
     <string name="kahoot_instructions_shake_title">Control por Gesto</string>
     <string name="kahoot_instructions_shake_desc">Selecciona una opción y luego AGITA tu dispositivo para confirmar tu respuesta.</string>
     <string name="kahoot_instructions_start_button">¡A JUGAR!</string>
-    
+
     <!-- Kahoot Questions -->
     <string name="kq1_question">¿En qué año se fundó el Real Madrid?</string>
     <string name="kq1_a1">1902</string>
@@ -276,7 +276,7 @@
     <string name="button_exit">Salir</string>
     <string name="button_restart">Reiniciar</string>
     <string name="points_popup_text">PUNTOS</string>
-    
+
     <string name="result_msg_perfect">¡Perfecto, madridista legendario! 🤍</string>
     <string name="result_msg_good">¡Gran visita al museo! ⚽</string>
     <string name="result_msg_retry">¡Buen intento! Aprende y vuelve a jugar 💪</string>
