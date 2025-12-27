@@ -1,4 +1,4 @@
-package com.example.real_madrid_museo // O tu paquete correspondiente
+package com.example.real_madrid_museo
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,28 +6,27 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-// Este adaptador recibe la lista de jugadores y crea las vistas
 class PlayersAdapter(private val players: List<Jugador>) :
     RecyclerView.Adapter<PlayersAdapter.PlayerViewHolder>() {
 
-    // Esta clase interna guarda las referencias a los elementos de la carta (solo la imagen por ahora)
     class PlayerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imgPlayer: ImageView = view.findViewById(R.id.imgPlayer)
     }
 
-    // Paso 1: Crea el diseño de la carta cuando hace falta
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_player_card, parent, false)
         return PlayerViewHolder(view)
     }
 
-    // Paso 2: Rellena los datos (pone la foto)
+    // INFINITO: Calculamos la posición real usando el resto de la división
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        val player = players[position]
+        // Si la posición es 100 y hay 6 jugadores, 100 % 6 = 4. Toca el jugador 4.
+        val realPosition = position % players.size
+        val player = players[realPosition]
         holder.imgPlayer.setImageResource(player.imagenResId)
     }
 
-    // Paso 3: Le dice al carrusel cuántas cartas hay
-    override fun getItemCount(): Int = players.size
+    // INFINITO: Decimos que hay "casi infinitos" elementos
+    override fun getItemCount(): Int = Int.MAX_VALUE
 }
