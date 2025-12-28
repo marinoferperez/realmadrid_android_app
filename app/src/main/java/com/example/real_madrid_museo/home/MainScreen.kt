@@ -17,6 +17,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -39,6 +41,10 @@ import com.example.real_madrid_museo.kahoot.KahootActivity
 import com.example.real_madrid_museo.ui.vitrina.ColeccionTrofeos
 import com.example.real_madrid_museo.ui.vitrina.TrofeoActivity
 import com.example.real_madrid_museo.ui.vitrina.TrofeoManager
+import com.example.real_madrid_museo.ui.linea.SalaHistorica
+import com.example.real_madrid_museo.ui.linea.PuzzleHistoricoScreen
+import com.example.real_madrid_museo.ui.linea.EraManager
+
 
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
@@ -47,6 +53,7 @@ val MadridGold = Color(0xFFFEBE10)
 @Composable
 fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int, puntos: Int, ranking: Int, email: String?) {
     val context = LocalContext.current
+    val historyRoomName = stringResource(R.string.map_history)
     var selectedItem by remember { mutableIntStateOf(0) }
 
     val items = listOf(
@@ -58,6 +65,11 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
     val icons = listOf(Icons.Default.Home, Icons.Default.Map, Icons.Default.QrCodeScanner, Icons.Default.Person)
 
     var mostrarColeccion by remember { mutableStateOf(false) }
+
+    var mostrarSalaHistorica by remember { mutableStateOf(false) }
+
+    var mostrarPuzzle by remember { mutableStateOf(false) }
+
 
     Scaffold(
         bottomBar = {
@@ -87,8 +99,20 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
         Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(MadridBlue.copy(alpha = 0.1f), Color.White)))) {
             Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
                 when (selectedItem) {
-                    0 -> DashboardInicio(nombre)
-                    1 -> MapScreen()
+                    0 -> {
+                        if (mostrarSalaHistorica) {
+                            // Mostramos tu sala y le pasamos la función para "cerrarse"
+                            SalaHistorica(email = email ?: "invitado",onBack = { mostrarSalaHistorica = false })
+                        } else {
+                            DashboardInicio(nombre)
+                        }
+                    }
+                    1 -> MapScreen(onNavigate = { nombreSala ->
+                        if (nombreSala.equals(historyRoomName, ignoreCase = true)) {
+                            selectedItem = 0            // Cambiamos a la pestaña de Inicio
+                            mostrarSalaHistorica = true  // Activamos la visibilidad de tu sala
+                        }
+                    })
                     2 -> {
                         // --- ESCÁNER ESCALABLE ---
                         ScannerScreen(onResultFound = { resultado ->
@@ -99,8 +123,18 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                                     context.startActivity(intent)
                                 }
                                 "1", "2", "3", "4", "5", "6", "8", "9", "10" -> {
-                                    // Aquí puedes definir acciones para los otros números
-                                    Toast.makeText(context, "Código $resultado detectado (Próximamente)", Toast.LENGTH_SHORT).show()
+                                    // 1. Calculamos qué número de pieza es (1 al 9)
+                                    val numPieza = when(resultado) {
+                                        "1" -> 1; "2" -> 2; "3" -> 3; "4" -> 4; "5" -> 5
+                                        "6" -> 6; "8" -> 7; "9" -> 8; "10" -> 9; else -> 0
+                                    }
+
+                                    // 2. Si el número es válido, desbloqueamos la era (índice 0-8)
+                                    if (numPieza > 0) {
+                                        EraManager.desbloquearEra(context, email ?: "invitado", numPieza - 1)
+                                        // MENSAJE PERSONALIZADO:
+                                        Toast.makeText(context, "¡Pieza número $numPieza desbloqueada!", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                                 "11" -> {
                                     // 1. Marcamos el trofeo como visto (índice 0 es Champions)
@@ -123,11 +157,17 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                         if (mostrarColeccion) {
                             // Si la variable es true, mostramos el Álbum
                             ColeccionTrofeos(onBack = { mostrarColeccion = false })
-                        } else {
+                        }
+                        else if (mostrarPuzzle) {
+                            // Pantalla que crearemos ahora
+                            PuzzleHistoricoScreen(email = email ?: "invitado",onBack = { mostrarPuzzle = false })
+                        }
+                        else {
                             // Si no, mostramos el Perfil normal y le pasamos la función para abrir el álbum
                             PerfilContent(
                                 nombre, perfil, esInvitado, visitas, puntos, ranking, email,
-                                onAbrirColeccion = { mostrarColeccion = true } // <--- Pasamos esto
+                                onAbrirColeccion = { mostrarColeccion = true }, // <--- Pasamos esto
+                                onAbrirPuzzle = { mostrarPuzzle = true } // <--- Nueva función
                             )
                         }
                     }
@@ -226,7 +266,8 @@ fun PerfilContent(
     puntosIniciales: Int,
     rankingInicial: Int,
     email: String?,
-    onAbrirColeccion: () -> Unit
+    onAbrirColeccion: () -> Unit,
+    onAbrirPuzzle: () -> Unit
 ) {
     val context = LocalContext.current
     var visitasActuales by remember { mutableIntStateOf(visitasIniciales) }
@@ -313,6 +354,19 @@ fun PerfilContent(
                                 desbloqueado = tieneAlguno
                             )
                         }
+                        // 3. NUEVO: Puzzle Histórico
+                        Column(
+                            modifier = Modifier.clickable { onAbrirPuzzle() },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            // Comprobamos el progreso de las épocas
+                            val tieneEras = remember { com.example.real_madrid_museo.ui.linea.EraManager.obtenerProgreso(context,email ?: "invitado") > 0 }
+                            LogroItem(
+                                icono = Icons.Default.Extension, // Icono de pieza de puzle
+                                nombre = "Puzzle",
+                                desbloqueado = tieneEras
+                            )
+                        }
                         LogroItem(Icons.Default.Map, stringResource(R.string.achievement_explorer), false)
                     }
                 }
@@ -359,3 +413,4 @@ fun LogroItem(icono: ImageVector, nombre: String, desbloqueado: Boolean) {
 fun MainScreenSocioPreview() {
     MainScreen("Javier Madridista", "ADULTO", false, 5, 250, 1, "javier@madrid.com")
 }
+

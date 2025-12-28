@@ -31,7 +31,7 @@ data class Point2D(val x: Float, val y: Float)
 data class RoomShape(val name: String, val vertices2D: List<Point2D>, val roofColor: Color, val wallColor: Color)
 
 @Composable
-fun MapScreen() {
+fun MapScreen(onNavigate: (String) -> Unit = {}) {
     val context = LocalContext.current
     var scale by remember { mutableStateOf(0.3f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -69,6 +69,9 @@ fun MapScreen() {
 
     val mapStructure = remember(roomNames) { getMegaMapStructure(roomNames, blueRoof, blueWall, exitRed, exitRedWall) }
     val gameRoomName = stringResource(R.string.map_game)
+    val historyRoomName = stringResource(R.string.map_history)
+
+
 
     Box(
         modifier = Modifier
@@ -82,7 +85,7 @@ fun MapScreen() {
 
                     // Buscamos si el toque cae dentro del BOUNDING BOX de alguna sala
                     val clickedRoom = mapStructure.find { room ->
-                        isPointInBoundingBox(worldPos, room.vertices2D)
+                        isPointInRoom(worldPos, room.vertices2D)
                     }
 
                     if (clickedRoom != null) {
@@ -92,6 +95,10 @@ fun MapScreen() {
                         if (clickedRoom.name.equals(gameRoomName, ignoreCase = true)) {
                             val intent = Intent(context, KahootActivity::class.java)
                             context.startActivity(intent)
+                        }
+                        // Entrar sala linea historica
+                        else {
+                            onNavigate(clickedRoom.name) // Avisamos a MainScreen que queremos abrir una sala
                         }
                     } else {
                         // Opcional: Feedback si tocamos el suelo vacío para depurar coordenadas
@@ -192,20 +199,18 @@ fun isoToTwoD(isoPos: Offset): Point2D {
 }
 
 // NUEVA FUNCIÓN: Detección por caja delimitadora (más robusta y fácil de acertar)
-fun isPointInBoundingBox(point: Point2D, vertices: List<Point2D>): Boolean {
-    if (vertices.isEmpty()) return false
-
-    // Calculamos los límites de la sala
-    val minX = vertices.minOf { it.x }
-    val maxX = vertices.maxOf { it.x }
-    val minY = vertices.minOf { it.y }
-    val maxY = vertices.maxOf { it.y }
-
-    // Margen de tolerancia (padding) para hacer el click más fácil
-    val padding = 200f
-
-    return point.x >= (minX - padding) && point.x <= (maxX + padding) &&
-            point.y >= (minY - padding) && point.y <= (maxY + padding)
+fun isPointInRoom(point: Point2D, vertices: List<Point2D>): Boolean {
+    var intersectCount = 0
+    for (i in vertices.indices) {
+        val vert1 = vertices[i]
+        val vert2 = vertices[(i + 1) % vertices.size]
+        if ((vert1.y > point.y) != (vert2.y > point.y) &&
+            (point.x < (vert2.x - vert1.x) * (point.y - vert1.y) / (vert2.y - vert1.y) + vert1.x)
+        ) {
+            intersectCount++
+        }
+    }
+    return intersectCount % 2 != 0
 }
 
 // --- Estructura del Museo ---
