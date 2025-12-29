@@ -71,38 +71,28 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
     val gameRoomName = stringResource(R.string.map_game)
     val historyRoomName = stringResource(R.string.map_history)
 
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFD1D1D1))
             .transformable(state = state)
             .pointerInput(Unit) {
-                detectTapGestures {
-                    // Calculamos la posición en el mundo 2D
-                    val worldPos = screenToWorld(it, size, offset, scale)
-
-                    // Buscamos si el toque cae dentro del BOUNDING BOX de alguna sala
+                detectTapGestures { tapOffset ->
+                    // 1. Convertimos el tap a coordenadas de "mundo isométrico"
+                    val worldIsoPos = screenToWorldIso(tapOffset, size, offset, scale)
+                    
+                    // 2. Buscamos la sala comprobando si el click está dentro de su forma dibujada
                     val clickedRoom = mapStructure.find { room ->
-                        isPointInRoom(worldPos, room.vertices2D)
+                        isPointInIsoRoom(worldIsoPos, room.vertices2D)
                     }
 
                     if (clickedRoom != null) {
-                        // Feedback visual para saber qué se ha tocado
-                        Toast.makeText(context, "Sala: ${clickedRoom.name}", Toast.LENGTH_SHORT).show()
-
                         if (clickedRoom.name.equals(gameRoomName, ignoreCase = true)) {
                             val intent = Intent(context, KahootActivity::class.java)
                             context.startActivity(intent)
+                        } else {
+                            onNavigate(clickedRoom.name)
                         }
-                        // Entrar sala linea historica
-                        else {
-                            onNavigate(clickedRoom.name) // Avisamos a MainScreen que queremos abrir una sala
-                        }
-                    } else {
-                        // Opcional: Feedback si tocamos el suelo vacío para depurar coordenadas
-                        // Toast.makeText(context, "Suelo: ${worldPos.x.toInt()}, ${worldPos.y.toInt()}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -122,11 +112,40 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
     }
 }
 
-// --- Funciones de Dibujo y Lógica ---
+// --- Funciones de Detección Corregidas ---
+
+fun screenToWorldIso(screenPos: Offset, screenSize: androidx.compose.ui.unit.IntSize, offset: Offset, scale: Float): Offset {
+    val centerX = screenSize.width / 2f
+    val centerY = screenSize.height / 2f
+    return Offset(
+        x = (screenPos.x - centerX - offset.x) / scale,
+        y = (screenPos.y - centerY - offset.y) / scale
+    )
+}
+
+fun isPointInIsoRoom(isoPoint: Offset, vertices2D: List<Point2D>): Boolean {
+    // Transformamos los vértices 2D a Isométrico (tal cual se dibujan)
+    val isoVertices = vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
+    
+    var intersectCount = 0
+    for (i in isoVertices.indices) {
+        val v1 = isoVertices[i]
+        val v2 = isoVertices[(i + 1) % isoVertices.size]
+        
+        // Algoritmo Ray-casting para polígonos
+        if ((v1.y > isoPoint.y) != (v2.y > isoPoint.y) &&
+            (isoPoint.x < (v2.x - v1.x) * (isoPoint.y - v1.y) / (v2.y - v1.y) + v1.x)
+        ) {
+            intersectCount++
+        }
+    }
+    return intersectCount % 2 != 0
+}
+
+// --- Funciones de Dibujo ---
 
 fun DrawScope.drawWallsOnly(room: RoomShape, wallHeight: Float) {
-    val ceilingPoints = room.vertices2D.map { twoDToIso(it) }
-    if (ceilingPoints.size < 3) return
+    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
     for (i in ceilingPoints.indices) {
         val p1 = ceilingPoints[i]
         val p2 = ceilingPoints[(i + 1) % ceilingPoints.size]
@@ -139,18 +158,20 @@ fun DrawScope.drawWallsOnly(room: RoomShape, wallHeight: Float) {
 }
 
 fun DrawScope.drawRoofOnly(room: RoomShape) {
-    val ceilingPoints = room.vertices2D.map { twoDToIso(it) }
-    if (ceilingPoints.size < 3) return
+    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
     val roofPath = Path().apply {
-        moveTo(ceilingPoints[0].x, ceilingPoints[0].y)
-        ceilingPoints.forEach { lineTo(it.x, it.y) }; close()
+        if (ceilingPoints.isNotEmpty()) {
+            moveTo(ceilingPoints[0].x, ceilingPoints[0].y)
+            ceilingPoints.forEach { lineTo(it.x, it.y) }
+            close()
+        }
     }
     drawPath(roofPath, room.roofColor)
 }
 
 fun DrawScope.drawTextOnly(room: RoomShape) {
     if (room.name.isEmpty()) return
-    val ceilingPoints = room.vertices2D.map { twoDToIso(it) }
+    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
     val centerX = ceilingPoints.map { it.x }.average().toFloat()
     val centerY = ceilingPoints.map { it.y }.average().toFloat()
     drawContext.canvas.nativeCanvas.drawText(
@@ -170,50 +191,13 @@ fun DrawScope.drawMegaGroundBase(color: Color) {
     val groundVertices = listOf(
         Point2D(-xBounds, yBounds), Point2D(xBounds, yBounds),
         Point2D(xBounds, -yBounds), Point2D(-xBounds, -yBounds)
-    ).map { twoDToIso(it) }
+    ).map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
     val topPath = Path().apply {
         moveTo(groundVertices[0].x, groundVertices[0].y)
         groundVertices.forEach { lineTo(it.x, it.y) }; close()
     }
     drawPath(topPath, color)
 }
-
-fun twoDToIso(point: Point2D): Offset = Offset(point.x - point.y, (point.x + point.y) / 2f)
-
-// --- Funciones de Detección de Click ---
-
-fun screenToWorld(screenPos: Offset, screenSize: androidx.compose.ui.unit.IntSize, offset: Offset, scale: Float): Point2D {
-    val screenCenterX = screenSize.width / 2f
-    val screenCenterY = screenSize.height / 2f
-
-    val worldX = (screenPos.x - screenCenterX - offset.x) / scale
-    val worldY = (screenPos.y - screenCenterY - offset.y) / scale
-
-    return isoToTwoD(Offset(worldX, worldY))
-}
-
-fun isoToTwoD(isoPos: Offset): Point2D {
-    val x = (isoPos.x + 2 * isoPos.y) / 2
-    val y = (2 * isoPos.y - isoPos.x) / 2
-    return Point2D(x, y)
-}
-
-// NUEVA FUNCIÓN: Detección por caja delimitadora (más robusta y fácil de acertar)
-fun isPointInRoom(point: Point2D, vertices: List<Point2D>): Boolean {
-    var intersectCount = 0
-    for (i in vertices.indices) {
-        val vert1 = vertices[i]
-        val vert2 = vertices[(i + 1) % vertices.size]
-        if ((vert1.y > point.y) != (vert2.y > point.y) &&
-            (point.x < (vert2.x - vert1.x) * (point.y - vert1.y) / (vert2.y - vert1.y) + vert1.x)
-        ) {
-            intersectCount++
-        }
-    }
-    return intersectCount % 2 != 0
-}
-
-// --- Estructura del Museo ---
 
 fun getMegaMapStructure(names: List<String>, blue: Color, blueDark: Color, red: Color, redDark: Color): List<RoomShape> {
     val u = 500f
@@ -239,12 +223,4 @@ fun getMegaMapStructure(names: List<String>, blue: Color, blueDark: Color, red: 
     )
 
     return listOf(pasillo, entrada, salida, vitrina, historia, estadio, juego, jugadores) + puentes
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MapPreview() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        MapScreen()
-    }
 }
