@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Real Madrid Museum</string>
 
@@ -6,23 +5,23 @@
     <string name="onboarding_title_1">Welcome to the Museum!</string>
     <string name="onboarding_desc_1">Discover the history and most legendary moments of Real Madrid.</string>
     <string name="onboarding_title_2">Scan and Discover</string>
-    <string name="onboarding_desc_2">Scan QR codes in the museum to access exclusive content.</string>
+    <string name="onboarding_desc_2">Scan the museum\'s QR codes to access exclusive content.</string>
     <string name="onboarding_title_3">Live the Club</string>
-    <string name="onboarding_desc_3">Take part in games, check events, and explore the club\'s past, present, and future.</string>
+    <string name="onboarding_desc_3">Participate in games, check events, and explore the past, present, and future of the club.</string>
     <string name="onboarding_where_is">Where is the museum located?</string>
     <string name="start">START</string>
 
     <!-- Login -->
     <string name="login_title">Welcome Madridista</string>
-    <string name="login_email_hint">Email</string>
+    <string name="login_email_hint">Email Address</string>
     <string name="login_password_hint">Password</string>
-    <string name="login_button_enter">LOG IN</string>
+    <string name="login_button_enter">ENTER</string>
     <string name="login_button_verifying">Verifying...</string>
     <string name="login_button_guest">Continue as Guest</string>
-    <string name="login_register_prompt">Don\'t have an account? Sign up here</string>
+    <string name="login_register_prompt">Don\'t have an account? Register here</string>
 
     <!-- Toasts / Login Messages -->
-    <string name="toast_fill_fields">Please fill all fields</string>
+    <string name="toast_fill_fields">Fill in all fields</string>
     <string name="toast_welcome">Welcome!</string>
     <string name="toast_wrong_data">Incorrect data</string>
     <string name="toast_guest_entry">Entering as Guest...</string>
@@ -37,12 +36,12 @@
     <string name="register_password_hint">Password</string>
     <string name="register_notifications_checkbox">I want to receive exclusive offers and discounts</string>
     <string name="register_terms_checkbox">I accept the terms and conditions</string>
-    <string name="register_button_register">SIGN UP</string>
+    <string name="register_button_register">REGISTER</string>
     <string name="register_go_to_login">Back to Login</string>
 
     <!-- Toasts / Register Messages -->
-    <string name="toast_no_permission_notifications">Without permission, you won\'t receive the discount</string>
-    <string name="toast_fill_all_fields_register">Please complete all fields</string>
+    <string name="toast_no_permission_notifications">Without permission, you will not receive the discount</string>
+    <string name="toast_fill_all_fields_register">Complete all fields</string>
     <string name="error_invalid_email">Invalid email</string>
     <string name="toast_accept_terms">You must accept the terms</string>
     <string name="toast_email_exists">This email is already registered</string>
@@ -51,8 +50,8 @@
 
     <!-- Register Notifications -->
     <string name="notification_welcome_title">Welcome to Real Madrid!</string>
-    <string name="notification_discount_text_short">You have a 10% discount on your ticket.</string>
-    <string name="notification_discount_text_long">Thanks for subscribing. You have a 10% discount on your museum ticket and in the official store.</string>
+    <string name="notification_discount_text_short">You have a 10%% discount on your ticket.</string>
+    <string name="notification_discount_text_long">Thank you for subscribing. You have a 10%% discount on your museum ticket and at the official store.</string>
     <string name="notification_channel_name">Offers and Promotions</string>
     <string name="notification_channel_description">Museum discounts</string>
 
@@ -63,12 +62,13 @@
     <string name="nav_profile">Profile</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_hello">Hi, %1$s!</string>
-    <string name="dashboard_subtitle">Get ready for your Expert level visit</string>
+    <string name="dashboard_hello">Hello, %1$s!</string>
+    <string name="dashboard_subtitle">Prepare for your Expert level visit</string>
     <string name="dashboard_next_match">Next Match</string>
     <string name="dashboard_team_1">Real Madrid</string>
     <string name="dashboard_team_2">Villacarrillo</string>
     <string name="dashboard_latest_news">Latest News</string>
+    <string name="dashboard_social_networks">Our social networks</string>
     <string name="news_title_1">The new Bernabéu opens its doors</string>
     <string name="news_title_2">Mbappé visits the museum</string>
     <string name="news_title_3">New special edition jersey</string>
@@ -77,7 +77,7 @@
     <!-- Profile -->
     <string name="profile_guest_title">Museum Visitor</string>
     <string name="profile_member_title">Madridista Member</string>
-    <string name="profile_register_prompt">Register to unlock your stats, achievements, and exclusive rewards.</string>
+    <string name="profile_register_prompt">Register to unlock your stats, achievements and exclusive rewards.</string>
     <string name="stats_visits">Visits</string>
     <string name="stats_points">Points</string>
     <string name="stats_ranking">Ranking</string>
@@ -87,9 +87,9 @@
     <string name="achievement_explorer">Explorer</string>
     <string name="rewards_title">Rewards</string>
     <string name="reward_coming_soon">COMING SOON</string>
-    <string name="reward_discount">10% OFF</string>
+    <string name="reward_discount">10%% OFF</string>
     <string name="reward_store">OFFICIAL STORE</string>
-    
+
     <string name="profile_type_adult">ADULT</string>
     <string name="profile_type_child">CHILD</string>
     <string name="profile_type_guest">GUEST</string>
@@ -104,15 +104,75 @@
     <string name="map_game">Game</string>
     <string name="map_players">Players</string>
 
-    <!-- Kahoot Instructions -->
+    <!-- Sala Histórica -->
+    <string name="history_title">HISTORICAL ROOM</string>
+    <string name="history_instruction">Cover the top sensor to reveal</string>
+    <string name="era_locked_title">Content Locked!</string>
+    <string name="era_locked_desc">Cover the top sensor to hide the light</string>
+    <string name="era_saber_mas">Learn more</string>
+    <string name="era_close">Close</string>
+    <string name="era_history_summary">HISTORICAL SUMMARY</string>
+    <string name="era_chronicle">CHRONICLE OF THE ERA</string>
+    <string name="era_period_label">Period:</string>
+    <string name="era_toast_discovered">Era discovered!</string>
+    <string name="history_back">Back</string>
+    <string name="history_listen">Listen</string>
+
+    <!-- Sala Histórica Eras -->
+    <string name="era0_titulo">The Origins</string>
+    <string name="era0_periodo">1902 - 1940</string>
+    <string name="era0_info_corta">Club foundation and first crest.</string>
+    <string name="era0_info_detallada">On March 6, 1902, the Madrid Foot-Ball Club was officially founded under the presidency of Juan Padrós. In these early years, the club began to stand out in the Regional Championship and won its first Spanish Cups. In 1920, King Alfonso XIII granted it the title of \'Real\', thus giving birth to the name we know today. It was an era of pioneers who played on pitches like O\'Donnell or the Velodrome, laying the foundations for the white ambition.</string>
+
+    <string name="era1_titulo">Don Santiago Bernabéu</string>
+    <string name="era1_periodo">1940 - 1953</string>
+    <string name="era1_info_corta">Santiago Bernabéu becomes the club president</string>
+    <string name="era1_info_detallada">In 1943, Santiago Bernabéu assumed the presidency at one of the most critical moments after the post-war period. His vision was revolutionary: he understood that to be the greatest, they needed the best setting, promoting the construction of the new stadium (opened in 1947). Bernabéu not only rebuilt the facilities but also professionalized the institution and sowed the values of nobility and ambition that today form Real Madrid\'s DNA.</string>
+
+    <string name="era2_titulo">Di Stéfano\'s Madrid</string>
+    <string name="era2_periodo">1953 - 1963</string>
+    <string name="era2_info_corta">The 5 European Cups in a row.</string>
+    <string name="era2_info_detallada">The arrival of Alfredo Di Stéfano in 1953 marked a before and after in football history. Together with legends like Puskas, Gento, Kopa, and Santamaría, Real Madrid became the dominant force on the continent. They consecutively won the first five European Cups (1956-1960), a feat never repeated. The team was admired for its attacking play and elegance, being recognized worldwide as the best team of the era.</string>
+
+    <string name="era3_titulo">The Yé-yé Madrid</string>
+    <string name="era3_periodo">1963 - 1980</string>
+    <string name="era3_info_corta">Total dominance in Spain.</string>
+    <string name="era3_info_detallada">After the retirement of the great legends, the club reinvented itself with a team made up entirely of Spanish players, known as \'The Yé-yés\'. Led by veteran Paco Gento, they managed to win the Sixth European Cup in 1966 in Brussels. During the 70s, the team maintained its dominance in Spain by winning multiple leagues and cups, consolidating the club\'s mystique and the legend of players like Pirri, Amancio, or Santillana.</string>
+
+    <string name="era4_titulo">Vulture\'s Cohort</string>
+    <string name="era4_periodo">1980 - 1990</string>
+    <string name="era4_info_corta">Five consecutive league titles.</string>
+    <string name="era4_info_detallada">In the early 80s, a generation of footballers emerged from the youth system that would change the club\'s style: The Quinta del Buitre. Formed by Butragueño, Míchel, Sanchís, Martín Vázquez, and Pardeza, this team made the Bernabéu fall in love with its technical and associative football. They achieved the milestone of winning five consecutive Leagues (1986-1990) and two UEFA Cups, marking a decade of total football in Spain, although the European Cup cruelly resisted them.</string>
+
+    <string name="era5_titulo">From the Seventh to the Ninth</string>
+    <string name="era5_periodo">1990 - 2003</string>
+    <string name="era5_info_corta">Return to European success</string>
+    <string name="era5_info_detallada">The 90s brought the long-awaited return to European glory. In 1998, Real Madrid won \'The Seventh\' in Amsterdam thanks to Pedja Mijatovic\'s unforgettable goal, breaking a 32-year drought. It was the start of a new golden era where the Eighth (2000) in the first-ever all-Spanish final, and the Ninth (2002) with Zidane\'s masterful volley in Glasgow during the Centenary year, would soon arrive.</string>
+
+    <string name="era6_titulo">The Galacticos</string>
+    <string name="era6_periodo">2000 - 2010</string>
+    <string name="era6_info_corta">Zidane, Ronaldo and the Centenary.</string>
+    <string name="era6_info_detallada">With the turn of the new millennium, Florentino Pérez promoted a model based on gathering the best players on the planet. The club signed stars like Figo, Zidane, Ronaldo, and Beckham, creating the team known as \'The Galacticos\'. Beyond the titles, the club experienced unprecedented global expansion and was recognized by FIFA as the Best Club of the 20th Century, elevating the Real Madrid brand to a worldwide level.</string>
+
+    <string name="era7_titulo">Cristiano Ronaldo. The Beast</string>
+    <string name="era7_periodo">2009 - 2018</string>
+    <string name="era7_info_corta">The Portuguese star arrives at the Castellana.</string>
+    <string name="era7_info_detallada">In 2009, one of the most successful cycles in modern history began. Cristiano Ronaldo arrived at the club to become its all-time top scorer. Under the direction of coaches like Mourinho, Ancelotti, and Zidane, the historical milestone of winning four Champions Leagues in five years was achieved, including three of them consecutively (2016-2018). It was the era of \'The Tenth\', impossible comebacks, and absolute European dominance.</string>
+
+    <string name="era8_titulo">The New Era</string>
+    <string name="era8_periodo">2019 - Today</string>
+    <string name="era8_info_corta">Rebuilding modern Madrid</string>
+    <string name="era8_info_detallada">Current Real Madrid faces the future with the remodeling of the Santiago Bernabéu, destined to be the best stadium in the world. Sportingly, the club has managed an exemplary transition by joining legendary veterans like Modric or Kroos with young stars like Vinícius Jr, Bellingham, or Rodrygo. In 2022, the 14th Champions was achieved with one of the most epic editions remembered, and in 2024, the 15th, confirming that the club\'s ambition knows no limits.</string>
+
+    <!-- Kahoot -->
     <string name="kahoot_instructions_title">Game Instructions</string>
     <string name="kahoot_instructions_touch_title">Touch Control</string>
-    <string name="kahoot_instructions_touch_desc">Tap on one of the options on the screen to select it.</string>
+    <string name="kahoot_instructions_touch_desc">Touch one of the options on the screen to select it.</string>
     <string name="kahoot_instructions_voice_title">Voice Control</string>
-    <string name="kahoot_instructions_voice_desc">Say the letter (A, B, C, D) out loud to select your answer.</string>
-    <string name="kahoot_instructions_shake_title">Shake Control</string>
+    <string name="kahoot_instructions_voice_desc">Say the letter (A, B, C, D) aloud to select your answer.</string>
+    <string name="kahoot_instructions_shake_title">Gesture Control</string>
     <string name="kahoot_instructions_shake_desc">Select an option and then SHAKE your device to confirm your answer.</string>
-    <string name="kahoot_instructions_start_button">PLAY!</string>
+    <string name="kahoot_instructions_start_button">LET\'S PLAY!</string>
 
     <!-- Kahoot Questions -->
     <string name="kq1_question">In what year was Real Madrid founded?</string>
@@ -124,8 +184,8 @@
     <string name="kq2_question">What was the club\'s first name?</string>
     <string name="kq2_a1">Real Madrid FC</string>
     <string name="kq2_a2">Madrid Foot-Ball Club</string>
-    <string name="kq2_a3">Sociedad Deportiva Madrid</string>
-    <string name="kq2_a4">Club Español de Madrid</string>
+    <string name="kq2_a3">Madrid Sports Society</string>
+    <string name="kq2_a4">Spanish Club of Madrid</string>
 
     <string name="kq3_question">Who was the first president of Real Madrid?</string>
     <string name="kq3_a1">Santiago Bernabéu</string>
@@ -145,13 +205,13 @@
     <string name="kq5_a3">Ferenc Puskás</string>
     <string name="kq5_a4">Amancio</string>
 
-    <string name="kq6_question">Who has the most appearances in Real Madrid history?</string>
+    <string name="kq6_question">Who is the player with the most matches in Real Madrid\'s history?</string>
     <string name="kq6_a1">Casillas</string>
     <string name="kq6_a2">Sergio Ramos</string>
     <string name="kq6_a3">Raúl</string>
     <string name="kq6_a4">Sanchís</string>
 
-    <string name="kq7_question">What mythical number did Juanito wear?</string>
+    <string name="kq7_question">What legendary number did Juanito wear?</string>
     <string name="kq7_a1">7</string>
     <string name="kq7_a2">9</string>
     <string name="kq7_a3">10</string>
@@ -169,43 +229,43 @@
     <string name="kq9_a3">Benzema</string>
     <string name="kq9_a4">Gareth Bale</string>
 
-    <string name="kq10_question">Who was the captain in \'La Décima\'?</string>
+    <string name="kq10_question">Who was the captain in the Tenth (La Décima)?</string>
     <string name="kq10_a1">Casillas</string>
     <string name="kq10_a2">Sergio Ramos</string>
     <string name="kq10_a3">Cristiano</string>
     <string name="kq10_a4">Modric</string>
 
-    <string name="kq11_question">How many Champions League titles has Real Madrid won up to 2024?</string>
+    <string name="kq11_question">How many Champions Leagues has Real Madrid won until 2024?</string>
     <string name="kq11_a1">13</string>
     <string name="kq11_a2">14</string>
     <string name="kq11_a3">15</string>
     <string name="kq11_a4">16</string>
 
-    <string name="kq12_question">Against which team was \'La Séptima\' won?</string>
+    <string name="kq12_question">Against which team did they win the \'Seventh\'?</string>
     <string name="kq12_a1">Bayer Leverkusen</string>
     <string name="kq12_a2">Valencia</string>
     <string name="kq12_a3">Juventus</string>
     <string name="kq12_a4">Liverpool</string>
 
-    <string name="kq13_question">Who scored the goal of \'La Novena\'?</string>
+    <string name="kq13_question">Who scored the goal for the \'Ninth\'?</string>
     <string name="kq13_a1">Raúl</string>
     <string name="kq13_a2">Zidane</string>
     <string name="kq13_a3">Morientes</string>
     <string name="kq13_a4">Roberto Carlos</string>
 
-    <string name="kq14_question">How many times consecutively did Real Madrid win the Champions League between 2016 and 2018?</string>
+    <string name="kq14_question">How many consecutive times did Real Madrid win the Champions League between 2016 and 2018?</string>
     <string name="kq14_a1">2</string>
     <string name="kq14_a2">3</string>
     <string name="kq14_a3">4</string>
     <string name="kq14_a4">5</string>
 
-    <string name="kq15_question">In which city was \'La Duodécima\' won?</string>
+    <string name="kq15_question">In which city was the \'Twelfth\' won?</string>
     <string name="kq15_a1">Lisbon</string>
     <string name="kq15_a2">Milan</string>
     <string name="kq15_a3">Cardiff</string>
     <string name="kq15_a4">Kyiv</string>
 
-    <string name="kq16_question">Who was Real Madrid\'s coach during \'La Décima\'?</string>
+    <string name="kq16_question">Who was Real Madrid\'s coach during the Tenth?</string>
     <string name="kq16_a1">Mourinho</string>
     <string name="kq16_a2">Zidane</string>
     <string name="kq16_a3">Ancelotti</string>
@@ -217,19 +277,19 @@
     <string name="kq17_a3">1960</string>
     <string name="kq17_a4">1947</string>
 
-    <string name="kq18_question">Which coach won 3 consecutive Champions League titles?</string>
+    <string name="kq18_question">Which coach won 3 consecutive Champions Leagues?</string>
     <string name="kq18_a1">Del Bosque</string>
     <string name="kq18_a2">Mourinho</string>
     <string name="kq18_a3">Zidane</string>
     <string name="kq18_a4">Ancelotti</string>
 
-    <string name="kq19_question">Where is the Real Madrid City (training ground) located?</string>
+    <string name="kq19_question">Where is the Training City located?</string>
     <string name="kq19_a1">Valdebebas</string>
     <string name="kq19_a2">Las Rozas</string>
     <string name="kq19_a3">Alcorcón</string>
     <string name="kq19_a4">Getafe</string>
 
-    <string name="kq20_question">Who won the 2018 Ballon d\'Or as a Real Madrid player?</string>
+    <string name="kq20_question">Who won the 2018 Ballon d\'Or being a Real Madrid player?</string>
     <string name="kq20_a1">Cristiano Ronaldo</string>
     <string name="kq20_a2">Modric</string>
     <string name="kq20_a3">Benzema</string>
@@ -241,25 +301,25 @@
     <string name="kq21_a3">Ronaldinho</string>
     <string name="kq21_a4">Ronaldo Nazário</string>
 
-    <string name="kq22_question">What nickname does the Real Madrid academy have?</string>
+    <string name="kq22_question">What nickname does the Real Madrid youth academy receive?</string>
     <string name="kq22_a1">La Masía</string>
     <string name="kq22_a2">La Fábrica</string>
     <string name="kq22_a3">Lezama</string>
     <string name="kq22_a4">Valdebebas</string>
 
-    <string name="kq23_question">Who was the starting goalkeeper in the 14th Champions League final?</string>
+    <string name="kq23_question">Who is the starting goalkeeper in the 14th final?</string>
     <string name="kq23_a1">Keylor Navas</string>
     <string name="kq23_a2">Courtois</string>
     <string name="kq23_a3">Lunin</string>
     <string name="kq23_a4">Casillas</string>
 
-    <string name="kq24_question">What is the name of the cheering group in the south end?</string>
+    <string name="kq24_question">What is the name of the animation group in the south end?</string>
     <string name="kq24_a1">Ultras Sur</string>
     <string name="kq24_a2">Grada Fans</string>
     <string name="kq24_a3">Frente Atlético</string>
     <string name="kq24_a4">Biris Norte</string>
 
-    <!-- Results/Solutions Strings -->
+    <!-- Kahoot Results -->
     <string name="game_over_perfect">PERFECT!</string>
     <string name="game_over">GAME OVER!</string>
     <string name="final_score_title">Final Score</string>
@@ -267,15 +327,15 @@
     <string name="button_exit">Exit</string>
     <string name="button_restart">Restart</string>
     <string name="points_popup_text">POINTS</string>
-    
-    <string name="result_msg_perfect">Perfect, legendary Madridista! 🤍</string>
-    <string name="result_msg_good">Great visit to the museum! ⚽</string>
-    <string name="result_msg_retry">Nice try! Learn and play again 💪</string>
+
+    <string name="result_msg_perfect">Perfect, legendary madridista! 🤍</string>
+    <string name="result_msg_good">Great museum visit! ⚽</string>
+    <string name="result_msg_retry">Good try! Learn and play again 💪</string>
     <string name="result_notif_title">Game Over! (%1$d/%2$d)</string>
 
     <string name="solutions_title">Solutions</string>
-    <string name="solutions_timeout">Time\'s up</string>
-    <string name="solutions_play_again">Play Again</string>
-    <string name="solutions_finalize">Finish</string>
+    <string name="solutions_timeout">Time Out</string>
+    <string name="solutions_play_again">Play again</string>
+    <string name="solutions_finalize">Finalize</string>
 
 </resources>

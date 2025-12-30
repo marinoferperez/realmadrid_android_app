@@ -14,12 +14,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.real_madrid_museo.R
+import com.example.real_madrid_museo.ui.comun.idiomas.LanguageToggle
+import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.cambiarIdioma
+import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.hbb20.CountryCodePicker
 import java.util.Calendar
 
@@ -42,6 +48,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        aplicarIdioma(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
@@ -61,10 +68,38 @@ class RegisterActivity : AppCompatActivity() {
         
         val btnRegister = findViewById<MaterialButton>(R.id.btnRegisterAction)
         val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
+        val composeBandera = findViewById<ComposeView>(R.id.composeBandera)
+        
+        val tvRegisterTitle = findViewById<TextView>(R.id.tvRegisterTitle)
+        val tilName = findViewById<TextInputLayout>(R.id.tilName)
+        val tilDate = findViewById<TextInputLayout>(R.id.tilDate)
+        val tilEmail = findViewById<TextInputLayout>(R.id.tilEmail)
+        val tilPass = findViewById<TextInputLayout>(R.id.tilPass)
+
+        // Actualizar textos manualmente para asegurar el cambio de idioma
+        tvRegisterTitle.text = getString(R.string.register_title)
+        tilName.hint = getString(R.string.register_name_hint)
+        tilDate.hint = getString(R.string.register_dob_hint)
+        tilEmail.hint = getString(R.string.register_email_hint)
+        tilPass.hint = getString(R.string.register_password_hint)
+        cbNotifications.text = getString(R.string.register_notifications_checkbox)
+        cbTerms.text = getString(R.string.register_terms_checkbox)
+        btnRegister.text = getString(R.string.register_button_register)
+        tvGoToLogin.text = getString(R.string.register_go_to_login)
+
+        composeBandera.setContent {
+            val currentLanguage = obtenerIdioma(this)
+            LanguageToggle(
+                currentLanguage = currentLanguage,
+                onToggle = {
+                    val newLanguage = if (currentLanguage == "es") "en" else "es"
+                    cambiarIdioma(this, newLanguage)
+                }
+            )
+        }
 
         ccp.registerCarrierNumberEditText(etPhone)
 
-        // Al marcar la casilla, quitamos el error automáticamente
         cbTerms.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 cbTerms.error = null
@@ -87,21 +122,16 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPass.text.toString().trim()
             val name = etName.text.toString().trim()
 
-            // 1. Validar campos obligatorios generales
             if (name.isEmpty() || etPhone.text.isNullOrEmpty() || 
                 email.isEmpty() || password.isEmpty() || !dateSelected) {
                 Toast.makeText(this, getString(R.string.toast_fill_all_fields_register), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // 2. DETECTOR DE TÉRMINOS Y CONDICIONES
             if (!cbTerms.isChecked) {
-                cbTerms.error = "Debes aceptar los términos para continuar"
-                cbTerms.requestFocus() // Lleva el foco a la casilla para que sea obvio
-                Toast.makeText(this, "Por favor, acepta los términos y condiciones", Toast.LENGTH_SHORT).show()
+                cbTerms.error = getString(R.string.register_terms_checkbox)
+                Toast.makeText(this, getString(R.string.toast_fill_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-            } else {
-                cbTerms.error = null
             }
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {

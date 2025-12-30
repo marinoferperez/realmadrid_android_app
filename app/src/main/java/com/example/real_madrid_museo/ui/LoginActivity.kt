@@ -24,10 +24,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        aplicarIdioma(this) // Aplicar antes de setContentView
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login2)
-
-        aplicarIdioma(this)
 
         databaseHelper = DatabaseHelper(this)
 
@@ -42,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
         val inputLayoutEmail = findViewById<TextInputLayout>(R.id.inputLayoutEmail)
         val inputLayoutPassword = findViewById<TextInputLayout>(R.id.inputLayoutPassword)
 
+        // Actualizar textos manualmente por si acaso el XML no los pilla al vuelo tras recrear
         titleWelcome.text = getString(R.string.login_title)
         inputLayoutEmail.hint = getString(R.string.login_email_hint)
         inputLayoutPassword.hint = getString(R.string.login_password_hint)
@@ -76,10 +76,8 @@ class LoginActivity : AppCompatActivity() {
                     if (existe) {
                         Toast.makeText(this, getString(R.string.toast_welcome), Toast.LENGTH_SHORT).show()
                         
-                        // 1. INCREMENTAR VISITA EN BBDD
                         databaseHelper.incrementVisits(email)
 
-                        // 2. GUARDAR EMAIL EN PREFERENCIAS (Sesión global)
                         val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
                         with(sharedPref.edit()) {
                             putString("current_email", email)
@@ -96,11 +94,9 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // INVITADO
         btnGuest.setOnClickListener {
             Toast.makeText(this, getString(R.string.toast_guest_entry), Toast.LENGTH_SHORT).show()
             
-            // Limpiamos sesión anterior si había
             val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
             with(sharedPref.edit()) {
                 clear()

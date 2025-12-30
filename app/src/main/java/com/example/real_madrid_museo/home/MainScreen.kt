@@ -1,7 +1,8 @@
 package com.example.real_madrid_museo.home
 
 import android.content.Intent
-import android.widget.Toast // Para avisos rápidos de códigos escaneados
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,8 +19,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -45,7 +45,6 @@ import com.example.real_madrid_museo.ui.linea.SalaHistorica
 import com.example.real_madrid_museo.ui.linea.PuzzleHistoricoScreen
 import com.example.real_madrid_museo.ui.linea.EraManager
 
-
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
 val MadridGold = Color(0xFFFEBE10)
@@ -54,7 +53,11 @@ val MadridGold = Color(0xFFFEBE10)
 fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int, puntos: Int, ranking: Int, email: String?) {
     val context = LocalContext.current
     val historyRoomName = stringResource(R.string.map_history)
-    var selectedItem by remember { mutableIntStateOf(0) }
+    
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    var mostrarColeccion by rememberSaveable { mutableStateOf(false) }
+    var mostrarSalaHistorica by rememberSaveable { mutableStateOf(false) }
+    var mostrarPuzzle by rememberSaveable { mutableStateOf(false) }
 
     val items = listOf(
         stringResource(R.string.nav_home),
@@ -63,13 +66,6 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
         stringResource(R.string.nav_profile)
     )
     val icons = listOf(Icons.Default.Home, Icons.Default.Map, Icons.Default.QrCodeScanner, Icons.Default.Person)
-
-    var mostrarColeccion by remember { mutableStateOf(false) }
-
-    var mostrarSalaHistorica by remember { mutableStateOf(false) }
-
-    var mostrarPuzzle by remember { mutableStateOf(false) }
-
 
     Scaffold(
         bottomBar = {
@@ -85,7 +81,12 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                             icon = { Icon(icons[index], contentDescription = item, modifier = Modifier.size(26.dp)) },
                             label = { Text(item, fontSize = 12.sp, fontWeight = FontWeight.Medium) },
                             selected = selectedItem == index,
-                            onClick = { selectedItem = index },
+                            onClick = { 
+                                selectedItem = index 
+                                mostrarColeccion = false
+                                mostrarSalaHistorica = false
+                                mostrarPuzzle = false
+                            },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = MadridBlue,
                                 indicatorColor = MadridGold.copy(alpha = 0.2f)
@@ -101,53 +102,41 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                 when (selectedItem) {
                     0 -> {
                         if (mostrarSalaHistorica) {
-                            // Mostramos tu sala y le pasamos la función para "cerrarse"
-                            SalaHistorica(email = email ?: "invitado",onBack = { mostrarSalaHistorica = false })
+                            SalaHistorica(email = email ?: "invitado", onBack = { mostrarSalaHistorica = false })
                         } else {
                             DashboardInicio(nombre)
                         }
                     }
                     1 -> MapScreen(onNavigate = { nombreSala ->
                         if (nombreSala.equals(historyRoomName, ignoreCase = true)) {
-                            selectedItem = 0            // Cambiamos a la pestaña de Inicio
-                            mostrarSalaHistorica = true  // Activamos la visibilidad de tu sala
+                            selectedItem = 0
+                            mostrarSalaHistorica = true
                         }
                     })
                     2 -> {
-                        // --- ESCÁNER ESCALABLE ---
                         ScannerScreen(onResultFound = { resultado ->
                             when (resultado) {
                                 "7" -> {
-                                    // El código 7 lanza el Kahoot
                                     val intent = Intent(context, KahootActivity::class.java)
                                     context.startActivity(intent)
                                 }
                                 "1", "2", "3", "4", "5", "6", "8", "9", "10" -> {
-                                    // 1. Calculamos qué número de pieza es (1 al 9)
                                     val numPieza = when(resultado) {
                                         "1" -> 1; "2" -> 2; "3" -> 3; "4" -> 4; "5" -> 5
                                         "6" -> 6; "8" -> 7; "9" -> 8; "10" -> 9; else -> 0
                                     }
-
-                                    // 2. Si el número es válido, desbloqueamos la era (índice 0-8)
                                     if (numPieza > 0) {
                                         EraManager.desbloquearEra(context, email ?: "invitado", numPieza - 1)
-                                        // MENSAJE PERSONALIZADO:
                                         Toast.makeText(context, "¡Pieza número $numPieza desbloqueada!", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                                 "11" -> {
-                                    // 1. Marcamos el trofeo como visto (índice 0 es Champions)
-                                    // Esto guardará el progreso y lanzará la notificación si completas todos
                                     TrofeoManager.marcarTrofeoVisto(context, 0)
-
-                                    // 2. Abrimos la actividad (Tu código de antes)
                                     val intent = Intent(context, TrofeoActivity::class.java)
                                     intent.putExtra("INDICE_TROFEO", 0)
                                     context.startActivity(intent)
                                 }
                                 else -> {
-                                    // Cualquier otro QR no registrado
                                     Toast.makeText(context, "QR no reconocido: $resultado", Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -155,22 +144,39 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                     }
                     3 -> {
                         if (mostrarColeccion) {
-                            // Si la variable es true, mostramos el Álbum
                             ColeccionTrofeos(onBack = { mostrarColeccion = false })
                         }
                         else if (mostrarPuzzle) {
-                            // Pantalla que crearemos ahora
-                            PuzzleHistoricoScreen(email = email ?: "invitado",onBack = { mostrarPuzzle = false })
+                            PuzzleHistoricoScreen(email = email ?: "invitado", onBack = { mostrarPuzzle = false })
                         }
                         else {
-                            // Si no, mostramos el Perfil normal y le pasamos la función para abrir el álbum
                             PerfilContent(
                                 nombre, perfil, esInvitado, visitas, puntos, ranking, email,
-                                onAbrirColeccion = { mostrarColeccion = true }, // <--- Pasamos esto
-                                onAbrirPuzzle = { mostrarPuzzle = true } // <--- Nueva función
+                                onAbrirColeccion = { mostrarColeccion = true },
+                                onAbrirPuzzle = { mostrarPuzzle = true }
                             )
                         }
                     }
+                }
+            }
+
+            // --- LÓGICA DE VISIBILIDAD DEL SELECTOR DE IDIOMA ---
+            // Se muestra en INICIO (0), PERFIL (3) y SALA HISTÓRICA
+            // Se oculta en MAPA (1) y CÁMARA (2)
+            val mostrarSelectorGlobal = (selectedItem == 0 || selectedItem == 3 || (selectedItem == 0 && mostrarSalaHistorica)) && 
+                                       !mostrarColeccion && !mostrarPuzzle
+
+            if (mostrarSelectorGlobal) {
+                Box(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(top = 16.dp, end = 16.dp)
+                        .align(Alignment.TopEnd)
+                ) {
+                    LanguageToggle(
+                        currentLanguage = obtenerIdioma(context),
+                        onToggle = { cambiarIdioma(context, if (obtenerIdioma(context) == "es") "en" else "es") }
+                    )
                 }
             }
         }
@@ -179,6 +185,8 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
 
 @Composable
 fun DashboardInicio(nombre: String) {
+    val context = LocalContext.current
+    
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
@@ -190,18 +198,79 @@ fun DashboardInicio(nombre: String) {
         item {
             Text(stringResource(R.string.dashboard_next_match), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
+            
             ElevatedCard(
-                modifier = Modifier.fillMaxWidth().height(140.dp),
+                modifier = Modifier.fillMaxWidth().height(160.dp),
                 shape = RoundedCornerShape(25.dp),
-                colors = CardDefaults.elevatedCardColors(containerColor = MadridBlue)
+                elevation = CardDefaults.elevatedCardElevation(10.dp)
             ) {
-                Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(stringResource(R.string.dashboard_team_1), color = Color.White, fontWeight = FontWeight.Bold)
-                    }
-                    Text("VS", color = MadridGold, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp)
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(stringResource(R.string.dashboard_team_2), color = Color.White, fontWeight = FontWeight.Bold)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.santiago_bernabeu),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        MadridBlue.copy(alpha = 0.6f),
+                                        Color.Black.copy(alpha = 0.8f)
+                                    )
+                                )
+                            )
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color.White,
+                                modifier = Modifier.size(80.dp),
+                                shadowElevation = 4.dp
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.real_madrid),
+                                    contentDescription = "Real Madrid",
+                                    modifier = Modifier.padding(10.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(stringResource(R.string.dashboard_team_1), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        }
+                        
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("VS", color = MadridGold, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
+                            Surface(color = MadridGold, shape = RoundedCornerShape(10.dp)) {
+                                Text("DOM 21:00", color = MadridBlue, fontSize = 10.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
+                            }
+                        }
+                        
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color.White,
+                                modifier = Modifier.size(70.dp),
+                                shadowElevation = 4.dp
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.villacarrillo),
+                                    contentDescription = "Villacarrillo",
+                                    modifier = Modifier.padding(8.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(stringResource(R.string.dashboard_team_2), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        }
                     }
                 }
             }
@@ -213,21 +282,64 @@ fun DashboardInicio(nombre: String) {
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        val listaImagenes = listOf(
-            R.drawable.bernabeu,
-            R.drawable.vitrina,
-            R.drawable.vestuario
+        val listaUrls = listOf(
+            "https://www.realmadrid.com/es-ES/noticias/futbol/primer-equipo/actualidad/asi-avanzan-las-obras-del-santiago-bernabeu-21-02-2024",
+            "https://www.realmadrid.com/es-ES/noticias/futbol/primer-equipo/actualidad/mbappe-visita-el-museo-real-madrid",
+            "https://www.realmadrid.com/es-ES/tienda"
         )
+        val listaImagenes = listOf(R.drawable.bernabeu, R.drawable.vitrina, R.drawable.vestuario)
 
         items(listaImagenes.size) { index ->
-            NewsCard(index, listaImagenes[index])
+            NewsCard(index, listaImagenes[index], listaUrls.getOrElse(index) { "https://www.realmadrid.com" })
             Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(stringResource(R.string.dashboard_social_networks), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SocialIconItem(iconRes = R.drawable.tiktok, name = "TikTok", url = "https://www.tiktok.com/@realmadrid")
+                    SocialIconItem(iconRes = R.drawable.ig, name = "Instagram", url = "https://www.instagram.com/realmadrid")
+                    SocialIconItem(iconRes = R.drawable.twitter, name = "Twitter", url = "https://twitter.com/realmadrid")
+                    SocialIconItem(iconRes = R.drawable.facebook, name = "Facebook", url = "https://www.facebook.com/RealMadrid")
+                }
+            }
         }
     }
 }
 
 @Composable
-fun NewsCard(index: Int, imageRes: Int) {
+fun SocialIconItem(iconRes: Int, name: String, url: String) {
+    val context = LocalContext.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+        }
+    ) {
+        Surface(shape = CircleShape, modifier = Modifier.size(50.dp), color = Color.Transparent) {
+            Image(painter = painterResource(id = iconRes), contentDescription = name, modifier = Modifier.fillMaxSize().clip(CircleShape), contentScale = ContentScale.Crop)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(name, fontSize = 10.sp, color = MadridBlue, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+fun NewsCard(index: Int, imageRes: Int, url: String) {
+    val context = LocalContext.current
     val titles = listOf(
         stringResource(R.string.news_title_1),
         stringResource(R.string.news_title_2),
@@ -235,7 +347,10 @@ fun NewsCard(index: Int, imageRes: Int) {
     )
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+        },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -311,7 +426,6 @@ fun PerfilContent(
                         }
                     }
                 }
-                LanguageToggle(currentLanguage = obtenerIdioma(context), onToggle = { cambiarIdioma(context, if (obtenerIdioma(context) == "es") "en" else "es") })
             }
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -349,20 +463,18 @@ fun PerfilContent(
                             val tieneAlguno = remember { TrofeoManager.obtenerProgreso(context) > 0 }
 
                             LogroItem(
-                                icono = Icons.Default.EmojiEvents, // O Icons.Default.Collections
-                                nombre = "Coleccionista", // O stringResource
+                                icono = Icons.Default.EmojiEvents,
+                                nombre = "Coleccionista",
                                 desbloqueado = tieneAlguno
                             )
                         }
-                        // 3. NUEVO: Puzzle Histórico
                         Column(
                             modifier = Modifier.clickable { onAbrirPuzzle() },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            // Comprobamos el progreso de las épocas
                             val tieneEras = remember { com.example.real_madrid_museo.ui.linea.EraManager.obtenerProgreso(context,email ?: "invitado") > 0 }
                             LogroItem(
-                                icono = Icons.Default.Extension, // Icono de pieza de puzle
+                                icono = Icons.Default.Extension,
                                 nombre = "Puzzle",
                                 desbloqueado = tieneEras
                             )
@@ -413,4 +525,3 @@ fun LogroItem(icono: ImageVector, nombre: String, desbloqueado: Boolean) {
 fun MainScreenSocioPreview() {
     MainScreen("Javier Madridista", "ADULTO", false, 5, 250, 1, "javier@madrid.com")
 }
-

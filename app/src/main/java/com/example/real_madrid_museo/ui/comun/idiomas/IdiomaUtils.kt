@@ -29,13 +29,13 @@ fun aplicarIdioma(context: Context) {
     val config = Configuration(context.resources.configuration)
     config.setLocale(locale)
 
+    // Actualizamos la configuración de recursos
     context.resources.updateConfiguration(
         config,
         context.resources.displayMetrics
     )
 }
 
-// Función auxiliar para encontrar la Activity desde un Contexto (muy útil en Jetpack Compose)
 fun Context.findActivity(): Activity? {
     var currentContext = this
     while (currentContext is ContextWrapper) {
@@ -47,6 +47,8 @@ fun Context.findActivity(): Activity? {
 
 fun cambiarIdioma(context: Context, language: String) {
     guardarIdioma(context, language)
-    // Reinicia la actividad actual para aplicar los nuevos recursos de idioma
+    aplicarIdioma(context)
+    
+    // Recreamos la actividad para que todos los componentes (Compose y XML) se actualicen
     context.findActivity()?.recreate()
 }
