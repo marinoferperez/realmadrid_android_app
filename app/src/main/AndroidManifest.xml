@@ -19,9 +19,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/escudo_real"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/escudo_real_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Real_madrid_museo">
 
@@ -43,6 +43,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".home.AppActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".kahoot.KahootActivity"
             android:exported="false" />
         <activity
@@ -50,9 +54,6 @@
             android:exported="false" />
         <activity
             android:name=".ui.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".home.AppActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

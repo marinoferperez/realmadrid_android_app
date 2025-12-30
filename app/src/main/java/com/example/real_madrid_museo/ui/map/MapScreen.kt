@@ -1,65 +1,108 @@
 package com.example.real_madrid_museo.ui.map
 
 import android.content.Intent
-import android.graphics.Paint
 import android.graphics.Typeface
-import android.widget.Toast
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.VectorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.kahoot.KahootActivity
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
-// --- Modelos de Datos ---
+// Colores oficiales
+val MadridBlue = Color(0xFF002D72)
+val MadridGold = Color(0xFFFEBE10)
+
 data class Point2D(val x: Float, val y: Float)
-data class RoomShape(val name: String, val vertices2D: List<Point2D>, val roofColor: Color, val wallColor: Color)
+data class RoomShape(
+    val name: String, 
+    val vertices2D: List<Point2D>, 
+    val roofColor: Color, 
+    val wallColor: Color,
+    val icon: ImageVector? = null
+)
 
 @Composable
 fun MapScreen(onNavigate: (String) -> Unit = {}) {
     val context = LocalContext.current
-    var scale by remember { mutableStateOf(0.3f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
+    val scope = rememberCoroutineScope()
 
-    val minScale = 0.15f
-    val maxScale = 1.0f
-    val maxPanX = 5000f
-    val maxPanY = 12000f
+    // Estados de transformación
+    val scaleAnim = remember { Animatable(0.35f) }
+    val offsetX = remember { Animatable(0f) }
+    val offsetY = remember { Animatable(0f) }
+    
+    var expanded by remember { mutableStateOf(false) }
+    var selectedRoomName by remember { mutableStateOf<String?>(null) }
+
+    // --- ANIMACIONES ---
+    val infiniteTransition = rememberInfiniteTransition(label = "PremiumAnims")
+    
+    val floatAnim by infiniteTransition.animateFloat(
+        initialValue = 0f, targetValue = -30f,
+        animationSpec = infiniteRepeatable(tween(2000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "float"
+    )
+
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f, targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(tween(1500, easing = LinearEasing), RepeatMode.Reverse),
+        label = "pulse"
+    )
+
+    // Animación para las partículas de polvo
+    val particleAnim by infiniteTransition.animateFloat(
+        initialValue = 0f, targetValue = 1000f,
+        animationSpec = infiniteRepeatable(tween(10000, easing = LinearEasing), RepeatMode.Restart),
+        label = "particles"
+    )
+
+    // Generar partículas una sola vez
+    val particles = remember { List(40) { Offset(Random.nextFloat(), Random.nextFloat()) } }
 
     val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        scale = (scale * zoomChange).coerceIn(minScale, maxScale)
-        val newOffset = offset + offsetChange
-        offset = Offset(
-            x = newOffset.x.coerceIn(-maxPanX * scale, maxPanX * scale),
-            y = newOffset.y.coerceIn(-maxPanY * scale, maxPanY * scale)
-        )
+        scope.launch {
+            scaleAnim.snapTo((scaleAnim.value * zoomChange).coerceIn(0.15f, 1.2f))
+            offsetX.snapTo(offsetX.value + offsetChange.x)
+            offsetY.snapTo(offsetY.value + offsetChange.y)
+        }
     }
 
-    val blueRoof = Color(0xFF3E50B4)
-    val blueWall = Color(0xFF1A237E)
-    val exitRed = Color(0xFFD32F2F)
-    val exitRedWall = Color(0xFFB71C1C)
-    val groundColor = Color(0xFFF5F5F5)
-
+    val hallName = stringResource(R.string.map_hall)
+    val entranceName = stringResource(R.string.map_entrance)
+    val exitName = stringResource(R.string.map_exit)
     val roomNames = listOf(
-        stringResource(R.string.map_hall),
-        stringResource(R.string.map_entrance),
-        stringResource(R.string.map_exit),
+        hallName, entranceName, exitName,
         stringResource(R.string.map_showcase),
         stringResource(R.string.map_history),
         stringResource(R.string.map_stadium),
@@ -67,160 +110,273 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
         stringResource(R.string.map_players)
     )
 
-    val mapStructure = remember(roomNames) { getMegaMapStructure(roomNames, blueRoof, blueWall, exitRed, exitRedWall) }
+    val selectableRooms = roomNames.filter { 
+        it != hallName && it != entranceName && it != exitName && it.isNotEmpty() 
+    }
+
+    val mapStructure = remember(roomNames) { getProMapStructure(roomNames) }
+    val iconPainters = mapStructure.associate { room ->
+        room to room.icon?.let { rememberVectorPainter(it) }
+    }
+
     val gameRoomName = stringResource(R.string.map_game)
-    val historyRoomName = stringResource(R.string.map_history)
+
+    fun focusOnRoom(roomName: String) {
+        val room = mapStructure.find { it.name == roomName } ?: return
+        val center = room.vertices2D.map { it.toIso() }.let { pts ->
+            Offset(pts.map { it.x }.average().toFloat(), pts.map { it.y }.average().toFloat())
+        }
+        selectedRoomName = roomName
+        scope.launch {
+            launch { scaleAnim.animateTo(0.6f, tween(800)) }
+            launch { offsetX.animateTo(-center.x * 0.6f, tween(800)) }
+            launch { offsetY.animateTo(-center.y * 0.6f, tween(800)) }
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFD1D1D1))
+            .background(Brush.verticalGradient(listOf(Color(0xFF0F172A), Color(0xFF000000))))
             .transformable(state = state)
             .pointerInput(Unit) {
                 detectTapGestures { tapOffset ->
-                    // 1. Convertimos el tap a coordenadas de "mundo isométrico"
-                    val worldIsoPos = screenToWorldIso(tapOffset, size, offset, scale)
-                    
-                    // 2. Buscamos la sala comprobando si el click está dentro de su forma dibujada
-                    val clickedRoom = mapStructure.find { room ->
-                        isPointInIsoRoom(worldIsoPos, room.vertices2D)
-                    }
-
-                    if (clickedRoom != null) {
-                        if (clickedRoom.name.equals(gameRoomName, ignoreCase = true)) {
-                            val intent = Intent(context, KahootActivity::class.java)
-                            context.startActivity(intent)
-                        } else {
-                            onNavigate(clickedRoom.name)
-                        }
+                    val worldIsoPos = Offset(
+                        (tapOffset.x - size.width / 2 - offsetX.value) / scaleAnim.value,
+                        (tapOffset.y - size.height / 2 - offsetY.value) / scaleAnim.value
+                    )
+                    val clickedRoom = mapStructure.find { isPointInIsoRoom(worldIsoPos, it.vertices2D) }
+                    if (clickedRoom != null && clickedRoom.name.isNotEmpty()) {
+                        focusOnRoom(clickedRoom.name)
+                    } else {
+                        selectedRoomName = null
                     }
                 }
             }
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             withTransform({
-                translate(size.width / 2 + offset.x, size.height / 2 + offset.y)
-                scale(scale, scale)
+                translate(size.width / 2 + offsetX.value, size.height / 2 + offsetY.value)
+                scale(scaleAnim.value, scaleAnim.value)
             }) {
-                val wallHeight = 115f
-                drawMegaGroundBase(groundColor)
-                mapStructure.forEach { room -> drawWallsOnly(room, wallHeight) }
-                mapStructure.forEach { room -> drawRoofOnly(room) }
-                mapStructure.forEach { room -> drawTextOnly(room) }
+                // 1. Suelo y Partículas
+                drawProGround()
+                drawAtmosphericParticles(particles, particleAnim)
+
+                // 2. Ruta de Navegación (Si hay selección)
+                selectedRoomName?.let { target ->
+                    drawNavigationPath(mapStructure, entranceName, target, pulseAlpha)
+                }
+
+                // 3. Estructura del Mapa
+                mapStructure.forEach { drawRoomShadow(it) }
+                mapStructure.forEach { room ->
+                    if (room.name == selectedRoomName) drawRoomHighlight(room, pulseAlpha)
+                }
+                mapStructure.forEach { drawProWalls(it) }
+                mapStructure.forEach { drawProRoof(it) }
+
+                // 4. Etiquetas e Iconos
+                if (scaleAnim.value >= 0.15f) {
+                    mapStructure.forEach { room ->
+                        drawRoomLabel(room)
+                        iconPainters[room]?.let { painter -> drawRoomIcon(room, floatAnim, painter) }
+                    }
+                }
+            }
+        }
+
+        // --- Interfaz de Usuario ---
+        SmallFloatingActionButton(
+            onClick = { 
+                selectedRoomName = null
+                scope.launch {
+                    launch { scaleAnim.animateTo(0.35f) }
+                    launch { offsetX.animateTo(0f) }
+                    launch { offsetY.animateTo(0f) }
+                }
+            },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp).padding(bottom = 140.dp),
+            containerColor = MadridGold,
+            contentColor = MadridBlue,
+            shape = CircleShape
+        ) {
+            Icon(Icons.Default.RestartAlt, contentDescription = "Reset")
+        }
+
+        // Selector Superior
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = 24.dp).padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ElevatedCard(
+                onClick = { expanded = !expanded },
+                modifier = Modifier.fillMaxWidth().height(60.dp),
+                shape = RoundedCornerShape(30.dp),
+                colors = CardDefaults.elevatedCardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+                elevation = CardDefaults.elevatedCardElevation(12.dp)
+            ) {
+                Row(modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Explore, contentDescription = null, tint = MadridBlue)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Explorar salas", color = MadridBlue, fontWeight = FontWeight.Bold)
+                    }
+                    Icon(if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, contentDescription = null, tint = MadridBlue)
+                }
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.fillMaxWidth(0.85f).background(Color.White, RoundedCornerShape(20.dp)), offset = DpOffset(0.dp, 8.dp)) {
+                selectableRooms.forEach { roomName ->
+                    DropdownMenuItem(text = { Text(roomName, color = MadridBlue, fontWeight = FontWeight.Medium) }, leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null, tint = MadridGold) }, onClick = { expanded = false; focusOnRoom(roomName) })
+                }
+            }
+        }
+
+        // Action Card Inferior
+        AnimatedVisibility(visible = selectedRoomName != null, enter = slideInVertically(initialOffsetY = { it }) + fadeIn(), exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(), modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp)) {
+            ElevatedCard(modifier = Modifier.fillMaxWidth().height(100.dp), shape = RoundedCornerShape(25.dp), colors = CardDefaults.elevatedCardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(16.dp)) {
+                Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(selectedRoomName ?: "", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
+                        Text("Sala del Museo", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                    }
+                    Button(onClick = { selectedRoomName?.let { if (it.equals(gameRoomName, ignoreCase = true)) context.startActivity(Intent(context, KahootActivity::class.java)) else onNavigate(it) } }, colors = ButtonDefaults.buttonColors(containerColor = MadridBlue), shape = RoundedCornerShape(15.dp)) {
+                        Text("VISITAR", color = MadridGold, fontWeight = FontWeight.Black)
+                    }
+                }
             }
         }
     }
 }
 
-// --- Funciones de Detección Corregidas ---
+// --- DIBUJO PREMIUM ---
 
-fun screenToWorldIso(screenPos: Offset, screenSize: androidx.compose.ui.unit.IntSize, offset: Offset, scale: Float): Offset {
-    val centerX = screenSize.width / 2f
-    val centerY = screenSize.height / 2f
-    return Offset(
-        x = (screenPos.x - centerX - offset.x) / scale,
-        y = (screenPos.y - centerY - offset.y) / scale
-    )
+fun DrawScope.drawAtmosphericParticles(particles: List<Offset>, animValue: Float) {
+    particles.forEach { p ->
+        val x = ((p.x * 8000f - 4000f) + animValue * 0.2f) % 4000f
+        val y = ((p.y * 18000f - 9000f) + animValue * 0.5f) % 9000f
+        drawCircle(color = Color.White.copy(alpha = 0.2f), radius = 3f + p.x * 5f, center = Offset(x, y).toIso())
+    }
 }
 
-fun isPointInIsoRoom(isoPoint: Offset, vertices2D: List<Point2D>): Boolean {
-    // Transformamos los vértices 2D a Isométrico (tal cual se dibujan)
-    val isoVertices = vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
+fun DrawScope.drawNavigationPath(map: List<RoomShape>, startName: String, endName: String, alpha: Float) {
+    val start = map.find { it.name == startName } ?: return
+    val end = map.find { it.name == endName } ?: return
     
+    val startPos = start.vertices2D.map { it.toIso() }.let { Offset(it.map { p -> p.x }.average().toFloat(), it.map { p -> p.y }.average().toFloat()) }
+    val endPos = end.vertices2D.map { it.toIso() }.let { Offset(it.map { p -> p.x }.average().toFloat(), it.map { p -> p.y }.average().toFloat()) }
+    
+    val path = Path().apply {
+        moveTo(startPos.x, startPos.y)
+        // Punto intermedio en el pasillo para hacer la ruta en "L" isométrica
+        lineTo(startPos.x, endPos.y)
+        lineTo(endPos.x, endPos.y)
+    }
+    
+    drawPath(path, MadridGold.copy(alpha = alpha), style = Stroke(width = 8f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), alpha * 100f)))
+}
+
+fun DrawScope.drawRoomHighlight(room: RoomShape, pulse: Float) {
+    val path = Path().apply {
+        if (room.vertices2D.isNotEmpty()) {
+            val first = room.vertices2D[0].toIso(10f)
+            moveTo(first.x, first.y)
+            room.vertices2D.forEach { p -> val iso = p.toIso(10f); lineTo(iso.x, iso.y) }
+            close()
+        }
+    }
+    drawPath(path, MadridGold.copy(alpha = pulse), style = Stroke(width = 25f, cap = StrokeCap.Round))
+}
+
+fun DrawScope.drawRoomIcon(room: RoomShape, floatOffset: Float, painter: VectorPainter) {
+    val center = room.vertices2D.map { it.toIso() }.let { pts ->
+        Offset(pts.map { it.x }.average().toFloat(), pts.map { it.y }.average().toFloat())
+    }
+    val iconSize = 140f
+    withTransform({ translate(center.x - iconSize / 2, center.y - 220f + floatOffset) }) {
+        with(painter) { draw(size = Size(iconSize, iconSize), colorFilter = ColorFilter.tint(MadridGold)) }
+    }
+}
+
+fun DrawScope.drawProGround() {
+    val xBounds = 4000f; val yBounds = 9000f
+    val points = listOf(Point2D(-xBounds, yBounds), Point2D(xBounds, yBounds), Point2D(xBounds, -yBounds), Point2D(-xBounds, -yBounds))
+    val path = Path().apply {
+        val first = points[0].toIso(); moveTo(first.x, first.y)
+        points.forEach { p -> val iso = p.toIso(); lineTo(iso.x, iso.y) }; close()
+    }
+    drawPath(path, Brush.verticalGradient(listOf(Color(0xFF1E293B), Color(0xFF020617))))
+}
+
+fun DrawScope.drawRoomShadow(room: RoomShape) {
+    val shadowOffset = 40f
+    val path = Path().apply {
+        val first = room.vertices2D[0].toIso(shadowOffset); moveTo(first.x, first.y)
+        room.vertices2D.forEach { p -> val iso = p.toIso(shadowOffset); lineTo(iso.x, iso.y) }; close()
+    }
+    drawPath(path, Color.Black.copy(alpha = 0.3f))
+}
+
+fun DrawScope.drawProWalls(room: RoomShape) {
+    val wallHeight = 130f
+    val pts = room.vertices2D.map { it.toIso() }
+    for (i in pts.indices) {
+        val p1 = pts[i]; val p2 = pts[(i + 1) % pts.size]
+        val isSouthWall = p2.x > p1.x
+        val wallBrush = if (isSouthWall) Brush.verticalGradient(listOf(room.wallColor, room.wallColor.copy(alpha = 0.7f)))
+                        else Brush.verticalGradient(listOf(room.wallColor.copy(alpha = 0.9f), room.wallColor.copy(alpha = 0.5f)))
+        val wallPath = Path().apply { moveTo(p1.x, p1.y); lineTo(p2.x, p2.y); lineTo(p2.x, p2.y + wallHeight); lineTo(p1.x, p1.y + wallHeight); close() }
+        drawPath(wallPath, wallBrush)
+    }
+}
+
+fun DrawScope.drawProRoof(room: RoomShape) {
+    val path = Path().apply {
+        if (room.vertices2D.isNotEmpty()) {
+            val first = room.vertices2D[0].toIso(); moveTo(first.x, first.y)
+            room.vertices2D.forEach { p -> val iso = p.toIso(); lineTo(iso.x, iso.y) }; close()
+        }
+    }
+    drawPath(path, Brush.linearGradient(listOf(room.roofColor, room.roofColor.copy(alpha = 0.8f))))
+}
+
+fun DrawScope.drawRoomLabel(room: RoomShape) {
+    if (room.name.isEmpty()) return
+    val center = room.vertices2D.map { it.toIso() }.let { pts ->
+        Offset(pts.map { it.x }.average().toFloat(), pts.map { it.y }.average().toFloat())
+    }
+    drawContext.canvas.nativeCanvas.drawText(room.name.uppercase(), center.x, center.y + 15f, android.graphics.Paint().apply { color = android.graphics.Color.WHITE; textSize = 65f; textAlign = android.graphics.Paint.Align.CENTER; typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD); setShadowLayer(10f, 0f, 0f, android.graphics.Color.BLACK) })
+}
+
+fun Point2D.toIso(z: Float = 0f): Offset = Offset(x - y, (x + y) / 2f + z)
+fun Offset.toIso(z: Float = 0f): Offset = Offset(x - y, (x + y) / 2f + z)
+
+fun isPointInIsoRoom(isoPoint: Offset, vertices2D: List<Point2D>): Boolean {
+    val isoVertices = vertices2D.map { it.toIso() }
     var intersectCount = 0
     for (i in isoVertices.indices) {
-        val v1 = isoVertices[i]
-        val v2 = isoVertices[(i + 1) % isoVertices.size]
-        
-        // Algoritmo Ray-casting para polígonos
-        if ((v1.y > isoPoint.y) != (v2.y > isoPoint.y) &&
-            (isoPoint.x < (v2.x - v1.x) * (isoPoint.y - v1.y) / (v2.y - v1.y) + v1.x)
-        ) {
-            intersectCount++
-        }
+        val v1 = isoVertices[i]; val v2 = isoVertices[(i + 1) % isoVertices.size]
+        if ((v1.y > isoPoint.y) != (v2.y > isoPoint.y) && (isoPoint.x < (v2.x - v1.x) * (isoPoint.y - v1.y) / (v2.y - v1.y) + v1.x)) intersectCount++
     }
     return intersectCount % 2 != 0
 }
 
-// --- Funciones de Dibujo ---
-
-fun DrawScope.drawWallsOnly(room: RoomShape, wallHeight: Float) {
-    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
-    for (i in ceilingPoints.indices) {
-        val p1 = ceilingPoints[i]
-        val p2 = ceilingPoints[(i + 1) % ceilingPoints.size]
-        val wallPath = Path().apply {
-            moveTo(p1.x, p1.y); lineTo(p2.x, p2.y)
-            lineTo(p2.x, p2.y + wallHeight); lineTo(p1.x, p1.y + wallHeight); close()
-        }
-        drawPath(wallPath, room.wallColor)
-    }
-}
-
-fun DrawScope.drawRoofOnly(room: RoomShape) {
-    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
-    val roofPath = Path().apply {
-        if (ceilingPoints.isNotEmpty()) {
-            moveTo(ceilingPoints[0].x, ceilingPoints[0].y)
-            ceilingPoints.forEach { lineTo(it.x, it.y) }
-            close()
-        }
-    }
-    drawPath(roofPath, room.roofColor)
-}
-
-fun DrawScope.drawTextOnly(room: RoomShape) {
-    if (room.name.isEmpty()) return
-    val ceilingPoints = room.vertices2D.map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
-    val centerX = ceilingPoints.map { it.x }.average().toFloat()
-    val centerY = ceilingPoints.map { it.y }.average().toFloat()
-    drawContext.canvas.nativeCanvas.drawText(
-        room.name.uppercase(), centerX, centerY + 10f,
-        Paint().apply {
-            color = android.graphics.Color.WHITE
-            textSize = 75f
-            textAlign = Paint.Align.CENTER
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
+fun getProMapStructure(names: List<String>): List<RoomShape> {
+    val u = 500f; val hw = 0.4f * u; val gap = 1.3f * u; val pw = 0.25f * u
+    val bRoof = MadridBlue; val bWall = Color(0xFF001A4D); val rRoof = Color(0xFFE74C3C); val rWall = Color(0xFF922B21)
+    return listOf(
+        RoomShape(names[0], listOf(Point2D(-hw, 8f*u), Point2D(hw, 8f*u), Point2D(hw, -8f*u), Point2D(-hw, -8f*u)), bRoof, bWall),
+        RoomShape(names[1], listOf(Point2D(-hw, 10f*u), Point2D(hw, 10f*u), Point2D(hw, 8f*u), Point2D(-hw, 8f*u)), bRoof, bWall),
+        RoomShape(names[2], listOf(Point2D(-hw, -8f*u), Point2D(hw, -8f*u), Point2D(hw, -10f*u), Point2D(-hw, -10f*u)), rRoof, rWall),
+        RoomShape(names[3], listOf(Point2D(-3.5f*u, 7f*u), Point2D(-gap, 7f*u), Point2D(-gap, 4.5f*u), Point2D(-3.5f*u, 4.5f*u)), bRoof, bWall, Icons.Default.EmojiEvents),
+        RoomShape(names[4], listOf(Point2D(gap, 7f*u), Point2D(3.5f*u, 7f*u), Point2D(3.5f*u, 4.5f*u), Point2D(gap, 4.5f*u)), bRoof, bWall, Icons.Default.History),
+        RoomShape(names[5], listOf(Point2D(-4.5f*u, 2.5f*u), Point2D(-gap, 2.5f*u), Point2D(-gap, -1.5f*u), Point2D(-4.5f*u, -1.5f*u)), bRoof, bWall, Icons.Default.Stadium),
+        RoomShape(names[6], listOf(Point2D(-3.5f*u, -3f*u), Point2D(-gap, -3f*u), Point2D(-gap, -5.5f*u), Point2D(-3.5f*u, -5.5f*u)), bRoof, bWall, Icons.Default.Games),
+        RoomShape(names[7], listOf(Point2D(gap, -3f*u), Point2D(3.5f*u, -3f*u), Point2D(3.5f*u, -5.5f*u), Point2D(gap, -5.5f*u)), bRoof, bWall, Icons.Default.Group),
+        RoomShape("", listOf(Point2D(-gap, 5.75f*u+pw), Point2D(-hw, 5.75f*u+pw), Point2D(-hw, 5.75f*u-pw), Point2D(-gap, 5.75f*u-pw)), bRoof, bWall),
+        RoomShape("", listOf(Point2D(hw, 5.75f*u+pw), Point2D(gap, 5.75f*u+pw), Point2D(gap, 5.75f*u-pw), Point2D(hw, 5.75f*u-pw)), bRoof, bWall),
+        RoomShape("", listOf(Point2D(-gap, 0.5f*u+pw), Point2D(-hw, 0.5f*u+pw), Point2D(-hw, 0.5f*u-pw), Point2D(-gap, 0.5f*u-pw)), bRoof, bWall),
+        RoomShape("", listOf(Point2D(-gap, -4.25f*u+pw), Point2D(-hw, -4.25f*u+pw), Point2D(-hw, -4.25f*u-pw), Point2D(-gap, -4.25f*u-pw)), bRoof, bWall),
+        RoomShape("", listOf(Point2D(hw, -4.25f*u+pw), Point2D(gap, -4.25f*u+pw), Point2D(gap, -4.25f*u-pw), Point2D(hw, -4.25f*u-pw)), bRoof, bWall)
     )
-}
-
-fun DrawScope.drawMegaGroundBase(color: Color) {
-    val xBounds = 3500f
-    val yBounds = 8000f
-    val groundVertices = listOf(
-        Point2D(-xBounds, yBounds), Point2D(xBounds, yBounds),
-        Point2D(xBounds, -yBounds), Point2D(-xBounds, -yBounds)
-    ).map { Offset(it.x - it.y, (it.x + it.y) / 2f) }
-    val topPath = Path().apply {
-        moveTo(groundVertices[0].x, groundVertices[0].y)
-        groundVertices.forEach { lineTo(it.x, it.y) }; close()
-    }
-    drawPath(topPath, color)
-}
-
-fun getMegaMapStructure(names: List<String>, blue: Color, blueDark: Color, red: Color, redDark: Color): List<RoomShape> {
-    val u = 500f
-    val hw = 0.4f * u
-    val gap = 1.3f * u
-    val pw = 0.25f * u
-
-    val pasillo = RoomShape(names[0], listOf(Point2D(-hw, 8f*u), Point2D(hw, 8f*u), Point2D(hw, -8f*u), Point2D(-hw, -8f*u)), blue, blueDark)
-    val entrada = RoomShape(names[1], listOf(Point2D(-hw, 10f*u), Point2D(hw, 10f*u), Point2D(hw, 8f*u), Point2D(-hw, 8f*u)), blue, blueDark)
-    val salida = RoomShape(names[2], listOf(Point2D(-hw, -8f*u), Point2D(hw, -8f*u), Point2D(hw, -10f*u), Point2D(-hw, -10f*u)), red, redDark)
-    val vitrina = RoomShape(names[3], listOf(Point2D(-3.5f*u, 7f*u), Point2D(-gap, 7f*u), Point2D(-gap, 4.5f*u), Point2D(-3.5f*u, 4.5f*u)), blue, blueDark)
-    val historia = RoomShape(names[4], listOf(Point2D(gap, 7f*u), Point2D(3.5f*u, 7f*u), Point2D(3.5f*u, 4.5f*u), Point2D(gap, 4.5f*u)), blue, blueDark)
-    val estadio = RoomShape(names[5], listOf(Point2D(-4.5f*u, 2.5f*u), Point2D(-gap, 2.5f*u), Point2D(-gap, -1.5f*u), Point2D(-4.5f*u, -1.5f*u)), blue, blueDark)
-    val juego = RoomShape(names[6], listOf(Point2D(-3.5f*u, -3f*u), Point2D(-gap, -3f*u), Point2D(-gap, -5.5f*u), Point2D(-3.5f*u, -5.5f*u)), blue, blueDark)
-    val jugadores = RoomShape(names[7], listOf(Point2D(gap, -3f*u), Point2D(3.5f*u, -3f*u), Point2D(3.5f*u, -5.5f*u), Point2D(gap, -5.5f*u)), blue, blueDark)
-
-    val puentes = listOf(
-        RoomShape("", listOf(Point2D(-gap, 6f*u+pw), Point2D(-hw, 6f*u+pw), Point2D(-hw, 6f*u-pw), Point2D(-gap, 6f*u-pw)), blue, blueDark),
-        RoomShape("", listOf(Point2D(hw, 6f*u+pw), Point2D(gap, 6f*u+pw), Point2D(gap, 6f*u-pw), Point2D(hw, 6f*u-pw)), blue, blueDark),
-        RoomShape("", listOf(Point2D(-gap, 0.5f*u+pw), Point2D(-hw, 0.5f*u+pw), Point2D(-hw, 0.5f*u-pw), Point2D(-gap, 0.5f*u-pw)), blue, blueDark),
-        RoomShape("", listOf(Point2D(-gap, -4.2f*u+pw), Point2D(-hw, -4.2f*u+pw), Point2D(-hw, -4.2f*u-pw), Point2D(-gap, -4.2f*u-pw)), blue, blueDark),
-        RoomShape("", listOf(Point2D(hw, -4.2f*u+pw), Point2D(gap, -4.2f*u+pw), Point2D(gap, -4.2f*u-pw), Point2D(hw, -4.2f*u-pw)), blue, blueDark)
-    )
-
-    return listOf(pasillo, entrada, salida, vitrina, historia, estadio, juego, jugadores) + puentes
 }

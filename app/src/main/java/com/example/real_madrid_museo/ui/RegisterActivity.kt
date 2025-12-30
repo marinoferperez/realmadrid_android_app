@@ -33,14 +33,10 @@ class RegisterActivity : AppCompatActivity() {
     
     private val CHANNEL_ID = "ofertas_real_madrid"
 
-    // 1. DEFINIMOS EL LANZADOR PARA PEDIR PERMISO (NUEVO)
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permiso concedido. No hacemos nada ahora, pero ya podremos enviar la notificación al final.
-        } else {
-            // Permiso denegado.
+        if (!isGranted) {
             Toast.makeText(this, getString(R.string.toast_no_permission_notifications), Toast.LENGTH_SHORT).show()
         }
     }
@@ -51,8 +47,6 @@ class RegisterActivity : AppCompatActivity() {
 
         databaseHelper = DatabaseHelper(this)
         crearCanalNotificacion()
-
-        // 2. PEDIR PERMISO NADA MÁS ENTRAR (Para Android 13+)
         pedirPermisoNotificaciones()
 
         val etDate = findViewById<TextInputEditText>(R.id.etDate)
@@ -70,6 +64,13 @@ class RegisterActivity : AppCompatActivity() {
 
         ccp.registerCarrierNumberEditText(etPhone)
 
+        // Al marcar la casilla, quitamos el error automáticamente
+        cbTerms.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                cbTerms.error = null
+            }
+        }
+
         etDate.setOnClickListener {
             val c = Calendar.getInstance()
             DatePickerDialog(this, R.style.CalendarioMorado, { _, year, month, day ->
@@ -86,19 +87,25 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPass.text.toString().trim()
             val name = etName.text.toString().trim()
 
+            // 1. Validar campos obligatorios generales
             if (name.isEmpty() || etPhone.text.isNullOrEmpty() || 
                 email.isEmpty() || password.isEmpty() || !dateSelected) {
                 Toast.makeText(this, getString(R.string.toast_fill_all_fields_register), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                etEmail.error = getString(R.string.error_invalid_email)
+            // 2. DETECTOR DE TÉRMINOS Y CONDICIONES
+            if (!cbTerms.isChecked) {
+                cbTerms.error = "Debes aceptar los términos para continuar"
+                cbTerms.requestFocus() // Lleva el foco a la casilla para que sea obvio
+                Toast.makeText(this, "Por favor, acepta los términos y condiciones", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            } else {
+                cbTerms.error = null
             }
 
-            if (!cbTerms.isChecked) {
-                Toast.makeText(this, getString(R.string.toast_accept_terms), Toast.LENGTH_SHORT).show()
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.error = getString(R.string.error_invalid_email)
                 return@setOnClickListener
             }
             
@@ -118,11 +125,9 @@ class RegisterActivity : AppCompatActivity() {
             val success = databaseHelper.addUser(email, password, name, perfil)
 
             if (success) {
-                // LÓGICA DEL PREMIO
                 if (cbNotifications.isChecked) {
                     lanzarNotificacionDescuento()
                 }
-
                 Toast.makeText(this, getString(R.string.toast_account_created), Toast.LENGTH_LONG).show()
                 finish()
             } else {
@@ -134,14 +139,8 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun pedirPermisoNotificaciones() {
-        // Solo necesario en Android 13 (API 33) o superior
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // Si no tenemos permiso, lo pedimos
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
@@ -149,21 +148,15 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun lanzarNotificacionDescuento() {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info) 
+            .setSmallIcon(R.drawable.logo_rm) 
             .setContentTitle(getString(R.string.notification_welcome_title))
             .setContentText(getString(R.string.notification_discount_text_short))
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(getString(R.string.notification_discount_text_long)))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(getString(R.string.notification_discount_text_long)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(this)) {
-            // Comprobación final de seguridad antes de emitir
-            if (ActivityCompat.checkSelfPermission(
-                    this@RegisterActivity,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ActivityCompat.checkSelfPermission(this@RegisterActivity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 notify(101, builder.build())
             }
         }
@@ -177,8 +170,7 @@ class RegisterActivity : AppCompatActivity() {
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
