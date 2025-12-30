@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.kahoot.KahootActivity
+import com.example.real_madrid_museo.home.PlayersActivity
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -120,6 +121,7 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
     }
 
     val gameRoomName = stringResource(R.string.map_game)
+    val playersRoomName = stringResource(R.string.map_players)
 
     fun focusOnRoom(roomName: String) {
         val room = mapStructure.find { it.name == roomName } ?: return
@@ -240,7 +242,28 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                         Text(selectedRoomName ?: "", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
                         Text("Sala del Museo", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                     }
-                    Button(onClick = { selectedRoomName?.let { if (it.equals(gameRoomName, ignoreCase = true)) context.startActivity(Intent(context, KahootActivity::class.java)) else onNavigate(it) } }, colors = ButtonDefaults.buttonColors(containerColor = MadridBlue), shape = RoundedCornerShape(15.dp)) {
+                    Button(
+                        onClick = { 
+                            selectedRoomName?.let { name ->
+                                // CAMBIO AQUÍ: Añadimos la condición para PlayersActivity
+                                
+                                // 1. Si es la sala de Juegos -> Kahoot
+                                if (name.equals(gameRoomName, ignoreCase = true)) {
+                                    context.startActivity(Intent(context, KahootActivity::class.java))
+                                } 
+                                // 2. Si es la sala de Jugadores -> PlayersActivity
+                                else if (name.equals(playersRoomName, ignoreCase = true)) {
+                                    context.startActivity(Intent(context, PlayersActivity::class.java))
+                                } 
+                                // 3. Si es otra sala -> Navegación normal
+                                else {
+                                    onNavigate(name)
+                                }
+                            } 
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MadridBlue),
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
                         Text("VISITAR", color = MadridGold, fontWeight = FontWeight.Black)
                     }
                 }

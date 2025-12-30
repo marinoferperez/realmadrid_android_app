@@ -1,28 +1,50 @@
 package com.example.real_madrid_museo.home
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.real_madrid_museo.Jugador
 import com.example.real_madrid_museo.PlayersAdapter
 import com.example.real_madrid_museo.R
 import com.google.android.material.button.MaterialButton
+import kotlin.math.sqrt
 
-class PlayersActivity : AppCompatActivity() {
+class PlayersActivity : AppCompatActivity(), SensorEventListener {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tvPlayerName: TextView
     private lateinit var tvPlayerPos: TextView
     private lateinit var btnInfo: MaterialButton
     private lateinit var btnLaunchTotem: MaterialButton
+    private lateinit var tvInstructions: TextView // Para guiar al usuario
 
     // Variable para el sonido del click
     private var clickPlayer: MediaPlayer? = null
+    private var magicSound: MediaPlayer? = null // Sonido al desbloquear
+
+    // SENSORES
+    private lateinit var sensorManager: SensorManager
+    private var proximitySensor: Sensor? = null
+    private var accelerometer: Sensor? = null
+
+    // ESTADO DEL JUGADOR
+    private var isUnlocked = false
+    private var lastShakeTime: Long = 0
 
     // LISTA MAESTRA: Textos completos e imágenes correctas
     private val playerList = listOf(
@@ -113,97 +135,231 @@ Ganó el Balón de Oro 2022 por unanimidad. Dejó el club en 2023 como el segund
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_players)
 
-        // 1. Inicializar Vistas
+        // 1. INICIALIZAR VISTAS
         viewPager = findViewById(R.id.viewPagerPlayers)
         tvPlayerName = findViewById(R.id.tvPlayerName)
         tvPlayerPos = findViewById(R.id.tvPlayerPos)
         btnInfo = findViewById(R.id.btnInfo)
         btnLaunchTotem = findViewById(R.id.btnLaunchTotem)
+        
+        // Añade un TextView en tu XML si quieres instrucciones, si no, usa un Toast
+        // tvInstructions = findViewById(R.id.tvInstructions) 
 
-        // 2. Inicializar Sonido Click (tech_click.mp3 en res/raw)
-        try {
-            clickPlayer = MediaPlayer.create(this, R.raw.tech_click)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        // 2. INICIALIZAR SENSORES
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        // 3. Configurar el Adaptador
+        // 3. SONIDOS
+        clickPlayer = MediaPlayer.create(this, R.raw.tech_click)
+        // Opcional: Sonido mágico al desbloquear (usa tech_click si no tienes otro)
+        magicSound = MediaPlayer.create(this, R.raw.tech_click) 
+
+        // 4. CONFIGURAR ADAPTER
         val adapter = PlayersAdapter(playerList)
         viewPager.adapter = adapter
-        
         viewPager.clipToPadding = false
         viewPager.clipChildren = false
         viewPager.offscreenPageLimit = 3
-        viewPager.getChildAt(0).overScrollMode = androidx.recyclerview.widget.RecyclerView.OVER_SCROLL_NEVER
+        viewPager.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 
-        // 4. LÓGICA INFINITA: Empezamos en la mitad exacta
+        // Posición inicial infinita
         val middle = Int.MAX_VALUE / 2
         val startPosition = middle - (middle % playerList.size)
         viewPager.setCurrentItem(startPosition, false)
 
-        // 5. Callback de cambio de página
+        // 5. CALLBACK DE CAMBIO DE PÁGINA
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 
-                // Efecto de Vibración al girar
-                viewPager.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-
-                // Cálculo de posición real (Módulo %)
-                val realPosition = position % playerList.size
-                actualizarInfoJugador(realPosition)
+                // RESETEO IMPORTANTE: AL CAMBIAR, BLOQUEAMOS DE NUEVO
+                bloquearJugador() 
+                
+                val realPos = position % playerList.size
+                actualizarInfoTexto(realPos)
             }
         })
         
-        // Cargar info del primero (el 0)
-        actualizarInfoJugador(0)
+        // Estado inicial
+        actualizarInfoTexto(0)
 
-        // BOTÓN 1: PANTALLA GRANDE (Con sonido y lógica infinita)
-        btnLaunchTotem.setOnClickListener {
-            reproducirClick()
-            val realPos = viewPager.currentItem % playerList.size
-            val jugador = playerList[realPos]
-            Toast.makeText(this, "📡 Conectando con Sala: ${jugador.nombre}", Toast.LENGTH_SHORT).show()
+        viewPager.post{
+            bloquearJugador() // Empezamos bloqueados
         }
+        
+        // LOS BOTONES SIGUEN FUNCIONANDO SI SE PULSAN MANUALMENTE (SI ESTÁN VISIBLES)
+        btnLaunchTotem.setOnClickListener { lanzarVideoAccion() }
+        btnInfo.setOnClickListener { abrirFichaAccion() }
+    }
 
-        // BOTÓN 2: FICHA TÉCNICA (Con sonido y lógica infinita)
-        btnInfo.setOnClickListener {
-            reproducirClick()
-            val realPos = viewPager.currentItem % playerList.size
-            val jugador = playerList[realPos]
-            
-            val intent = Intent(this, PlayerDetailActivity::class.java)
-            
-            intent.putExtra("EXTRA_NOMBRE", jugador.nombre)
-            intent.putExtra("EXTRA_POSICION", jugador.posicion)
-            intent.putExtra("EXTRA_IMG", jugador.imagenResId)
-            
-            // Enviamos AMBOS textos
-            intent.putExtra("EXTRA_RESUMEN", jugador.descripcionAdulto)
-            intent.putExtra("EXTRA_BIO_LARGA", jugador.biografiaExtensa)
-            
-            startActivity(intent)
+    // --------------------------------------------------------
+    // LÓGICA DE SENSORES (SensorEventListener)
+    // --------------------------------------------------------
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event == null) return
+
+        when (event.sensor.type) {
+            // 1. SENSOR DE PROXIMIDAD -> DESBLOQUEAR
+            Sensor.TYPE_PROXIMITY -> {
+                val distancia = event.values[0]
+                // Si la distancia es menor que el rango máximo (detecta mano cerca)
+                // y aún no está desbloqueado
+                if (distancia < proximitySensor!!.maximumRange && !isUnlocked) {
+                    desbloquearJugador()
+                }
+            }
+
+            // 2. ACELERÓMETRO -> AGITAR (Shake) Y INCLINAR (Tilt)
+            Sensor.TYPE_ACCELEROMETER -> {
+                if (!isUnlocked) return // Si está bloqueado, ignoramos movimientos
+
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+
+                // A) DETECTAR AGITACIÓN (SHAKE) -> FICHA TÉCNICA
+                val gForce = sqrt(x * x + y * y + z * z) / SensorManager.GRAVITY_EARTH
+                if (gForce > 2.5f) { // Umbral de fuerza para considerar agitación
+                    val now = System.currentTimeMillis()
+                    // Evitar que se abra 20 veces seguidas (Cooldown de 1 seg)
+                    if (now - lastShakeTime > 1000) {
+                        lastShakeTime = now
+                        abrirFichaAccion()
+                    }
+                }
+
+                // B) DETECTAR INCLINACIÓN HACIA ADELANTE (TILT) -> VÍDEO
+                // Si pones el móvil horizontal apuntando al frente:
+                // Y (vertical) baja a cerca de 0. Z (profundidad) sube o baja.
+                // Ajuste: Si Y < 3 (casi horizontal) y Z > 5 (pantalla hacia arriba/frente)
+                if (y < 3.0f && y > -3.0f && z > 5.0f) {
+                     // Cooldown pequeño para que no lance mil toasts
+                     val now = System.currentTimeMillis()
+                     if (now - lastShakeTime > 2000) {
+                         lastShakeTime = now
+                         lanzarVideoAccion()
+                     }
+                }
+            }
         }
     }
 
-    private fun actualizarInfoJugador(index: Int) {
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // No necesitamos hacer nada aquí
+    }
+
+    // --------------------------------------------------------
+    // FUNCIONES DE ESTADO (MAGIA)
+    // --------------------------------------------------------
+
+    private fun bloquearJugador() {
+        isUnlocked = false
+        // Ocultar botones
+        btnInfo.visibility = View.INVISIBLE
+        btnLaunchTotem.visibility = View.INVISIBLE
+        
+        // Poner Texto de ayuda
+        Toast.makeText(this, "✋ Pasa la mano por el sensor superior para desbloquear", Toast.LENGTH_SHORT).show()
+
+        // PONER BLANCO Y NEGRO
+        aplicarFiltroBlancoYNegro(true)
+    }
+
+    private fun desbloquearJugador() {
+        isUnlocked = true
+        
+        // Feedback al usuario
+        viewPager.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+        magicSound?.start() // Sonido
+        Toast.makeText(this, "✨ ¡Jugador Desbloqueado! \n🫨 Agita para Info \n📲 Apunta para Vídeo", Toast.LENGTH_LONG).show()
+
+        // Mostrar botones
+        btnInfo.visibility = View.VISIBLE
+        btnLaunchTotem.visibility = View.VISIBLE
+
+        // PONER COLOR
+        aplicarFiltroBlancoYNegro(false)
+    }
+
+    private fun aplicarFiltroBlancoYNegro(activar: Boolean) {
+        // Truco para acceder a la vista actual dentro del ViewPager2
+        // ViewPager2 tiene un RecyclerView dentro en la posición 0
+        val recyclerView = viewPager.getChildAt(0) as? RecyclerView
+        val viewHolder = recyclerView?.findViewHolderForAdapterPosition(viewPager.currentItem)
+        
+        // Buscamos la imagen dentro del ViewHolder (asegúrate que el ID sea imgPlayer en el XML item_player_card)
+        val imgView = viewHolder?.itemView?.findViewById<ImageView>(R.id.imgPlayer)
+
+        if (imgView != null) {
+            if (activar) {
+                val matrix = ColorMatrix()
+                matrix.setSaturation(0f) // Saturación 0 = Blanco y Negro
+                val filter = ColorMatrixColorFilter(matrix)
+                imgView.colorFilter = filter
+                imgView.imageAlpha = 150 // Un poco transparente/oscuro
+            } else {
+                imgView.colorFilter = null // Quitar filtro (Color original)
+                imgView.imageAlpha = 255 // Opacidad total
+            }
+        }
+    }
+
+    // --------------------------------------------------------
+    // ACCIONES
+    // --------------------------------------------------------
+
+    private fun lanzarVideoAccion() {
+        reproducirClick()
+        // Hacemos vibración fuerte
+        viewPager.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        val realPos = viewPager.currentItem % playerList.size
+        val jugador = playerList[realPos]
+        Toast.makeText(this, "📡 LANZANDO VÍDEO AL TÓTEM: ${jugador.nombre}", Toast.LENGTH_LONG).show()
+    }
+
+    private fun abrirFichaAccion() {
+        reproducirClick()
+        val realPos = viewPager.currentItem % playerList.size
+        val jugador = playerList[realPos]
+        
+        val intent = Intent(this, PlayerDetailActivity::class.java)
+        intent.putExtra("EXTRA_NOMBRE", jugador.nombre)
+        intent.putExtra("EXTRA_POSICION", jugador.posicion)
+        intent.putExtra("EXTRA_IMG", jugador.imagenResId)
+        intent.putExtra("EXTRA_RESUMEN", jugador.descripcionAdulto)
+        intent.putExtra("EXTRA_BIO_LARGA", jugador.biografiaExtensa)
+        startActivity(intent)
+    }
+
+    private fun actualizarInfoTexto(index: Int) {
         val jugador = playerList[index]
         tvPlayerName.text = jugador.nombre
         tvPlayerPos.text = jugador.posicion
     }
 
     private fun reproducirClick() {
-        if (clickPlayer != null) {
-            if (clickPlayer!!.isPlaying) {
-                clickPlayer!!.seekTo(0)
-            }
-            clickPlayer!!.start()
+        if (clickPlayer?.isPlaying == true) clickPlayer?.seekTo(0)
+        clickPlayer?.start()
+    }
+
+    // --------------------------------------------------------
+    // CICLO DE VIDA (IMPORTANTE PARA SENSORES)
+    // --------------------------------------------------------
+    override fun onResume() {
+        super.onResume()
+        // Registrar sensores al volver a la app
+        proximitySensor?.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
+        }
+        accelerometer?.also { sensor ->
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        clickPlayer?.release()
-        clickPlayer = null
+    override fun onPause() {
+        super.onPause()
+        // Desregistrar para ahorrar batería
+        sensorManager.unregisterListener(this)
     }
 }
