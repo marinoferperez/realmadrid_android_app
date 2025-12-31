@@ -94,6 +94,10 @@
     <string name="profile_type_child">CHILD</string>
     <string name="profile_type_guest">GUEST</string>
 
+    <!-- Ranking Dialog -->
+    <string name="ranking_title">Ranking</string>
+    <string name="ranking_close">Close</string>
+
     <!-- Map Screen -->
     <string name="map_hall">Hall</string>
     <string name="map_entrance">Entrance</string>

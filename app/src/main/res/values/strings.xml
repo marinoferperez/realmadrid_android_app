@@ -104,6 +104,10 @@
     <string name="profile_type_child">NIÑO</string>
     <string name="profile_type_guest">INVITADO</string>
 
+    <!-- Ranking Dialog -->
+    <string name="ranking_title">Clasificación</string>
+    <string name="ranking_close">Cerrar</string>
+
     <!-- Map Screen -->
     <string name="map_hall">Pasillo</string>
     <string name="map_entrance">Entrada</string>

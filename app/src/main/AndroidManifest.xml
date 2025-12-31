@@ -25,9 +25,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Real_madrid_museo">
 
+        <!-- OnboardingActivity es el LAUNCHER, por lo tanto debe llevar el tema Splash -->
         <activity
             android:name=".ui.OnboardingActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.RealMadrid.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -58,8 +60,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.RealMadrid.Splash" />
+            android:label="@string/app_name" />
         <activity
             android:name=".ui.vitrina.TrofeoActivity"
             android:exported="false"

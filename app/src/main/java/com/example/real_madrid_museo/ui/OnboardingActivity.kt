@@ -6,6 +6,7 @@ import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
@@ -14,6 +15,9 @@ import com.example.real_madrid_museo.ui.onboarding.OnboardingScreen
 
 class OnboardingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // INSTALAR SPLASH SCREEN ANTES DE SUPER.ONCREATE
+        installSplashScreen()
+        
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -124,4 +124,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL("UPDATE $TABLE_USERS SET $COL_POINTS = $COL_POINTS + ? WHERE $COL_EMAIL = ?", arrayOf(pointsToAdd, email))
         db.close()
     }
+
+    // Obtener lista completa para el Ranking
+    fun getAllUsersRanking(): List<Pair<String, Int>> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $COL_NAME, $COL_POINTS FROM $TABLE_USERS ORDER BY $COL_POINTS DESC", null)
+        val list = mutableListOf<Pair<String, Int>>()
+        if (cursor.moveToFirst()) {
+            do {
+                val name = cursor.getString(0)
+                val points = cursor.getInt(1)
+                list.add(name to points)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return list
+    }
 }

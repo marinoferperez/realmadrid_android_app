@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.ui.DatabaseHelper
 import com.example.real_madrid_museo.ui.ScannerScreen.ScannerScreen
@@ -388,6 +390,7 @@ fun PerfilContent(
     var visitasActuales by remember { mutableIntStateOf(visitasIniciales) }
     var puntosActuales by remember { mutableIntStateOf(puntosIniciales) }
     var rankingActual by remember { mutableIntStateOf(rankingInicial) }
+    var mostrarRankingDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (!esInvitado && email != null) {
@@ -399,6 +402,10 @@ fun PerfilContent(
                 rankingActual = userData["ranking"] as? Int ?: rankingInicial
             }
         }
+    }
+
+    if (mostrarRankingDialog) {
+        RankingDialog(onDismiss = { mostrarRankingDialog = false })
     }
 
     val perfilLocalizado = when (perfil) {
@@ -445,7 +452,11 @@ fun PerfilContent(
                     Row(modifier = Modifier.padding(20.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         EstadisticaItem(stringResource(R.string.stats_visits), visitasActuales.toString())
                         EstadisticaItem(stringResource(R.string.stats_points), puntosActuales.toString())
-                        EstadisticaItem(stringResource(R.string.stats_ranking), if (rankingActual > 0) "#$rankingActual" else "--")
+                        EstadisticaItem(
+                            stringResource(R.string.stats_ranking),
+                            if (rankingActual > 0) "#$rankingActual" else "--",
+                            onClick = { mostrarRankingDialog = true }
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
@@ -503,8 +514,157 @@ fun PerfilContent(
 }
 
 @Composable
-fun EstadisticaItem(titulo: String, valor: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun RankingDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    var rankingList by remember { mutableStateOf<List<Pair<String, Int>>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        val db = DatabaseHelper(context)
+        rankingList = db.getAllUsersRanking()
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .heightIn(max = 600.dp)
+        ) {
+            Column {
+                // Cabecera
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Brush.horizontalGradient(listOf(MadridBlue, MadridBlue.copy(alpha = 0.8f))))
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Default.EmojiEvents,
+                            contentDescription = null,
+                            tint = MadridGold,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(R.string.ranking_title),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+
+                // Lista
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    itemsIndexed(rankingList) { index, item ->
+                        val rank = index + 1
+                        val isTop3 = rank <= 3
+                        val backgroundColor = if (rank % 2 == 0) Color(0xFFF5F5F5) else Color.White
+                        
+                        // Determinar color de medalla/rank
+                        val rankColor = when (rank) {
+                            1 -> MadridGold // Oro
+                            2 -> Color(0xFFC0C0C0) // Plata
+                            3 -> Color(0xFFCD7F32) // Bronce
+                            else -> MadridBlue
+                        }
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = backgroundColor),
+                            elevation = if (isTop3) CardDefaults.cardElevation(4.dp) else CardDefaults.cardElevation(0.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Posición / Medalla
+                                Surface(
+                                    shape = CircleShape,
+                                    color = if (isTop3) rankColor.copy(alpha = 0.2f) else Color.Transparent,
+                                    modifier = Modifier.size(40.dp),
+                                    contentColor = rankColor
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(
+                                            text = "#$rank",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                // Nombre
+                                Text(
+                                    text = item.first,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MadridBlue,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                // Puntos
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = MadridBlue,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                ) {
+                                    Text(
+                                        text = "${item.second} pts",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Botón cerrar
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(containerColor = MadridBlue),
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    ) {
+                        Text(stringResource(R.string.ranking_close), fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EstadisticaItem(titulo: String, valor: String, onClick: (() -> Unit)? = null) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier
+    ) {
         Text(valor, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = MadridGold)
         Text(titulo, style = MaterialTheme.typography.bodySmall, color = Color.White)
     }
