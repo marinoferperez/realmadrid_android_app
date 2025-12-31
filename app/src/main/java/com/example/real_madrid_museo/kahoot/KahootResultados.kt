@@ -163,14 +163,13 @@ fun PantallaResultados(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(stringResource(R.string.button_exit), maxLines = 1)
                             }
+                            // MODIFICACIÓN: Botón de reiniciar solo con icono
                             Button(
                                 onClick = onReiniciar,
                                 colors = ButtonDefaults.buttonColors(containerColor = RealMadridGold),
-                                modifier = Modifier.weight(1f).padding(start = 8.dp)
+                                modifier = Modifier.padding(start = 8.dp)
                             ) {
                                 Icon(Icons.Default.Refresh, contentDescription = null, tint = RealMadridBlue)
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(stringResource(R.string.button_restart), color = RealMadridBlue, maxLines = 1)
                             }
                         }
                     }

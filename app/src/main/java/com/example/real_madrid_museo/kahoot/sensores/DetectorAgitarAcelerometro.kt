@@ -19,7 +19,8 @@ class DetectorAgitarAcelerometro(
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
     private var lastShakeTime = 0L
-    private val SHAKE_THRESHOLD = 14f
+    // INCREMENTADO: Umbral más alto para reducir sensibilidad (antes 14f)
+    private val SHAKE_THRESHOLD = 20f 
     private val SHAKE_COOLDOWN = 1000L // 1 segundo
 
     fun start() {

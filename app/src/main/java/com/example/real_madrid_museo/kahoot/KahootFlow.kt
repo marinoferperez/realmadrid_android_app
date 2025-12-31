@@ -1,9 +1,11 @@
 package com.example.real_madrid_museo.kahoot
 
+import android.app.Activity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -16,6 +18,7 @@ data class PreguntaFallada(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun KahootFlow() {
+    val context = LocalContext.current
     var gameStarted by rememberSaveable { mutableStateOf(false) }
     var index by rememberSaveable { mutableIntStateOf(0) }
     var currentQuestions by remember { mutableStateOf(emptyList<KahootPregunta>()) }
@@ -66,7 +69,12 @@ fun KahootFlow() {
                     respuestasCorrectas = correctAnswers,
                     preguntasFalladas = failedQuestions,
                     onReiniciar = { gameStarted = false }, // Vuelve a instrucciones
-                    onFinalizar = { gameStarted = false }   // Vuelve a instrucciones
+                    onFinalizar = { 
+                        // MODIFICADO: Cierra la actividad Kahoot para volver al MainScreen
+                        if (context is Activity) {
+                            context.finish()
+                        }
+                    }
                 )
             } else {
                 val current = currentQuestions[index]
