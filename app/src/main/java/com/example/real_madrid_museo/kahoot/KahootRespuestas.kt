@@ -116,8 +116,29 @@ fun ContenidoPreguntaUnica(
     /* ─────────────── 🔊 TTS ─────────────── */
     val questionText = stringResource(question.pregunta)
     val lectorTTS = remember { LectorPreguntaTTS(context) }
-    LaunchedEffect(Unit) {
-        lectorTTS.leer(questionText)
+    // Modificación: TTS no inicia automáticamente, depende del sensor de proximidad
+
+    /* ─────────────── 📏 SENSOR DE PROXIMIDAD ─────────────── */
+    // Solo si el sensor detecta cercanía (NEAR), se lee la pregunta
+    val detectorProximidad = remember {
+        DetectorProximidad(
+            context,
+            onNear = { 
+                // Al acercar al oído -> LEER
+                lectorTTS.leer(questionText) 
+            },
+            onFar = { 
+                // Al alejar -> PARAR (Ahora activo para comportamiento tipo WhatsApp)
+                lectorTTS.parar() 
+            }
+        )
+    }
+    DisposableEffect(Unit) {
+        detectorProximidad.start()
+        onDispose { 
+            detectorProximidad.stop()
+            lectorTTS.liberar() 
+        }
     }
 
     /* ─────────────── ⏱ TIMER LOGIC ─────────────── */
@@ -165,7 +186,7 @@ fun ContenidoPreguntaUnica(
         voiceRecognizer.startListening()
         onDispose {
             voiceRecognizer.stop()
-            lectorTTS.liberar()
+            // TTS se libera arriba junto con el sensor de proximidad
         }
     }
 
@@ -195,7 +216,7 @@ fun ContenidoPreguntaUnica(
             )
 
             val elevation by animateDpAsState(if (isSelected) 12.dp else 4.dp)
-            val letter = ('A' + index).toString()
+            val number = (index + 1).toString()
 
             Row(
                 modifier = Modifier
@@ -215,7 +236,7 @@ fun ContenidoPreguntaUnica(
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 🔤 LETRA
+                // 🔢 NÚMERO
                 Surface(
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(14.dp),
@@ -224,7 +245,7 @@ fun ContenidoPreguntaUnica(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Text(
-                            text = letter,
+                            text = number,
                             fontWeight = FontWeight.Black,
                             color = RealMadridBlue,
                             style = MaterialTheme.typography.titleMedium

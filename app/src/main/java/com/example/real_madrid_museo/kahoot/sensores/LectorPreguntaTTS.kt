@@ -43,6 +43,12 @@ class LectorPreguntaTTS(context: Context) {
         speak(texto)
     }
 
+    fun parar() {
+        if (ready) {
+            tts.stop()
+        }
+    }
+
     private fun speak(texto: String) {
         try {
             tts.speak(

@@ -173,7 +173,7 @@
     <string name="kahoot_instructions_touch_title">Touch Control</string>
     <string name="kahoot_instructions_touch_desc">Touch one of the options on the screen to select it.</string>
     <string name="kahoot_instructions_voice_title">Voice Control</string>
-    <string name="kahoot_instructions_voice_desc">Say the letter (A, B, C, D) aloud to select your answer.</string>
+    <string name="kahoot_instructions_voice_desc">Say the number (1, 2, 3, 4) aloud to select your answer.</string>
     <string name="kahoot_instructions_shake_title">Gesture Control</string>
     <string name="kahoot_instructions_shake_desc">Select an option and then SHAKE your device to confirm your answer.</string>
     <string name="kahoot_instructions_start_button">LET\'S PLAY!</string>

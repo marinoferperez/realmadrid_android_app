@@ -7,68 +7,72 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import java.util.Locale
 
-class ReconocedorVozKahoot(
-    private val context: Context,
-    private val onLetterDetected: (Int) -> Unit
-) {
+class ReconocedorVozKahoot(private val context: Context, private val onResult: (Int) -> Unit) {
 
-    private val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+    private val speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+    private val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+    }
 
-    // Variantes aceptadas por letra
-    private val variantesA = listOf("OPCIÓN A", "A", "AH", "EI", "UNO", "1")
-    private val variantesB = listOf("OPCIÓN B", "B", "BE", "BI", "DOS", "2")
-    private val variantesC = listOf("OPCIÓN C", "C", "CE", "SE", "TRES", "3")
-    private val variantesD = listOf("OPCIÓN D", "D", "DE", "CUATRO", "4")
+    private val answerMap = mapOf(
+        // --- Español ---
+        "1" to 0, "uno" to 0, "opción 1" to 0, "la primera" to 0,
+        "2" to 1, "dos" to 1, "opción 2" to 1, "la segunda" to 1,
+        "3" to 2, "tres" to 2, "opción 3" to 2, "la tercera" to 2,
+        "4" to 3, "cuatro" to 3, "opción 4" to 3, "la cuarta" to 3,
+
+        // --- Inglés ---
+        "one" to 0, "option 1" to 0, "the first one" to 0,
+        "two" to 1, "option 2" to 1, "the second one" to 1,
+        "three" to 2, "option 3" to 2, "the third one" to 2,
+        "four" to 3, "option 4" to 3, "the fourth one" to 3
+    )
 
     init {
-        recognizer.setRecognitionListener(object : RecognitionListener {
-
-            override fun onResults(results: Bundle?) {
-                val matches = results
-                    ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                    ?.joinToString(" ")
-                    ?.uppercase() ?: return
-
-                Log.d("VOICE", "Detectado: $matches")
-
-                when {
-                    variantesA.any { matches.contains(it) } -> onLetterDetected(0)
-                    variantesB.any { matches.contains(it) } -> onLetterDetected(1)
-                    variantesC.any { matches.contains(it) } -> onLetterDetected(2)
-                    variantesD.any { matches.contains(it) } -> onLetterDetected(3)
-                }
-            }
-
-            override fun onError(error: Int) {
-                Log.e("VOICE", "Error reconocimiento: $error")
-                // NO hacemos nada → seguimos escuchando
-            }
-
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
             override fun onEndOfSpeech() {}
-            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onError(error: Int) {
+                if (error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
+                    speechRecognizer.startListening(speechRecognizerIntent)
+                }
+            }
+            override fun onResults(results: Bundle?) {}
+
+            override fun onPartialResults(partialResults: Bundle?) {
+                val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                if (!matches.isNullOrEmpty()) {
+                    val spokenText = matches[0].lowercase(Locale.getDefault()).trim()
+                    Log.d("VOZ", "Detectado: $spokenText")
+                    for ((key, value) in answerMap) {
+                        if (spokenText.contains(key)) {
+                            onResult(value)
+                            break
+                        }
+                    }
+                }
+            }
+
+            // --- MÉTODO AÑADIDO PARA SOLUCIONAR EL ERROR ---
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
     }
 
     fun startListening() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
-            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+        if (SpeechRecognizer.isRecognitionAvailable(context)) {
+            speechRecognizer.startListening(speechRecognizerIntent)
         }
-        recognizer.startListening(intent)
     }
 
     fun stop() {
-        recognizer.stopListening()
-        recognizer.destroy()
+        speechRecognizer.stopListening()
+        speechRecognizer.destroy()
     }
 }
