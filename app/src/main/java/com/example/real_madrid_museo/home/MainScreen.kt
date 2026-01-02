@@ -46,6 +46,7 @@ import com.example.real_madrid_museo.ui.vitrina.TrofeoManager
 import com.example.real_madrid_museo.ui.linea.SalaHistorica
 import com.example.real_madrid_museo.ui.linea.PuzzleHistoricoScreen
 import com.example.real_madrid_museo.ui.linea.EraManager
+import com.example.real_madrid_museo.ui.stadium.StadiumActivity
 
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
@@ -55,6 +56,7 @@ val MadridGold = Color(0xFFFEBE10)
 fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int, puntos: Int, ranking: Int, email: String?) {
     val context = LocalContext.current
     val historyRoomName = stringResource(R.string.map_history)
+    val stadiumRoomName = stringResource(R.string.map_stadium)
     
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     var mostrarColeccion by rememberSaveable { mutableStateOf(false) }
@@ -110,9 +112,17 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                         }
                     }
                     1 -> MapScreen(onNavigate = { nombreSala ->
-                        if (nombreSala.equals(historyRoomName, ignoreCase = true)) {
-                            selectedItem = 0
-                            mostrarSalaHistorica = true
+                        when {
+                            nombreSala.equals(historyRoomName, ignoreCase = true) -> {
+                                selectedItem = 0
+                                mostrarSalaHistorica = true
+                            }
+
+                            nombreSala.equals(stadiumRoomName, ignoreCase = true) -> {
+                                context.startActivity(
+                                    Intent(context, StadiumActivity::class.java)
+                                )
+                            }
                         }
                     })
                     2 -> {

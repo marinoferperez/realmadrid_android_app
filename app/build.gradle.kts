@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.real_madrid_museo"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -85,4 +85,11 @@ dependencies {
     implementation(libs.material)
     implementation("com.hbb20:ccp:2.7.3") // Country Code Picker
     implementation("nl.dionsegijn:konfetti-compose:2.0.5")
+
+    // SceneView (AR + 3D)
+    implementation("io.github.sceneview:sceneview:2.3.0")
+    implementation("io.github.sceneview:arsceneview:2.3.0")
+
+    // ARCore
+    implementation("com.google.ar:core:1.48.0")
 }

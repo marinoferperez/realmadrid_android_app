@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
         android:name="android.hardware.camera"
@@ -65,6 +66,17 @@
             android:name=".ui.vitrina.TrofeoActivity"
             android:exported="false"
             android:theme="@style/Theme.Real_madrid_museo" />
+
+        <activity
+            android:name=".ui.stadium.StadiumActivity"
+            android:exported="false" />
+
+
+        <meta-data
+            android:name="com.google.ar.core"
+            android:value="optional"
+            tools:replace="android:value" />
+
     </application>
 
 </manifest>
