@@ -117,10 +117,7 @@ fun ContenidoPreguntaUnica(
     val questionText = stringResource(question.pregunta)
     val lectorTTS = remember { LectorPreguntaTTS(context) }
     
-    // DEBUG: Leer la pregunta SIEMPRE al iniciar
-    LaunchedEffect(questionText) {
-        lectorTTS.leer(questionText)
-    }
+    // NOTA: Se ha eliminado la lectura automática al inicio para restaurar el comportamiento original.
 
     /* ─────────────── 📏 SENSOR DE PROXIMIDAD ─────────────── */
     // Solo si el sensor detecta cercanía (NEAR), se lee la pregunta
@@ -132,8 +129,8 @@ fun ContenidoPreguntaUnica(
                 lectorTTS.leer(questionText) 
             },
             onFar = { 
-                // Al alejar -> PARAR (Ahora activo para comportamiento tipo WhatsApp)
-                // lectorTTS.parar() // COMENTADO PARA DEBUG: No parar al alejar
+                // Al alejar -> PARAR (Comportamiento tipo WhatsApp)
+                lectorTTS.parar() 
             }
         )
     }
