@@ -111,7 +111,7 @@
     <!-- Map Screen -->
     <string name="map_hall">Pasillo</string>
     <string name="map_entrance">Entrada</string>
-    <string name="map_exit">Salida</string>
+    <string name="map_exit">Exit</string>
     <string name="map_showcase">Vitrina</string>
     <string name="map_history">Historia</string>
     <string name="map_stadium">Estadio</string>
@@ -135,6 +135,10 @@
     <string name="era_toast_discovered">¡Época descubierta!</string>
     <string name="history_back">Volver</string>
     <string name="history_listen">Escuchar</string>
+
+    <string name="era_puzzle_view_title">¡Época Desbloqueada!</string>
+    <string name="era_puzzle_view_instruction">Mueve el móvil para ver tu pieza del puzzle</string>
+    <string name="era_puzzle_view_btn">Ver Puzzle</string>
 
     <!-- Sala Histórica Eras -->
     <string name="era0_titulo">Los orígenes</string>
