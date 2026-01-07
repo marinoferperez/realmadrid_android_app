@@ -109,6 +109,8 @@
     <string name="map_players">Players</string>
     <string name="explore_rooms">Explore Rooms</string>
     <string name="museum_room">Museum Room</string>
+    <string name="visit_button">VISIT</string>
+    <string name="default_visitor_name">Visitor</string>
 
     <!-- Sala Histórica -->
     <string name="history_title">HISTORICAL ROOM</string>

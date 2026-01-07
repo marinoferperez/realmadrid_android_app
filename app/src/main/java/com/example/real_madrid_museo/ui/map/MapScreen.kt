@@ -264,7 +264,7 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                         colors = ButtonDefaults.buttonColors(containerColor = MadridBlue),
                         shape = RoundedCornerShape(15.dp)
                     ) {
-                        Text("VISITAR", color = MadridGold, fontWeight = FontWeight.Black)
+                        Text(stringResource(R.string.visit_button), color = MadridGold, fontWeight = FontWeight.Black)
                     }
                 }
             }

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.example.real_madrid_museo.ui.DatabaseHelper
 import com.example.real_madrid_museo.ui.comun.idiomas.aplicarIdioma
 import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
+import com.example.real_madrid_museo.R
 
 class AppActivity : ComponentActivity() {
 
@@ -23,7 +24,7 @@ class AppActivity : ComponentActivity() {
         val userData = if (tipoUsuario == "USUARIO") db.getUserDetails(userEmail) else null
 
         // Extraemos los datos, con valores por defecto si es nulo
-        val nombreFinal = userData?.get("name") as? String ?: "Visitante"
+        val nombreFinal = userData?.get("name") as? String ?: getString(R.string.default_visitor_name)
         val perfilFinal = userData?.get("profile") as? String ?: "INVITADO"
         val visitas = userData?.get("visits") as? Int ?: 1
         val puntos = userData?.get("points") as? Int ?: 0

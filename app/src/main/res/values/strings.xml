@@ -119,6 +119,8 @@
     <string name="map_players">Jugadores</string>
     <string name="explore_rooms">Explorar Salas</string>
     <string name="museum_room">Sala del Museo</string>
+    <string name="visit_button">VISITAR</string>
+    <string name="default_visitor_name">Visitante</string>
 
     <!-- Sala Histórica -->
     <string name="history_title">SALA HISTÓRICA</string>
