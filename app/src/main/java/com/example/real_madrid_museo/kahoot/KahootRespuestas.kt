@@ -147,7 +147,8 @@ fun ContenidoPreguntaUnica(
             delay(1000)
             timeLeft--
             if (timeLeft in 1..3 && !answered) {
-                vibracionCorrecta(context)
+                // Vibración de cuenta atrás
+                vibracionCuentaAtras(context)
             }
         }
         if (!answered && timeLeft == 0) {
@@ -191,6 +192,7 @@ fun ContenidoPreguntaUnica(
     }
 
     /* ─────────────── 🎨 UI DE LA PREGUNTA ─────────────── */
+
     Column {
         question.respuestas.forEachIndexed { index, answerRes ->
             val isSelected = selectedIndex == index
