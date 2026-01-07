@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Vibration
@@ -25,7 +26,7 @@ import com.example.real_madrid_museo.ui.theme.RealMadridBlue
 import com.example.real_madrid_museo.ui.theme.RealMadridGold
 
 @Composable
-fun KahootInstructionsScreen(onStart: () -> Unit) {
+fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         FondoAnimadoKahoot()
 
@@ -56,7 +57,7 @@ fun KahootInstructionsScreen(onStart: () -> Unit) {
                     
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // NUEVA INSTRUCCIÓN TÁCTIL
+                    // INSTRUCCIÓN TÁCTIL
                     InstructionItem(
                         icon = Icons.Default.TouchApp,
                         title = stringResource(R.string.kahoot_instructions_touch_title),
@@ -65,14 +66,16 @@ fun KahootInstructionsScreen(onStart: () -> Unit) {
                     
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // INSTRUCCIÓN TTS (Lector de preguntas)
                     InstructionItem(
-                        icon = Icons.Default.Mic,
-                        title = stringResource(R.string.kahoot_instructions_voice_title),
-                        desc = stringResource(R.string.kahoot_instructions_voice_desc)
+                        icon = Icons.Default.Hearing,
+                        title = stringResource(R.string.kahoot_instructions_tts_title),
+                        desc = stringResource(R.string.kahoot_instructions_tts_desc)
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    // INSTRUCCIÓN AGITAR
                     InstructionItem(
                         icon = Icons.Default.Vibration,
                         title = stringResource(R.string.kahoot_instructions_shake_title),
@@ -92,6 +95,19 @@ fun KahootInstructionsScreen(onStart: () -> Unit) {
                             color = RealMadridBlue,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    OutlinedButton(
+                        onClick = onBack,
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, RealMadridGold)
+                    ) {
+                        Text(
+                            text = "Volver al menú",
+                            color = RealMadridGold
                         )
                     }
                 }

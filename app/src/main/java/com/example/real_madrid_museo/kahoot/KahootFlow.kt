@@ -54,13 +54,20 @@ fun KahootFlow() {
         label = "KahootFlowTransition"
     ) { isGameStarted ->
         if (!isGameStarted) {
-            KahootInstructionsScreen(onStart = {
-                currentQuestions = todasLasPreguntasRealMadrid.shuffled().take(10)
-                gameStarted = true
-                index = 0
-                correctAnswers = 0
-                failedQuestions.clear()
-            })
+            KahootInstructionsScreen(
+                onStart = {
+                    currentQuestions = todasLasPreguntasRealMadrid.shuffled().take(10)
+                    gameStarted = true
+                    index = 0
+                    correctAnswers = 0
+                    failedQuestions.clear()
+                },
+                onBack = {
+                    if (context is Activity) {
+                        context.finish()
+                    }
+                }
+            )
         } else {
             // --- Flujo del juego principal ---
             if (index >= currentQuestions.size) {

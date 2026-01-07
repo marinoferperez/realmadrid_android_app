@@ -178,19 +178,7 @@ fun ContenidoPreguntaUnica(
         onDispose { shakeDetector.stop() }
     }
 
-    /* ─────────────── 🎙️ VOZ ─────────────── */
-    val voiceRecognizer = remember {
-        ReconocedorVozKahoot(context) { index ->
-            if (!answered) selectedIndex = index
-        }
-    }
-    DisposableEffect(Unit) {
-        voiceRecognizer.startListening()
-        onDispose {
-            voiceRecognizer.stop()
-            // TTS se libera arriba junto con el sensor de proximidad
-        }
-    }
+    // SE HA ELIMINADO EL RECONOCEDOR DE VOZ (ReconocedorVozKahoot)
 
     /* ─────────────── 🎨 UI DE LA PREGUNTA ─────────────── */
 

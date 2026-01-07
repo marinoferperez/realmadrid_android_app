@@ -184,6 +184,10 @@
     <string name="kahoot_instructions_touch_desc">Toca una de las opciones en la pantalla para seleccionarla.</string>
     <string name="kahoot_instructions_voice_title">Control por Voz</string>
     <string name="kahoot_instructions_voice_desc">Di el número (1, 2, 3, 4) en voz alta para seleccionar tu respuesta.</string>
+    
+    <string name="kahoot_instructions_tts_title">Lector de Preguntas</string>
+    <string name="kahoot_instructions_tts_desc">Si tienes dificultades para leer, acerca el móvil a tu oído para escuchar la pregunta.</string>
+    
     <string name="kahoot_instructions_shake_title">Control por Gesto</string>
     <string name="kahoot_instructions_shake_desc">Selecciona una opción y luego AGITA tu dispositivo para confirmar tu respuesta.</string>
     <string name="kahoot_instructions_start_button">¡A JUGAR!</string>
