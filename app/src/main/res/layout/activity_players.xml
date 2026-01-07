@@ -75,6 +75,8 @@
             android:layout_height="55dp"
             android:text="Ver Ficha Técnica"
             app:backgroundTint="@color/rm_blue_dark"
+            android:textColor="@color/white"
+            
             app:cornerRadius="12dp"
             app:icon="@android:drawable/ic_menu_info_details"
             app:iconGravity="textStart"/>
