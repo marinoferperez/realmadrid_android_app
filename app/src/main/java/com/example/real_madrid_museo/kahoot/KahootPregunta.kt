@@ -8,5 +8,5 @@ data class KahootPregunta(
     @StringRes val pregunta: Int,
     val respuestas: List<Int>, // List of StringRes IDs
     val respuestaCorrecta: Int,
-    val tiempoLimite: Int = 1
+    val tiempoLimite: Int = 50
 )

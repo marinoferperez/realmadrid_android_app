@@ -59,6 +59,7 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = { eras.size })
     var refreshKey by remember { mutableIntStateOf(0) }
 
+    // Guardamos la máxima luz detectada para calcular el contraste
     var maxLuxDetected by remember { mutableFloatStateOf(0f) }
 
     val playUnlockSound = {
@@ -76,23 +77,46 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event == null) return
                 val eraActual = eras[pagerState.currentPage]
+                
+                // Si ya está desbloqueada, no hacemos nada
                 if (EraManager.estaDesbloqueada(context, email, eraActual.id)) return
+                
                 var detectarDesbloqueo = false
+                
+                // Lógica del sensor de proximidad (fallback)
                 if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
                     val distance = event.values[0]
-                    if (distance < (proximitySensor?.maximumRange ?: 5f) || distance == 0f) detectarDesbloqueo = true
+                    if (distance < (proximitySensor?.maximumRange ?: 5f) || distance == 0f) {
+                        detectarDesbloqueo = true
+                    }
                 }
+                
+                // Lógica del sensor de luz mejorada por contraste
                 if (event.sensor.type == Sensor.TYPE_LIGHT) {
                     val currentLux = event.values[0]
-                    if (currentLux > maxLuxDetected) maxLuxDetected = currentLux
-                    val threshold = (maxLuxDetected * 0.15f).coerceAtLeast(3.0f)
-                    if (currentLux < threshold && maxLuxDetected > 5f) detectarDesbloqueo = true
+                    
+                    // Actualizamos el máximo nivel de luz visto en esta sesión de la página
+                    if (currentLux > maxLuxDetected) {
+                        maxLuxDetected = currentLux
+                    }
+                    
+                    // Detectamos desbloqueo por contraste:
+                    // Si hay una caída significativa (ej. menos del 40% de la luz máxima previa)
+                    // y el nivel de luz previo era lo suficientemente alto para notar el cambio.
+                    val threshold = maxLuxDetected * 0.4f
+                    if (maxLuxDetected > 10f && currentLux < threshold) {
+                        detectarDesbloqueo = true
+                    }
                 }
+                
                 if (detectarDesbloqueo) {
                     EraManager.desbloquearEra(context, email, eraActual.id)
-                    maxLuxDetected = 0f
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
-                    else vibrator.vibrate(150)
+                    maxLuxDetected = 0f // Reseteamos para la siguiente era
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
+                    } else {
+                        vibrator.vibrate(150)
+                    }
                     playUnlockSound()
                     Toast.makeText(context, eraDiscoveredMsg, Toast.LENGTH_SHORT).show()
                     refreshKey++
