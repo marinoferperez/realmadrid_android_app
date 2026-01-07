@@ -107,6 +107,8 @@
     <string name="map_stadium">Stadium</string>
     <string name="map_game">Game</string>
     <string name="map_players">Players</string>
+    <string name="explore_rooms">Explore Rooms</string>
+    <string name="museum_room">Museum Room</string>
 
     <!-- Sala Histórica -->
     <string name="history_title">HISTORICAL ROOM</string>

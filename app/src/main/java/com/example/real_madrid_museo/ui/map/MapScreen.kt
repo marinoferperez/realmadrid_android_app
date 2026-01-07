@@ -222,7 +222,7 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Explore, contentDescription = null, tint = MadridBlue)
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("Explorar salas", color = MadridBlue, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.explore_rooms), color = MadridBlue, fontWeight = FontWeight.Bold)
                     }
                     Icon(if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, contentDescription = null, tint = MadridBlue)
                 }
@@ -240,7 +240,7 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                 Row(modifier = Modifier.fillMaxSize().padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(selectedRoomName ?: "", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MadridBlue)
-                        Text("Sala del Museo", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                        Text(stringResource(R.string.museum_room), style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                     }
                     Button(
                         onClick = { 
