@@ -11,6 +11,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +45,8 @@ import androidx.compose.ui.unit.sp
 import com.example.real_madrid_museo.R
 import com.example.real_madrid_museo.home.MadridBlue
 import com.example.real_madrid_museo.home.MadridGold
+import kotlinx.coroutines.delay
+import kotlin.math.sqrt
 
 @Composable
 fun SalaHistorica(email: String, onBack: () -> Unit) {
@@ -50,16 +54,16 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
     val sensorManager = remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     val proximitySensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) }
     val lightSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) }
+    val accelSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) }
+    val gyroSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) }
     val vibrator = remember { context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator }
 
-    // Usamos listaEras directamente desde EraManager.kt
     val eras = remember { listaEras }
     var eraParaMostrar by remember { mutableStateOf<EraReal?>(null) }
-
+    var eraParaVerPuzzle by remember { mutableStateOf<EraReal?>(null) }
+    
     val pagerState = rememberPagerState(pageCount = { eras.size })
     var refreshKey by remember { mutableIntStateOf(0) }
-
-    // Guardamos la máxima luz detectada para calcular el contraste
     var maxLuxDetected by remember { mutableFloatStateOf(0f) }
 
     val playUnlockSound = {
@@ -77,46 +81,35 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event == null) return
                 val eraActual = eras[pagerState.currentPage]
-                
-                // Si ya está desbloqueada, no hacemos nada
                 if (EraManager.estaDesbloqueada(context, email, eraActual.id)) return
                 
                 var detectarDesbloqueo = false
                 
-                // Lógica del sensor de proximidad (fallback)
                 if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
                     val distance = event.values[0]
-                    if (distance < (proximitySensor?.maximumRange ?: 5f) || distance == 0f) {
-                        detectarDesbloqueo = true
-                    }
+                    if (distance < (proximitySensor?.maximumRange ?: 5f) || distance == 0f) detectarDesbloqueo = true
                 }
                 
-                // Lógica del sensor de luz mejorada por contraste
                 if (event.sensor.type == Sensor.TYPE_LIGHT) {
                     val currentLux = event.values[0]
-                    
-                    // Actualizamos el máximo nivel de luz visto en esta sesión de la página
-                    if (currentLux > maxLuxDetected) {
-                        maxLuxDetected = currentLux
-                    }
-                    
-                    // Detectamos desbloqueo por contraste:
-                    // Si hay una caída significativa (ej. menos del 40% de la luz máxima previa)
-                    // y el nivel de luz previo era lo suficientemente alto para notar el cambio.
+                    if (currentLux > maxLuxDetected) maxLuxDetected = currentLux
                     val threshold = maxLuxDetected * 0.4f
-                    if (maxLuxDetected > 10f && currentLux < threshold) {
-                        detectarDesbloqueo = true
-                    }
+                    if (maxLuxDetected > 10f && currentLux < threshold) detectarDesbloqueo = true
+                }
+
+                if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                    val x = event.values[0]
+                    val y = event.values[1]
+                    val z = event.values[2]
+                    val accelMag = sqrt((x * x + y * y + z * z).toDouble()).toFloat() - 9.81f
+                    if (accelMag > 13f) detectarDesbloqueo = true
                 }
                 
                 if (detectarDesbloqueo) {
                     EraManager.desbloquearEra(context, email, eraActual.id)
-                    maxLuxDetected = 0f // Reseteamos para la siguiente era
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
-                    } else {
-                        vibrator.vibrate(150)
-                    }
+                    maxLuxDetected = 0f
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE))
+                    else vibrator.vibrate(150)
                     playUnlockSound()
                     Toast.makeText(context, eraDiscoveredMsg, Toast.LENGTH_SHORT).show()
                     refreshKey++
@@ -126,6 +119,7 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
         }
         sensorManager.registerListener(listener, proximitySensor, SensorManager.SENSOR_DELAY_UI)
         sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_UI)
+        sensorManager.registerListener(listener, accelSensor, SensorManager.SENSOR_DELAY_UI)
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
@@ -141,7 +135,12 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 45.dp), pageSpacing = 20.dp) { page ->
                 val era = eras[page]
                 val estaDesbloqueada = remember(page, refreshKey) { EraManager.estaDesbloqueada(context, email, era.id) }
-                CartaEra(era = era, desbloqueada = estaDesbloqueada, onSaberMas = { eraParaMostrar = era })
+                CartaEra(
+                    era = era, 
+                    desbloqueada = estaDesbloqueada, 
+                    onSaberMas = { eraParaMostrar = era },
+                    onVerPuzzle = { eraParaVerPuzzle = era }
+                )
             }
             Spacer(modifier = Modifier.height(40.dp))
         }
@@ -151,11 +150,20 @@ fun SalaHistorica(email: String, onBack: () -> Unit) {
         }
 
         eraParaMostrar?.let { era -> DialogoInfoEra(era = era, onDismiss = { eraParaMostrar = null }) }
+        
+        eraParaVerPuzzle?.let { era ->
+            VisualizadorPuzzleGiroscopio(
+                era = era,
+                sensorManager = sensorManager,
+                gyroSensor = gyroSensor,
+                onDismiss = { eraParaVerPuzzle = null }
+            )
+        }
     }
 }
 
 @Composable
-fun CartaEra(era: EraReal, desbloqueada: Boolean, onSaberMas: () -> Unit) {
+fun CartaEra(era: EraReal, desbloqueada: Boolean, onSaberMas: () -> Unit, onVerPuzzle: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().height(500.dp),
         shape = RoundedCornerShape(32.dp),
@@ -187,15 +195,26 @@ fun CartaEra(era: EraReal, desbloqueada: Boolean, onSaberMas: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     if (desbloqueada) {
-                        Button(
-                            onClick = onSaberMas, 
-                            modifier = Modifier.fillMaxWidth(), 
-                            colors = ButtonDefaults.buttonColors(containerColor = MadridBlue, contentColor = Color.White), 
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Icon(Icons.Default.Search, contentDescription = null, tint = Color.White)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(stringResource(R.string.era_saber_mas), color = Color.White)
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(
+                                onClick = onSaberMas, 
+                                modifier = Modifier.weight(1f), 
+                                colors = ButtonDefaults.buttonColors(containerColor = MadridBlue, contentColor = Color.White), 
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Icon(Icons.Default.Search, contentDescription = null, tint = Color.White)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(stringResource(R.string.era_saber_mas), color = Color.White, fontSize = 12.sp)
+                            }
+                            
+                            FilledIconButton(
+                                onClick = onVerPuzzle,
+                                modifier = Modifier.size(48.dp),
+                                shape = RoundedCornerShape(16.dp),
+                                colors = IconButtonDefaults.filledIconButtonColors(containerColor = MadridGold)
+                            ) {
+                                Icon(Icons.Default.Extension, contentDescription = stringResource(R.string.era_puzzle_view_btn), tint = Color.White)
+                            }
                         }
                     } else {
                         Icon(imageVector = Icons.Default.TouchApp, contentDescription = null, tint = MadridGold.copy(alpha = 0.5f), modifier = Modifier.size(40.dp))
@@ -205,6 +224,112 @@ fun CartaEra(era: EraReal, desbloqueada: Boolean, onSaberMas: () -> Unit) {
             Surface(modifier = Modifier.align(Alignment.TopEnd).padding(16.dp), shape = CircleShape, color = if (desbloqueada) MadridGold else Color.Gray.copy(alpha = 0.8f), shadowElevation = 6.dp) {
                 Icon(imageVector = if (desbloqueada) Icons.Default.LockOpen else Icons.Default.Lock, contentDescription = null, modifier = Modifier.padding(10.dp).size(24.dp), tint = Color.White)
             }
+        }
+    }
+}
+
+@Composable
+fun VisualizadorPuzzleGiroscopio(
+    era: EraReal,
+    sensorManager: SensorManager,
+    gyroSensor: Sensor?,
+    onDismiss: () -> Unit
+) {
+    var timer by remember { mutableIntStateOf(10) }
+    var rotationX by remember { mutableFloatStateOf(0f) }
+    var rotationY by remember { mutableFloatStateOf(0f) }
+    
+    // Sensibilidad del giroscopio
+    val sensitivity = 1.5f
+
+    LaunchedEffect(Unit) {
+        while (timer > 0) {
+            delay(1000)
+            timer--
+        }
+        onDismiss()
+    }
+
+    DisposableEffect(Unit) {
+        val listener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                if (event == null || event.sensor.type != Sensor.TYPE_GYROSCOPE) return
+                // Los valores son velocidad angular rad/s
+                rotationY += event.values[1] * sensitivity
+                rotationX += event.values[0] * sensitivity
+                
+                // Limitamos la rotación para que no sea infinita
+                rotationX = rotationX.coerceIn(-30f, 30f)
+                rotationY = rotationY.coerceIn(-30f, 30f)
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+        sensorManager.registerListener(listener, gyroSensor, SensorManager.SENSOR_DELAY_GAME)
+        onDispose { sensorManager.unregisterListener(listener) }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.9f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = stringResource(R.string.era_puzzle_view_title),
+                color = MadridGold,
+                fontWeight = FontWeight.Black,
+                fontSize = 24.sp
+            )
+            Text(
+                text = stringResource(R.string.era_puzzle_view_instruction),
+                color = Color.White,
+                fontSize = 14.sp
+            )
+            
+            Spacer(modifier = Modifier.height(30.dp))
+            
+            Box(
+                modifier = Modifier
+                    .size(300.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.DarkGray)
+            ) {
+                // Aquí simulamos el efecto de "ventana" usando la rotación del móvil
+                Image(
+                    painter = painterResource(id = era.imagenPuzzleRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(x = (rotationY * 5).dp, y = (rotationX * 5).dp)
+                        .scale(1.5f), // Escalamos para que al movernos veamos distintas partes
+                    contentScale = ContentScale.Crop
+                )
+                
+                // Marco de la "mira"
+                Box(modifier = Modifier.fillMaxSize().background(Brush.radialGradient(
+                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.5f)),
+                    radius = 500f
+                )))
+            }
+            
+            Spacer(modifier = Modifier.height(40.dp))
+            
+            // Indicador de tiempo
+            Surface(
+                color = MadridBlue,
+                shape = CircleShape,
+                modifier = Modifier.size(60.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(text = timer.toString(), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                }
+            }
+        }
+        
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier.align(Alignment.TopEnd).padding(30.dp)
+        ) {
+            Icon(Icons.Default.Close, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
         }
     }
 }

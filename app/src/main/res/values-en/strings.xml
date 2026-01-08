@@ -126,6 +126,10 @@
     <string name="history_back">Back</string>
     <string name="history_listen">Listen</string>
 
+    <string name="era_puzzle_view_title">Era Unlocked!</string>
+    <string name="era_puzzle_view_instruction">Move your phone to see your puzzle piece</string>
+    <string name="era_puzzle_view_btn">View Puzzle</string>
+
     <!-- Sala Histórica Eras -->
     <string name="era0_titulo">The Origins</string>
     <string name="era0_periodo">1902 - 1940</string>
