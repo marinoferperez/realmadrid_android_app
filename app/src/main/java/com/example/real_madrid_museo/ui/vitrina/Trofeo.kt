@@ -12,6 +12,7 @@ import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -45,6 +47,7 @@ data class TrofeoInfo(
     val nombre: String,
     val subTitulo: String,
     val descripcion: String,
+    val infoExtra: String,
     val imagenRes: Int
 )
 
@@ -52,36 +55,43 @@ val listaTrofeos = listOf(
     TrofeoInfo(
         "Champions League", "La Decimoquinta",
         "El trofeo más prestigioso a nivel de clubes. El Real Madrid es el rey absoluto de esta competición.",
+        "El Real Madrid ganó su primera Copa de Europa en 1956. Desde entonces, ha establecido un idilio con la competición, destacando las 5 copas consecutivas de la era Di Stéfano y las 3 seguidas de la era Zidane.",
         R.drawable.copa_champions
     ),
     TrofeoInfo(
         "Copa de Europa (Antigua)", "El inicio de la Leyenda",
         "Las primeras copas ganadas por Gento, Di Stéfano y Puskás. Forja del mito madridista.",
+        "Este trofeo original, con un diseño diferente a la 'Orejona' actual, fue otorgado en propiedad al Real Madrid tras ganar seis de las primeras ediciones. Jugadores legendarios como Alfredo Di Stéfano, Paco Gento (el único jugador con 6 copas) y Ferenc Puskás forjaron aquí el prestigio mundial del que goza el club hoy en día.",
         R.drawable.copa_champions_old
     ),
     TrofeoInfo(
         "La Liga", "Regularidad Histórica",
         "El trofeo que premia al mejor equipo de España tras 38 jornadas.",
+        "Con más de 36 títulos en sus vitrinas, el Real Madrid es el dominador histórico del campeonato español. Destacan hitos como la 'Liga de los 100 puntos' conseguida en la temporada 2011-12 o la racha de las cinco ligas seguidas de la 'Quinta del Buitre' en los años 80, demostrando una consistencia inigualable.",
         R.drawable.copa_liga
     ),
     TrofeoInfo(
         "Copa del Rey", "El torneo del KO",
         "La competición más antigua del fútbol español.",
+        "La competición más antigua de España ha dejado momentos grabados en la memoria madridista, como la final de 2011 en Mestalla con el gol de cabeza de Cristiano Ronaldo, o la carrera icónica de Gareth Bale en 2014. Es un trofeo que celebra la pasión y la resistencia en eliminatorias directas.",
         R.drawable.copa_rey
     ),
     TrofeoInfo(
         "Mundial de Clubes", "Campeones del Mundo",
         "El título que acredita al Real Madrid como el mejor equipo del planeta.",
+        "Sumando las antiguas Copas Intercontinentales y los actuales Mundiales de Clubes de la FIFA, el Real Madrid es el club con más títulos mundiales del planeta. Este trofeo acredita que el equipo ha vencido a los campeones de todos los continentes, luciendo con orgullo el parche dorado en su camiseta.",
         R.drawable.copa_mundialito
     ),
     TrofeoInfo(
         "Supercopa de Europa", "Supercampeones",
         "El duelo que decide quién manda en el continente.",
+        "Este título enfrenta anualmente al campeón de la Champions League contra el ganador de la Europa League. El Real Madrid ha demostrado su hegemonía europea ganando este trofeo en numerosas ocasiones, consolidando su estatus como el equipo a batir en el viejo continente al inicio de cada temporada.",
         R.drawable.copa_super_uefa
     ),
     TrofeoInfo(
         "Supercopa de España", "El primer título",
         "Torneo que enfrenta a los mejores equipos de la temporada española.",
+        "Tradicionalmente enfrentaba al campeón de Liga y Copa, pero desde 2020 se disputa en un emocionante formato de 'Final Four'. El Real Madrid ha dominado este nuevo sistema, ofreciendo grandes actuaciones y Clásicos memorables en sedes internacionales, siendo a menudo el primer trofeo que marca el rumbo de una temporada exitosa.",
         R.drawable.copa_super_espana
     )
 )
@@ -97,6 +107,7 @@ fun Trofeo(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
+    var mostrarDialogo by remember { mutableStateOf(false) } // Estado para el diálogo
 
     // --- 1. CONFIGURACIÓN DEL AUDIO (TTS) ---
     var tts: TextToSpeech? by remember { mutableStateOf(null) }
@@ -265,6 +276,19 @@ fun Trofeo(
                         )
                     }
                 }
+
+                // --- BOTÓN DE MÁS INFORMACIÓN ---
+                OutlinedButton(
+                    onClick = { mostrarDialogo = true },
+                    modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MadridBlue),
+                    border = BorderStroke(1.dp, MadridBlue)
+                ) {
+                    Icon(Icons.Default.Info, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Más información histórica")
+                }
+
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
@@ -272,6 +296,22 @@ fun Trofeo(
             if (estaCelebrando) {
                 // Aquí podrías poner una imagen de confeti transparente encima si tuvieras
                 // Por ahora, el cambio de color y zoom es suficiente feedback
+            }
+
+            // --- LÓGICA DEL DIÁLOGO EMERGENTE ---
+            if (mostrarDialogo) {
+                AlertDialog(
+                    onDismissRequest = { mostrarDialogo = false },
+                    title = { Text(trofeo.nombre, fontWeight = FontWeight.Bold, color = MadridBlue) },
+                    text = { Text(trofeo.infoExtra, textAlign = TextAlign.Justify) },
+                    confirmButton = {
+                        TextButton(onClick = { mostrarDialogo = false }) {
+                            Text("Cerrar", color = MadridGold, fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    containerColor = Color.White,
+                    shape = RoundedCornerShape(20.dp)
+                )
             }
         }
     }
@@ -298,6 +338,6 @@ fun vibrarMovil(context: Context) {
 @Preview(showBackground = true)
 @Composable
 fun TrofeoPreview() {
-    val trofeoEjemplo = TrofeoInfo("Champions", "La 15", "Desc...", R.drawable.copa_champions)
+    val trofeoEjemplo = TrofeoInfo("Champions", "La 15", "Desc...", "Info...", R.drawable.copa_champions)
     Trofeo(trofeo = trofeoEjemplo, onBackClick = {})
 }
