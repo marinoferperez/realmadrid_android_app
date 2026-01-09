@@ -134,23 +134,6 @@ fun ScannerScreen(onResultFound: (String) -> Unit) { // <-- CAMBIO: Ahora recibe
 
             QRScannerOverlay()
 
-            FloatingActionButton(
-                onClick = {
-                    lensFacing = if (lensFacing == CameraSelector.LENS_FACING_BACK)
-                        CameraSelector.LENS_FACING_FRONT
-                    else
-                        CameraSelector.LENS_FACING_BACK
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 110.dp, end = 24.dp),
-                containerColor = MadridGold,
-                contentColor = MadridBlue,
-                shape = CircleShape
-            ) {
-                Icon(Icons.Default.FlipCameraAndroid, contentDescription = "Girar Cámara")
-            }
-
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),

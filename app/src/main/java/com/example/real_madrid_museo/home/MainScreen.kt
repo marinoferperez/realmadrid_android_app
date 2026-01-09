@@ -48,6 +48,8 @@ import com.example.real_madrid_museo.ui.linea.PuzzleHistoricoScreen
 import com.example.real_madrid_museo.ui.linea.EraManager
 import com.example.real_madrid_museo.ui.stadium.StadiumActivity
 
+
+
 // Colores oficiales
 val MadridBlue = Color(0xFF002D72)
 val MadridGold = Color(0xFFFEBE10)
@@ -57,7 +59,7 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
     val context = LocalContext.current
     val historyRoomName = stringResource(R.string.map_history)
     val stadiumRoomName = stringResource(R.string.map_stadium)
-    
+
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     var mostrarColeccion by rememberSaveable { mutableStateOf(false) }
     var mostrarSalaHistorica by rememberSaveable { mutableStateOf(false) }
@@ -79,14 +81,15 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                 shadowElevation = 12.dp,
                 color = Color.White.copy(alpha = 0.95f)
             ) {
-                NavigationBar(containerColor = Color.Transparent) {
+                NavigationBar(
+                    containerColor = Color.Transparent) {
                     items.forEachIndexed { index, item ->
                         NavigationBarItem(
                             icon = { Icon(icons[index], contentDescription = item, modifier = Modifier.size(26.dp)) },
                             label = { Text(item, fontSize = 12.sp, fontWeight = FontWeight.Medium) },
                             selected = selectedItem == index,
-                            onClick = { 
-                                selectedItem = index 
+                            onClick = {
+                                selectedItem = index
                                 mostrarColeccion = false
                                 mostrarSalaHistorica = false
                                 mostrarPuzzle = false
@@ -148,6 +151,23 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                                     intent.putExtra("INDICE_TROFEO", 0)
                                     context.startActivity(intent)
                                 }
+                                "12" -> {
+                                    // Abrimos la actividad de exploración del estadio
+                                    val intent = Intent(context, StadiumActivity::class.java)
+                                    context.startActivity(intent)
+                                }
+
+                                "13" -> {
+                                    // Cambiamos al tab de Inicio (0) y activamos la variable para mostrar la sala
+                                    selectedItem = 0
+                                    mostrarSalaHistorica = true
+
+                                }
+
+                                "14" -> {
+                                    val intent = Intent(context, PlayersActivity::class.java)
+                                    context.startActivity(intent)
+                                }
                                 else -> {
                                     Toast.makeText(context, "QR no reconocido: $resultado", Toast.LENGTH_SHORT).show()
                                 }
@@ -175,7 +195,7 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
             // --- LÓGICA DE VISIBILIDAD DEL SELECTOR DE IDIOMA ---
             // Se muestra en INICIO (0), PERFIL (3) y SALA HISTÓRICA
             // Se oculta en MAPA (1) y CÁMARA (2)
-            val mostrarSelectorGlobal = (selectedItem == 0 || selectedItem == 3 || (selectedItem == 0 && mostrarSalaHistorica)) && 
+            val mostrarSelectorGlobal = (selectedItem == 0 || selectedItem == 3 || (selectedItem == 0 && mostrarSalaHistorica)) &&
                                        !mostrarColeccion && !mostrarPuzzle
 
             if (mostrarSelectorGlobal) {
@@ -198,7 +218,7 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
 @Composable
 fun DashboardInicio(nombre: String) {
     val context = LocalContext.current
-    
+
     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
         item {
             Spacer(modifier = Modifier.height(20.dp))
@@ -210,7 +230,7 @@ fun DashboardInicio(nombre: String) {
         item {
             Text(stringResource(R.string.dashboard_next_match), fontWeight = FontWeight.Bold, fontSize = 18.sp, color = MadridBlue)
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth().height(160.dp),
                 shape = RoundedCornerShape(25.dp),
@@ -235,7 +255,7 @@ fun DashboardInicio(nombre: String) {
                                 )
                             )
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -258,14 +278,14 @@ fun DashboardInicio(nombre: String) {
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(stringResource(R.string.dashboard_team_1), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
-                        
+
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("VS", color = MadridGold, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp)
                             Surface(color = MadridGold, shape = RoundedCornerShape(10.dp)) {
                                 Text("DOM 21:00", color = MadridBlue, fontSize = 10.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp))
                             }
                         }
-                        
+
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Surface(
                                 shape = CircleShape,
@@ -579,7 +599,7 @@ fun RankingDialog(onDismiss: () -> Unit) {
                         val rank = index + 1
                         val isTop3 = rank <= 3
                         val backgroundColor = if (rank % 2 == 0) Color(0xFFF5F5F5) else Color.White
-                        
+
                         // Determinar color de medalla/rank
                         val rankColor = when (rank) {
                             1 -> MadridGold // Oro

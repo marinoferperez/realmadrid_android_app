@@ -375,4 +375,43 @@
     <string name="solutions_play_again">Play again</string>
     <string name="solutions_finalize">Finalize</string>
 
+    <!-- Common buttons used in Stadium -->
+    <string name="btn_start_visit">Start Visit</string>
+    <string name="btn_back">Back</string>
+
+    <!-- Stadium -->
+    <string name="stadium_name">Santiago Bernabéu</string>
+    <string name="stadium_compass_subtitle">Digital Compass</string>
+    <string name="stadium_explorer_title">Stadium Explorer</string>
+    <string name="stadium_locked_msg">Explore (%1$d/%2$d)\nto unlock</string>
+
+    <string name="stadium_instr_1_title">Rotate your device</string>
+    <string name="stadium_instr_1_desc">Use the compass and rotate 360° to find the hidden historical milestones.</string>
+
+    <string name="stadium_instr_2_title">Unlock the model</string>
+    <string name="stadium_instr_2_desc">Visit all 6 historical points on the wheel to unlock the center button.</string>
+
+    <string name="stadium_instr_3_title">3D View</string>
+    <string name="stadium_instr_3_desc">Once unlocked, you can see the New Bernabéu in Augmented Reality.</string>
+
+    <string name="stadium_fact_1_title">Inauguration (1947)</string>
+    <string name="stadium_fact_1_desc">It opened on December 14, 1947 as the New Chamartín Stadium.</string>
+
+    <string name="stadium_fact_2_title">The Golden Era (1950s)</string>
+    <string name="stadium_fact_2_desc">In 1954 it reached a capacity of 125,000 spectators and added electric lighting.</string>
+
+    <string name="stadium_fact_3_title">Spain \'82 World Cup</string>
+    <string name="stadium_fact_3_desc">Complete remodeling: new roof and improved access areas.</string>
+
+    <string name="stadium_fact_4_title">The 90s Towers</string>
+    <string name="stadium_fact_4_desc">The four iconic towers and the third tier were introduced.</string>
+
+    <string name="stadium_fact_5_title">Elite Stadium (2007)</string>
+    <string name="stadium_fact_5_desc">UEFA certified it as an Elite Stadium for European finals.</string>
+
+    <string name="stadium_fact_6_title">The New Bernabéu</string>
+    <string name="stadium_fact_6_desc">Steel skin, retractable roof, and underground pitch.</string>
+
+    <!-- Optional: if you want to localize the center button label too -->
+    <string name="stadium_3d_view_label">3D VIEW</string>
 </resources>

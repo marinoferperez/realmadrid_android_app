@@ -1,5 +1,6 @@
 package com.example.real_madrid_museo.ui.stadium
 
+import android.app.Activity
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -13,10 +14,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.ViewInAr
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,9 +32,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,32 +54,165 @@ private val MadridBlue = Color(0xFF002D72)
 private val MadridGold = Color(0xFFFEBE10)
 private val DeepNight = Color(0xFF000814)
 
+// Modificado para usar Int (Recursos) en lugar de String directo
 data class BernabeuFact(
     val id: Int,
-    val title: String,
-    val description: String,
+    val titleRes: Int,       // ID del recurso de string
+    val descriptionRes: Int, // ID del recurso de string
     val imageRes: Int,
     val angle: Float
 )
 
 @Composable
 fun StadiumExplorerScreen(assetPath: String = "models/bernabeu.glb") {
+    val context = LocalContext.current
+    var showInstructions by remember { mutableStateOf(true) }
+
+    // Al quitar el botón, el idioma se hereda automáticamente del Contexto de la App
+    if (showInstructions) {
+        StadiumInstructionsScreen(
+            onStart = { showInstructions = false },
+            onBack = { (context as? Activity)?.finish() }
+        )
+    } else {
+        StadiumExplorerContent(assetPath)
+    }
+}
+
+@Composable
+fun StadiumExplorerContent(assetPath: String) {
+    val context = LocalContext.current
     var isARMode by remember { mutableStateOf(false) }
 
-    val bernabeuHistory = listOf(
-        BernabeuFact(0, "INAUGURACIÓN (1947)", "Se inauguró el 14 de diciembre de 1947 como Nuevo Estadio Chamartín.", R.drawable.foto_1947, 0f),
-        BernabeuFact(1, "LA ÉPOCA DE ORO (1950s)", "En 1954 alcanzó un aforo de 125.000 espectadores e iluminación eléctrica.", R.drawable.foto_1955, 60f),
-        BernabeuFact(2, "MUNDIAL ESPAÑA '82", "Remodelación total: gran cubierta y modernización de accesos.", R.drawable.foto_finales, 120f),
-        BernabeuFact(3, "LAS TORRES DE LOS 90", "Aparición de las cuatro icónicas torres y el tercer anfiteatro.", R.drawable.foto_torres, 180f),
-        BernabeuFact(4, "ESTADIO DE ÉLITE (2007)", "La UEFA lo certificó como Estadio de Élite para finales continentales.", R.drawable.foto_elite, 240f),
-        BernabeuFact(5, "EL NUEVO BERNABÉU", "Piel de acero, techo retráctil y césped hipogeo.", R.drawable.foto_nuevo, 300f)
-    )
+    // Definimos los datos usando R.string para que se traduzcan solos
+    val bernabeuHistory = remember {
+        listOf(
+            BernabeuFact(0, R.string.stadium_fact_1_title, R.string.stadium_fact_1_desc, R.drawable.foto_1947, 0f),
+            BernabeuFact(1, R.string.stadium_fact_2_title, R.string.stadium_fact_2_desc, R.drawable.foto_1955, 60f),
+            BernabeuFact(2, R.string.stadium_fact_3_title, R.string.stadium_fact_3_desc, R.drawable.foto_finales, 120f),
+            BernabeuFact(3, R.string.stadium_fact_4_title, R.string.stadium_fact_4_desc, R.drawable.foto_torres, 180f),
+            BernabeuFact(4, R.string.stadium_fact_5_title, R.string.stadium_fact_5_desc, R.drawable.foto_elite, 240f),
+            BernabeuFact(5, R.string.stadium_fact_6_title, R.string.stadium_fact_6_desc, R.drawable.foto_nuevo, 300f)
+        )
+    }
 
     Box(Modifier.fillMaxSize()) {
         if (!isARMode) {
             CompassRouletteView(bernabeuHistory, onEnterAR = { isARMode = true })
+
+            // Botón de salir (Igual que en SalaHistorica)
+            IconButton(
+                onClick = { (context as? Activity)?.finish() },
+                modifier = Modifier.padding(top = 48.dp, start = 16.dp).align(Alignment.TopStart)
+            ) {
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.btn_back), tint = Color.White)
+            }
         } else {
             ARStadiumView(assetPath, onExitAR = { isARMode = false })
+        }
+    }
+}
+
+@Composable
+fun StadiumInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.8f))
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.DarkGray.copy(alpha = 0.95f)),
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(2.dp, MadridGold),
+                elevation = CardDefaults.cardElevation(10.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.stadium_explorer_title).uppercase(),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MadridGold,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    StadiumInstructionItem(
+                        icon = Icons.Default.Explore,
+                        title = stringResource(R.string.stadium_instr_1_title),
+                        desc = stringResource(R.string.stadium_instr_1_desc)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    StadiumInstructionItem(
+                        icon = Icons.Default.LockOpen,
+                        title = stringResource(R.string.stadium_instr_2_title),
+                        desc = stringResource(R.string.stadium_instr_2_desc)
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    StadiumInstructionItem(
+                        icon = Icons.Default.ViewInAr,
+                        title = stringResource(R.string.stadium_instr_3_title),
+                        desc = stringResource(R.string.stadium_instr_3_desc)
+                    )
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Button(
+                        onClick = onStart,
+                        colors = ButtonDefaults.buttonColors(containerColor = MadridGold),
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(stringResource(R.string.btn_start_visit), color = MadridBlue, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    OutlinedButton(
+                        onClick = onBack,
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MadridGold)
+                    ) {
+                        Text(stringResource(R.string.btn_back), color = MadridGold)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StadiumInstructionItem(icon: ImageVector, title: String, desc: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Surface(
+            color = MadridGold.copy(alpha = 0.2f),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.size(56.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(imageVector = icon, contentDescription = null, tint = MadridGold, modifier = Modifier.size(32.dp))
+            }
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(text = title, style = MaterialTheme.typography.titleMedium, color = Color.White, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = desc, style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
         }
     }
 }
@@ -88,12 +226,9 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
     var smoothAzimuth by remember { mutableStateOf(0f) }
     var lastAzimuth by remember { mutableStateOf(0f) }
     var initialOffset by remember { mutableStateOf<Float?>(null) }
-
-    // Lista de IDs visitados
     val visitedFacts = remember { mutableStateListOf<Int>() }
     val isUnlocked = visitedFacts.size == history.size
 
-    // --- SENSOR ---
     DisposableEffect(Unit) {
         val listener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
@@ -114,24 +249,17 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    // --- LÓGICA DE DETECCIÓN MEJORADA ---
-    // Se ejecuta cada vez que 'lastAzimuth' cambia. Es mucho más preciso.
     LaunchedEffect(lastAzimuth) {
         val normalized = (lastAzimuth % 360 + 360) % 360
-
         history.forEach { fact ->
-            // Calculamos la distancia angular al hecho
             val diff = abs(normalized - fact.angle)
             val realDiff = if (diff > 180) 360 - diff else diff
-
-            // Si estamos cerca (margen de 15 grados) y NO lo hemos visitado aún -> Añadir
             if (realDiff < 15 && !visitedFacts.contains(fact.id)) {
                 visitedFacts.add(fact.id)
             }
         }
     }
 
-    // Cálculo visual normalizado
     val normalizedAzimuth = (lastAzimuth % 360 + 360) % 360
     val activeFact = history.minByOrNull { fact ->
         val diff = abs(normalizedAzimuth - fact.angle)
@@ -144,93 +272,56 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
             .background(Brush.verticalGradient(listOf(MadridBlue, DeepNight, Color.Black))),
         contentAlignment = Alignment.Center
     ) {
-        // --- 1. CABECERA ---
+        // Cabecera
         Column(
             modifier = Modifier.align(Alignment.TopCenter).padding(top = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("SANTIAGO BERNABÉU", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
-            Text("BRÚJULA DIGITAL", color = MadridGold, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
-
+            Text(stringResource(R.string.stadium_name).uppercase(), color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
+            Text(stringResource(R.string.stadium_compass_subtitle).uppercase(), color = MadridGold, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
             Spacer(Modifier.height(10.dp))
-
-            // Barra de progreso (Puntos superiores)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 history.forEach { fact ->
                     val isVisited = visitedFacts.contains(fact.id)
-                    Box(
-                        Modifier
-                            .size(if(isVisited) 8.dp else 6.dp)
-                            .clip(CircleShape)
-                            .background(if (isVisited) MadridGold else Color.White.copy(0.2f))
-                    )
+                    Box(Modifier.size(if(isVisited) 8.dp else 6.dp).clip(CircleShape).background(if (isVisited) MadridGold else Color.White.copy(0.2f)))
                 }
             }
         }
 
-        // --- 2. ZONA CENTRAL (RULETA) ---
+        // Ruleta Central
         Box(
-            modifier = Modifier
-                .size(300.dp)
-                .offset(y = (-50).dp),
+            modifier = Modifier.size(300.dp).offset(y = (-50).dp),
             contentAlignment = Alignment.Center
         ) {
-            // Fondo tenue
             Canvas(Modifier.fillMaxSize().alpha(0.15f)) {
                 drawCircle(MadridGold, radius = size.minDimension / 2, style = Stroke(1f))
             }
 
-            // HITOS (Marcas alrededor)
             history.forEach { fact ->
-                // ¿Está activo ahora mismo (estoy encima)?
                 val diff = abs(normalizedAzimuth - fact.angle)
                 val realDiff = if (diff > 180) 360 - diff else diff
                 val isCurrentlyActive = realDiff < 15
-
-                // ¿Ha sido visitado alguna vez?
                 val isVisited = visitedFacts.contains(fact.id)
 
-                Box(
-                    Modifier.fillMaxSize().graphicsLayer { rotationZ = fact.angle },
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    // LÓGICA VISUAL DE LA RALLA
+                Box(Modifier.fillMaxSize().graphicsLayer { rotationZ = fact.angle }, contentAlignment = Alignment.TopCenter) {
                     Box(
                         Modifier
-                            // Si está activo es más ancho (4dp), si está visitado normal (2.5dp), si no fino (1.5dp)
                             .size(if (isCurrentlyActive) 4.dp else if (isVisited) 2.5.dp else 1.5.dp, 25.dp)
-                            // Si está activo O visitado -> ORO. Si no -> Blanco transparente
-                            .background(
-                                if (isCurrentlyActive || isVisited) MadridGold else Color.White.copy(0.2f),
-                                RoundedCornerShape(2.dp)
-                            )
-                            // Efecto de brillo si está activo
+                            .background(if (isCurrentlyActive || isVisited) MadridGold else Color.White.copy(0.2f), RoundedCornerShape(2.dp))
                             .shadow(if (isCurrentlyActive) 10.dp else 0.dp, spotColor = MadridGold)
                     )
                 }
             }
 
-            // Puntero (Se mueve)
-            Box(
-                Modifier.fillMaxSize().graphicsLayer { rotationZ = smoothAzimuth },
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .offset(y = (-5).dp)
-                        .background(Color.White, CircleShape)
-                        .drawBehind {
-                            drawCircle(MadridGold, radius = size.minDimension * 0.8f, alpha = 0.5f)
-                            drawCircle(MadridGold.copy(0.2f), radius = size.minDimension * 2f)
-                        }
-                )
+            Box(Modifier.fillMaxSize().graphicsLayer { rotationZ = smoothAzimuth }, contentAlignment = Alignment.TopCenter) {
+                Box(Modifier.size(22.dp).offset(y = (-5).dp).background(Color.White, CircleShape).drawBehind {
+                    drawCircle(MadridGold, radius = size.minDimension * 0.8f, alpha = 0.5f)
+                    drawCircle(MadridGold.copy(0.2f), radius = size.minDimension * 2f)
+                })
             }
 
-            // NÚCLEO CENTRAL (BOTÓN / CANDADO)
             AnimatedContent(targetState = isUnlocked, label = "Unlock") { unlocked ->
                 if (unlocked) {
-                    // DESBLOQUEADO
                     Surface(
                         onClick = onEnterAR,
                         modifier = Modifier.size(100.dp),
@@ -239,17 +330,12 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
                         shadowElevation = 20.dp,
                         border = BorderStroke(2.dp, Color.White.copy(0.5f))
                     ) {
-                        Column(
-                            Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.ViewInAr, contentDescription = null, tint = MadridBlue, modifier = Modifier.size(36.dp))
                             Text("3D VIEW", color = MadridBlue, fontWeight = FontWeight.Black, fontSize = 12.sp)
                         }
                     }
                 } else {
-                    // BLOQUEADO
                     Surface(
                         modifier = Modifier.size(100.dp),
                         shape = CircleShape,
@@ -257,15 +343,11 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
                         border = BorderStroke(1.dp, MadridGold.copy(0.3f)),
                         shadowElevation = 10.dp
                     ) {
-                        Column(
-                            Modifier.fillMaxSize().padding(10.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        Column(Modifier.fillMaxSize().padding(10.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.Lock, contentDescription = null, tint = MadridGold.copy(0.5f), modifier = Modifier.size(20.dp))
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                "EXPLORA (${visitedFacts.size}/6)\nPARA ABRIR",
+                                stringResource(R.string.stadium_locked_msg, visitedFacts.size, 6),
                                 color = MadridGold.copy(0.8f),
                                 fontSize = 9.sp,
                                 lineHeight = 11.sp,
@@ -278,24 +360,15 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
             }
         }
 
-        // --- 3. TARJETA INFO ---
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 50.dp)
-        ) {
+        // Tarjeta Info
+        Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp)) {
             AnimatedContent(
                 targetState = activeFact,
-                transitionSpec = {
-                    (fadeIn(tween(300)) + scaleIn(initialScale = 0.95f))
-                        .togetherWith(fadeOut(tween(300)) + scaleOut(targetScale = 1.05f))
-                },
+                transitionSpec = { (fadeIn(tween(300)) + scaleIn(initialScale = 0.95f)).togetherWith(fadeOut(tween(300)) + scaleOut(targetScale = 1.05f)) },
                 label = "Card"
             ) { fact ->
                 fact?.let {
-                    // Si el hecho ha sido visitado, mostramos el icono de check
                     val isCollected = visitedFacts.contains(it.id)
-
                     Card(
                         modifier = Modifier.fillMaxWidth(0.92f).height(160.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.08f)),
@@ -311,13 +384,13 @@ fun CompassRouletteView(history: List<BernabeuFact>, onEnterAR: () -> Unit) {
                             )
                             Column(modifier = Modifier.weight(0.62f).padding(18.dp).verticalScroll(rememberScrollState())) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(it.title, color = MadridGold, fontSize = 13.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
+                                    Text(stringResource(it.titleRes), color = MadridGold, fontSize = 13.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f))
                                     if (isCollected) {
                                         Icon(Icons.Default.CheckCircle, contentDescription = null, tint = MadridGold, modifier = Modifier.size(16.dp))
                                     }
                                 }
                                 Spacer(Modifier.height(6.dp))
-                                Text(it.description, color = Color.White.copy(0.9f), fontSize = 12.sp, lineHeight = 16.sp)
+                                Text(stringResource(it.descriptionRes), color = Color.White.copy(0.9f), fontSize = 12.sp, lineHeight = 16.sp)
                             }
                         }
                     }

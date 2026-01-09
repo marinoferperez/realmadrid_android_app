@@ -385,4 +385,35 @@
     <string name="solutions_play_again">Jugar de nuevo</string>
     <string name="solutions_finalize">Finalizar</string>
 
+    <string name="stadium_name">Santiago Bernabéu</string>
+    <string name="stadium_compass_subtitle">Brújula Digital</string>
+    <string name="stadium_explorer_title">Explorador del Estadio</string>
+    <string name="stadium_locked_msg">Explora (%1$d/%2$d)\npara abrir</string>
+    <string name="btn_start_visit">Comenzar Visita</string>
+    <string name="btn_back">Volver</string>
+
+    <string name="stadium_instr_1_title">Gira tu Dispositivo</string>
+    <string name="stadium_instr_1_desc">Usa la brújula y gira 360º sobre ti mismo para encontrar los hitos históricos ocultos.</string>
+    <string name="stadium_instr_2_title">Desbloquea el Modelo</string>
+    <string name="stadium_instr_2_desc">Debes visitar los 6 puntos históricos de la ruleta para desbloquear el botón central.</string>
+    <string name="stadium_instr_3_title">Visualización 3D</string>
+    <string name="stadium_instr_3_desc">Una vez desbloqueado, podrás ver el Nuevo Bernabéu en Realidad Aumentada.</string>
+
+    <string name="stadium_fact_1_title">Inauguración (1947)</string>
+    <string name="stadium_fact_1_desc">Se inauguró el 14 de diciembre de 1947 como Nuevo Estadio Chamartín.</string>
+
+    <string name="stadium_fact_2_title">La Época de Oro (1950s)</string>
+    <string name="stadium_fact_2_desc">En 1954 alcanzó un aforo de 125.000 espectadores e iluminación eléctrica.</string>
+
+    <string name="stadium_fact_3_title">Mundial España \'82</string>
+    <string name="stadium_fact_3_desc">Remodelación total: gran cubierta y modernización de accesos.</string>
+
+    <string name="stadium_fact_4_title">Las Torres de los 90</string>
+    <string name="stadium_fact_4_desc">Aparición de las cuatro icónicas torres y el tercer anfiteatro.</string>
+
+    <string name="stadium_fact_5_title">Estadio de Élite (2007)</string>
+    <string name="stadium_fact_5_desc">La UEFA lo certificó como Estadio de Élite para finales continentales.</string>
+
+    <string name="stadium_fact_6_title">El Nuevo Bernabéu</string>
+    <string name="stadium_fact_6_desc">Piel de acero, techo retráctil y césped hipogeo.</string>
 </resources>
