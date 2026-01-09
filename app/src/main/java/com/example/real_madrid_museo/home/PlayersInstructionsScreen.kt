@@ -94,7 +94,7 @@ fun PlayersInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.kahoot_instructions_start_button),
+                            text = stringResource(R.string.players_instructions_start_button),
                             color = RealMadridBlue,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold

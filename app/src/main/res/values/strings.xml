@@ -202,7 +202,8 @@
     <string name="kahoot_instructions_back_button">Volver al menú</string>
 
     <!-- Players Room Instructions -->
-    <string name="players_instructions_title">Instrucciones del Juego</string>
+    <string name="players_instructions_start_button">COMENZAR LA VISITA</string>
+    <string name="players_instructions_title">Instrucciones</string>
     <string name="players_instructions_unlock_title">Desbloqueo</string>
     <string name="players_instructions_unlock_desc">Pasa la mano por el sensor de proximidad para desbloquear la sala.</string>
     <string name="players_instructions_shake_title">Ficha Técnica</string>
