@@ -385,4 +385,58 @@
     <string name="solutions_play_again">Jugar de nuevo</string>
     <string name="solutions_finalize">Finalizar</string>
 
+    <!-- Players Room UI -->
+    <string name="players_room_title">Leyendas Blancas</string>
+    <string name="players_swipe_hint">Desliza para seleccionar</string>
+    <string name="players_view_sheet">Ver Ficha Técnica</string>
+    <string name="players_play_big_screen">Reproducir en Pantalla Grande</string>
+    <string name="player_name_placeholder">Nombre del Jugador</string>
+    <string name="player_pos_placeholder">Posición</string>
+    <string name="toast_unlock_hint">✋ Pasa la mano para desbloquear</string>
+    <string name="toast_unlocked">✨ ¡Sala Desbloqueada!</string>
+    <string name="toast_launching_video">📡 LANZANDO VÍDEO: %1$s</string>
+
+    <!-- Player Data -->
+    <!-- Cristiano -->
+    <string name="p_cr7_name">Cristiano Ronaldo</string>
+    <string name="p_cr7_role">Delantero Leyenda</string>
+    <string name="p_cr7_desc">Máximo goleador de la historia del Real Madrid. Ganador de 4 Champions League y 4 Balones de Oro con el club.</string>
+    <string name="p_cr7_short">¡El Bicho!</string>
+    <string name="p_cr7_bio">Cristiano Ronaldo (Madeira, 1985) es el máximo goleador de la historia del Real Madrid con 451 goles en 438 partidos. Llegó en 2009 y marcó una época dorada, liderando al equipo en la conquista de 4 Champions League, 3 de ellas consecutivas. Su ambición, potencia física y capacidad goleadora lo convierten en uno de los mejores jugadores de todos los tiempos.</string>
+
+    <!-- Vinicius -->
+    <string name="p_vini_name">Vinícius Jr.</string>
+    <string name="p_vini_role">Delantero</string>
+    <string name="p_vini_desc">La estrella brasileña actual. Autor del gol de la 14ª y figura clave en la 15ª. Desborde y alegría.</string>
+    <string name="p_vini_short">Es muy rápido y baila.</string>
+    <string name="p_vini_bio">Vinícius José Paixão de Oliveira Júnior (São Gonçalo, 2000) llegó al Real Madrid con 18 años. Su evolución ha sido meteórica, pasando de ser una promesa a una realidad mundial. Marcó el gol decisivo en la final de la Champions 2022 contra el Liverpool. Su velocidad, regate y carisma lo han convertido en el ídolo de la nueva generación madridista.</string>
+
+    <!-- Modric -->
+    <string name="p_modric_name">Luka Modrić</string>
+    <string name="p_modric_role">Centrocampista</string>
+    <string name="p_modric_desc">Balón de Oro 2018. El cerebro del equipo y ejemplo de longevidad y clase mundial.</string>
+    <string name="p_modric_short">El mago del balón.</string>
+    <string name="p_modric_bio">Luka Modrić (Zadar, 1985) es el motor del Real Madrid. Llegó en 2012 y se convirtió en pieza fundamental de las 6 Champions ganadas en una década. En 2018 rompió la hegemonía de Messi y Cristiano ganando el Balón de Oro. Su visión de juego, control y pases con el exterior son patrimonio del fútbol mundial.</string>
+
+    <!-- Kroos -->
+    <string name="p_kroos_name">Toni Kroos</string>
+    <string name="p_kroos_role">Centrocampista</string>
+    <string name="p_kroos_desc">La leyenda alemana. El metrónomo que dirigió el juego del Madrid durante una década gloriosa.</string>
+    <string name="p_kroos_short">Nunca falla un pase.</string>
+    <string name="p_kroos_bio">Toni Kroos (Greifswald, 1990) definió el ritmo del Real Madrid desde su llegada en 2014 hasta su retirada en 2024. Con una precisión en el pase casi perfecta, formó junto a Modric y Casemiro uno de los mejores mediocampos de la historia. Ganó 5 Champions con el club y se retiró en la cima, siendo ovacionado por todo el Bernabéu.</string>
+
+    <!-- Casillas -->
+    <string name="p_casillas_name">Iker Casillas</string>
+    <string name="p_casillas_role">Portero Leyenda</string>
+    <string name="p_casillas_desc">El mejor portero de la historia del Real Madrid y del fútbol español. Capitán eterno.</string>
+    <string name="p_casillas_short">El Santo.</string>
+    <string name="p_casillas_bio">Iker Casillas (Móstoles, 1981) es un mito del madridismo. Desarrolló casi toda su carrera en el club, defendiendo la portería durante 16 temporadas en el primer equipo. Sus paradas milagrosas le valieron el apodo de \'El Santo\'. Capitaneó al equipo en la conquista de la Décima y levantó innumerables títulos, siendo un símbolo de la cantera.</string>
+
+    <!-- Benzema -->
+    <string name="p_benzema_name">Karim Benzema</string>
+    <string name="p_benzema_role">Delantero Leyenda</string>
+    <string name="p_benzema_desc">Balón de Oro 2022. Segundo máximo goleador histórico y un 9 con alma de 10.</string>
+    <string name="p_benzema_short">Juega con mucha clase.</string>
+    <string name="p_benzema_bio">Karim Benzema (Lyon, 1987) protagonizó una de las mayores evoluciones en la historia del club. Durante años fue el socio perfecto de Cristiano, pero tras su marcha, asumió el liderazgo goleador. Su temporada 2021-2022 fue histórica, con hat-tricks y remontadas épicas que le valieron el Balón de Oro. Se marchó como el jugador con más títulos junto a Marcelo (25).</string>
+
 </resources>

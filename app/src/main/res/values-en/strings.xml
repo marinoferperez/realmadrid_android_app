@@ -375,4 +375,58 @@
     <string name="solutions_play_again">Play again</string>
     <string name="solutions_finalize">Finalize</string>
 
+    <!-- Players Room UI -->
+    <string name="players_room_title">White Legends</string>
+    <string name="players_swipe_hint">Swipe to select</string>
+    <string name="players_view_sheet">View Technical Sheet</string>
+    <string name="players_play_big_screen">Play on Big Screen</string>
+    <string name="player_name_placeholder">Player Name</string>
+    <string name="player_pos_placeholder">Position</string>
+    <string name="toast_unlock_hint">✋ Wave your hand to unlock</string>
+    <string name="toast_unlocked">✨ Room Unlocked!</string>
+    <string name="toast_launching_video">📡 LAUNCHING VIDEO: %1$s</string>
+
+    <!-- Player Data -->
+    <!-- Cristiano -->
+    <string name="p_cr7_name">Cristiano Ronaldo</string>
+    <string name="p_cr7_role">Legendary Forward</string>
+    <string name="p_cr7_desc">All-time top scorer in Real Madrid history. Winner of 4 Champions Leagues and 4 Ballon d\'Ors with the club.</string>
+    <string name="p_cr7_short">The Beast!</string>
+    <string name="p_cr7_bio">Cristiano Ronaldo (Madeira, 1985) is the all-time top scorer in Real Madrid history with 451 goals in 438 matches. He arrived in 2009 and marked a golden era, leading the team to win 4 Champions Leagues, 3 of them consecutively. His ambition, physical power, and scoring ability make him one of the best players of all time.</string>
+
+    <!-- Vinicius -->
+    <string name="p_vini_name">Vinícius Jr.</string>
+    <string name="p_vini_role">Forward</string>
+    <string name="p_vini_desc">The current Brazilian star. Scorer of the goal for the 14th and key figure in the 15th. Dribbling and joy.</string>
+    <string name="p_vini_short">He is very fast and dances.</string>
+    <string name="p_vini_bio">Vinícius José Paixão de Oliveira Júnior (São Gonçalo, 2000) arrived at Real Madrid at 18 years old. His evolution has been meteoric, going from a promise to a world reality. He scored the decisive goal in the 2022 Champions League final against Liverpool. His speed, dribbling, and charisma have made him the idol of the new madridista generation.</string>
+
+    <!-- Modric -->
+    <string name="p_modric_name">Luka Modrić</string>
+    <string name="p_modric_role">Midfielder</string>
+    <string name="p_modric_desc">2018 Ballon d\'Or. The brain of the team and an example of longevity and world class.</string>
+    <string name="p_modric_short">The wizard of the ball.</string>
+    <string name="p_modric_bio">Luka Modrić (Zadar, 1985) is the engine of Real Madrid. He arrived in 2012 and became a fundamental piece of the 6 Champions Leagues won in a decade. In 2018 he broke the hegemony of Messi and Cristiano by winning the Ballon d\'Or. His vision of the game, control, and passes with the outside of his boot are world football heritage.</string>
+
+    <!-- Kroos -->
+    <string name="p_kroos_name">Toni Kroos</string>
+    <string name="p_kroos_role">Midfielder</string>
+    <string name="p_kroos_desc">The German legend. The metronome who directed Madrid\'s game during a glorious decade.</string>
+    <string name="p_kroos_short">He never misses a pass.</string>
+    <string name="p_kroos_bio">Toni Kroos (Greifswald, 1990) defined the rhythm of Real Madrid from his arrival in 2014 until his retirement in 2024. With almost perfect passing precision, he formed one of the best midfields in history alongside Modric and Casemiro. He won 5 Champions Leagues with the club and retired at the top, being cheered by the entire Bernabéu.</string>
+
+    <!-- Casillas -->
+    <string name="p_casillas_name">Iker Casillas</string>
+    <string name="p_casillas_role">Legendary Goalkeeper</string>
+    <string name="p_casillas_desc">The best goalkeeper in the history of Real Madrid and Spanish football. Eternal captain.</string>
+    <string name="p_casillas_short">The Saint.</string>
+    <string name="p_casillas_bio">Iker Casillas (Móstoles, 1981) is a madridista myth. He spent almost his entire career at the club, defending the goal for 16 seasons in the first team. His miraculous saves earned him the nickname \'The Saint\'. He captained the team in winning the Tenth and lifted countless titles, being a symbol of the youth academy.</string>
+
+    <!-- Benzema -->
+    <string name="p_benzema_name">Karim Benzema</string>
+    <string name="p_benzema_role">Legendary Forward</string>
+    <string name="p_benzema_desc">2022 Ballon d\'Or. Second all-time top scorer and a 9 with the soul of a 10.</string>
+    <string name="p_benzema_short">He plays with a lot of class.</string>
+    <string name="p_benzema_bio">Karim Benzema (Lyon, 1987) starred in one of the greatest evolutions in the club\'s history. For years he was Cristiano\'s perfect partner, but after his departure, he assumed the scoring leadership. His 2021-2022 season was historic, with hat-tricks and epic comebacks that earned him the Ballon d\'Or. He left as the player with the most titles alongside Marcelo (25).</string>
+
 </resources>
