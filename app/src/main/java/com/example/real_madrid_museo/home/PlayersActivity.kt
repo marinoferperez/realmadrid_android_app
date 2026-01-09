@@ -52,36 +52,15 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
     private var yaDesbloqueadoParaSiempre = false
 
     // DATOS
-    private val playerList = listOf(
-        Jugador("Cristiano Ronaldo", "Delantero Leyenda",
-            "Máximo goleador de la historia del Real Madrid...",
-            "¡El Bicho!",
-            "Biografía extensa de CR7...", R.drawable.cr7),
-        Jugador("Vinícius Jr.", "Delantero",
-            "La estrella brasileña actual...",
-            "Es muy rápido...",
-            "Biografía extensa de Vini...", R.drawable.vinicius),
-        Jugador("Luka Modrić", "Centrocampista",
-            "Balón de Oro 2018...",
-            "El mago del balón.",
-            "Biografía extensa de Modric...", R.drawable.modric),
-        Jugador("Toni Kroos", "Centrocampista",
-            "La leyenda alemana...",
-            "Nunca falla un pase.",
-            "Biografía extensa de Kroos...", R.drawable.kroos),
-        Jugador("Iker Casillas", "Portero Leyenda",
-            "El mejor portero de la historia...",
-            "El Santo.",
-            "Biografía extensa de Iker...", R.drawable.casillas),
-        Jugador("Karim Benzema", "Delantero Leyenda",
-            "Balón de Oro 2022...",
-            "Juega con clase.",
-            "Biografía extensa de Benzema...", R.drawable.benzema)
-    )
+    // DATOS
+    private lateinit var playerList: List<Jugador>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_players)
+
+        // 0. INICIALIZAR DATOS (LOCALIZADOS)
+        initPlayerList()
 
         // 1. INICIALIZAR VISTAS
         viewPager = findViewById(R.id.viewPagerPlayers)
@@ -143,6 +122,35 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
 
         // MOSTRAR INSTRUCCIONES
         showInstructionsDialog()
+    }
+
+    private fun initPlayerList() {
+        playerList = listOf(
+            Jugador(getString(R.string.p_cr7_name), getString(R.string.p_cr7_role),
+                getString(R.string.p_cr7_desc),
+                getString(R.string.p_cr7_short),
+                getString(R.string.p_cr7_bio), R.drawable.cr7),
+            Jugador(getString(R.string.p_vini_name), getString(R.string.p_vini_role),
+                getString(R.string.p_vini_desc),
+                getString(R.string.p_vini_short),
+                getString(R.string.p_vini_bio), R.drawable.vinicius),
+            Jugador(getString(R.string.p_modric_name), getString(R.string.p_modric_role),
+                getString(R.string.p_modric_desc),
+                getString(R.string.p_modric_short),
+                getString(R.string.p_modric_bio), R.drawable.modric),
+            Jugador(getString(R.string.p_kroos_name), getString(R.string.p_kroos_role),
+                getString(R.string.p_kroos_desc),
+                getString(R.string.p_kroos_short),
+                getString(R.string.p_kroos_bio), R.drawable.kroos),
+            Jugador(getString(R.string.p_casillas_name), getString(R.string.p_casillas_role),
+                getString(R.string.p_casillas_desc),
+                getString(R.string.p_casillas_short),
+                getString(R.string.p_casillas_bio), R.drawable.casillas),
+            Jugador(getString(R.string.p_benzema_name), getString(R.string.p_benzema_role),
+                getString(R.string.p_benzema_desc),
+                getString(R.string.p_benzema_short),
+                getString(R.string.p_benzema_bio), R.drawable.benzema)
+        )
     }
 
     private fun showInstructionsDialog() {
@@ -228,7 +236,7 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
         isUnlocked = false
         btnInfo.visibility = View.INVISIBLE
         btnLaunchTotem.visibility = View.INVISIBLE
-        Toast.makeText(this, "✋ Pasa la mano para desbloquear", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.toast_unlock_hint), Toast.LENGTH_SHORT).show()
         aplicarFiltroBlancoYNegro(true)
     }
 
@@ -241,7 +249,7 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
 
         viewPager.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
         magicSound?.start()
-        Toast.makeText(this, "✨ ¡Sala Desbloqueada!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.toast_unlocked), Toast.LENGTH_SHORT).show()
 
         btnInfo.visibility = View.VISIBLE
         btnLaunchTotem.visibility = View.VISIBLE
@@ -284,7 +292,7 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
         viewPager.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
         val realPos = viewPager.currentItem % playerList.size
         val jugador = playerList[realPos]
-        Toast.makeText(this, "📡 LANZANDO VÍDEO: ${jugador.nombre}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.toast_launching_video, jugador.nombre), Toast.LENGTH_SHORT).show()
     }
 
     private fun abrirFichaAccion() {

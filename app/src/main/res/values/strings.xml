@@ -385,35 +385,97 @@
     <string name="solutions_play_again">Jugar de nuevo</string>
     <string name="solutions_finalize">Finalizar</string>
 
+    <!-- Common buttons used in Stadium -->
+    <string name="btn_start_visit">Start Visit</string>
+    <string name="btn_back">Back</string>
+
+    <!-- Stadium -->
     <string name="stadium_name">Santiago Bernabéu</string>
-    <string name="stadium_compass_subtitle">Brújula Digital</string>
-    <string name="stadium_explorer_title">Explorador del Estadio</string>
-    <string name="stadium_locked_msg">Explora (%1$d/%2$d)\npara abrir</string>
-    <string name="btn_start_visit">Comenzar Visita</string>
-    <string name="btn_back">Volver</string>
+    <string name="stadium_compass_subtitle">Digital Compass</string>
+    <string name="stadium_explorer_title">Stadium Explorer</string>
+    <string name="stadium_locked_msg">Explore (%1$d/%2$d)\nto unlock</string>
 
-    <string name="stadium_instr_1_title">Gira tu Dispositivo</string>
-    <string name="stadium_instr_1_desc">Usa la brújula y gira 360º sobre ti mismo para encontrar los hitos históricos ocultos.</string>
-    <string name="stadium_instr_2_title">Desbloquea el Modelo</string>
-    <string name="stadium_instr_2_desc">Debes visitar los 6 puntos históricos de la ruleta para desbloquear el botón central.</string>
-    <string name="stadium_instr_3_title">Visualización 3D</string>
-    <string name="stadium_instr_3_desc">Una vez desbloqueado, podrás ver el Nuevo Bernabéu en Realidad Aumentada.</string>
+    <string name="stadium_instr_1_title">Rotate your device</string>
+    <string name="stadium_instr_1_desc">Use the compass and rotate 360° to find the hidden historical milestones.</string>
 
-    <string name="stadium_fact_1_title">Inauguración (1947)</string>
-    <string name="stadium_fact_1_desc">Se inauguró el 14 de diciembre de 1947 como Nuevo Estadio Chamartín.</string>
+    <string name="stadium_instr_2_title">Unlock the model</string>
+    <string name="stadium_instr_2_desc">Visit all 6 historical points on the wheel to unlock the center button.</string>
 
-    <string name="stadium_fact_2_title">La Época de Oro (1950s)</string>
-    <string name="stadium_fact_2_desc">En 1954 alcanzó un aforo de 125.000 espectadores e iluminación eléctrica.</string>
+    <string name="stadium_instr_3_title">3D View</string>
+    <string name="stadium_instr_3_desc">Once unlocked, you can see the New Bernabéu in Augmented Reality.</string>
 
-    <string name="stadium_fact_3_title">Mundial España \'82</string>
-    <string name="stadium_fact_3_desc">Remodelación total: gran cubierta y modernización de accesos.</string>
+    <string name="stadium_fact_1_title">Inauguration (1947)</string>
+    <string name="stadium_fact_1_desc">It opened on December 14, 1947 as the New Chamartín Stadium.</string>
 
-    <string name="stadium_fact_4_title">Las Torres de los 90</string>
-    <string name="stadium_fact_4_desc">Aparición de las cuatro icónicas torres y el tercer anfiteatro.</string>
+    <string name="stadium_fact_2_title">The Golden Era (1950s)</string>
+    <string name="stadium_fact_2_desc">In 1954 it reached a capacity of 125,000 spectators and added electric lighting.</string>
 
-    <string name="stadium_fact_5_title">Estadio de Élite (2007)</string>
-    <string name="stadium_fact_5_desc">La UEFA lo certificó como Estadio de Élite para finales continentales.</string>
+    <string name="stadium_fact_3_title">Spain \'82 World Cup</string>
+    <string name="stadium_fact_3_desc">Complete remodeling: new roof and improved access areas.</string>
 
-    <string name="stadium_fact_6_title">El Nuevo Bernabéu</string>
-    <string name="stadium_fact_6_desc">Piel de acero, techo retráctil y césped hipogeo.</string>
+    <string name="stadium_fact_4_title">The 90s Towers</string>
+    <string name="stadium_fact_4_desc">The four iconic towers and the third tier were introduced.</string>
+
+    <string name="stadium_fact_5_title">Elite Stadium (2007)</string>
+    <string name="stadium_fact_5_desc">UEFA certified it as an Elite Stadium for European finals.</string>
+
+    <string name="stadium_fact_6_title">The New Bernabéu</string>
+    <string name="stadium_fact_6_desc">Steel skin, retractable roof, and underground pitch.</string>
+
+    <!-- Optional: if you want to localize the center button label too -->
+    <string name="stadium_3d_view_label">3D VIEW</string>
+    <!-- Players Room UI -->
+    <string name="players_room_title">Leyendas Blancas</string>
+    <string name="players_swipe_hint">Desliza para seleccionar</string>
+    <string name="players_view_sheet">Ver Ficha Técnica</string>
+    <string name="players_play_big_screen">Reproducir en Pantalla Grande</string>
+    <string name="player_name_placeholder">Nombre del Jugador</string>
+    <string name="player_pos_placeholder">Posición</string>
+    <string name="toast_unlock_hint">✋ Pasa la mano para desbloquear</string>
+    <string name="toast_unlocked">✨ ¡Sala Desbloqueada!</string>
+    <string name="toast_launching_video">📡 LANZANDO VÍDEO: %1$s</string>
+
+    <!-- Player Data -->
+    <!-- Cristiano -->
+    <string name="p_cr7_name">Cristiano Ronaldo</string>
+    <string name="p_cr7_role">Delantero Leyenda</string>
+    <string name="p_cr7_desc">Máximo goleador de la historia del Real Madrid. Ganador de 4 Champions League y 4 Balones de Oro con el club.</string>
+    <string name="p_cr7_short">¡El Bicho!</string>
+    <string name="p_cr7_bio">Cristiano Ronaldo (Madeira, 1985) es el máximo goleador de la historia del Real Madrid con 451 goles en 438 partidos. Llegó en 2009 y marcó una época dorada, liderando al equipo en la conquista de 4 Champions League, 3 de ellas consecutivas. Su ambición, potencia física y capacidad goleadora lo convierten en uno de los mejores jugadores de todos los tiempos.</string>
+
+    <!-- Vinicius -->
+    <string name="p_vini_name">Vinícius Jr.</string>
+    <string name="p_vini_role">Delantero</string>
+    <string name="p_vini_desc">La estrella brasileña actual. Autor del gol de la 14ª y figura clave en la 15ª. Desborde y alegría.</string>
+    <string name="p_vini_short">Es muy rápido y baila.</string>
+    <string name="p_vini_bio">Vinícius José Paixão de Oliveira Júnior (São Gonçalo, 2000) llegó al Real Madrid con 18 años. Su evolución ha sido meteórica, pasando de ser una promesa a una realidad mundial. Marcó el gol decisivo en la final de la Champions 2022 contra el Liverpool. Su velocidad, regate y carisma lo han convertido en el ídolo de la nueva generación madridista.</string>
+
+    <!-- Modric -->
+    <string name="p_modric_name">Luka Modrić</string>
+    <string name="p_modric_role">Centrocampista</string>
+    <string name="p_modric_desc">Balón de Oro 2018. El cerebro del equipo y ejemplo de longevidad y clase mundial.</string>
+    <string name="p_modric_short">El mago del balón.</string>
+    <string name="p_modric_bio">Luka Modrić (Zadar, 1985) es el motor del Real Madrid. Llegó en 2012 y se convirtió en pieza fundamental de las 6 Champions ganadas en una década. En 2018 rompió la hegemonía de Messi y Cristiano ganando el Balón de Oro. Su visión de juego, control y pases con el exterior son patrimonio del fútbol mundial.</string>
+
+    <!-- Kroos -->
+    <string name="p_kroos_name">Toni Kroos</string>
+    <string name="p_kroos_role">Centrocampista</string>
+    <string name="p_kroos_desc">La leyenda alemana. El metrónomo que dirigió el juego del Madrid durante una década gloriosa.</string>
+    <string name="p_kroos_short">Nunca falla un pase.</string>
+    <string name="p_kroos_bio">Toni Kroos (Greifswald, 1990) definió el ritmo del Real Madrid desde su llegada en 2014 hasta su retirada en 2024. Con una precisión en el pase casi perfecta, formó junto a Modric y Casemiro uno de los mejores mediocampos de la historia. Ganó 5 Champions con el club y se retiró en la cima, siendo ovacionado por todo el Bernabéu.</string>
+
+    <!-- Casillas -->
+    <string name="p_casillas_name">Iker Casillas</string>
+    <string name="p_casillas_role">Portero Leyenda</string>
+    <string name="p_casillas_desc">El mejor portero de la historia del Real Madrid y del fútbol español. Capitán eterno.</string>
+    <string name="p_casillas_short">El Santo.</string>
+    <string name="p_casillas_bio">Iker Casillas (Móstoles, 1981) es un mito del madridismo. Desarrolló casi toda su carrera en el club, defendiendo la portería durante 16 temporadas en el primer equipo. Sus paradas milagrosas le valieron el apodo de \'El Santo\'. Capitaneó al equipo en la conquista de la Décima y levantó innumerables títulos, siendo un símbolo de la cantera.</string>
+
+    <!-- Benzema -->
+    <string name="p_benzema_name">Karim Benzema</string>
+    <string name="p_benzema_role">Delantero Leyenda</string>
+    <string name="p_benzema_desc">Balón de Oro 2022. Segundo máximo goleador histórico y un 9 con alma de 10.</string>
+    <string name="p_benzema_short">Juega con mucha clase.</string>
+    <string name="p_benzema_bio">Karim Benzema (Lyon, 1987) protagonizó una de las mayores evoluciones en la historia del club. Durante años fue el socio perfecto de Cristiano, pero tras su marcha, asumió el liderazgo goleador. Su temporada 2021-2022 fue histórica, con hat-tricks y remontadas épicas que le valieron el Balón de Oro. Se marchó como el jugador con más títulos junto a Marcelo (25).</string>
+
 </resources>
