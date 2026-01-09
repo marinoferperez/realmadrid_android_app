@@ -23,6 +23,9 @@ import com.example.real_madrid_museo.PlayersAdapter
 import com.example.real_madrid_museo.R
 import com.google.android.material.button.MaterialButton
 import kotlin.math.sqrt
+import com.example.real_madrid_museo.ui.theme.Real_madrid_museoTheme
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 
 class PlayersActivity : AppCompatActivity(), SensorEventListener {
 
@@ -137,6 +140,36 @@ class PlayersActivity : AppCompatActivity(), SensorEventListener {
 
         btnLaunchTotem.setOnClickListener { lanzarVideoAccion() }
         btnInfo.setOnClickListener { abrirFichaAccion() }
+
+        // MOSTRAR INSTRUCCIONES
+        showInstructionsDialog()
+    }
+
+    private fun showInstructionsDialog() {
+        val dialog = android.app.Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        
+        // FIX: Necesario para que Compose funcione dentro de un Dialog normal
+        val decorView = dialog.window!!.decorView
+        decorView.setViewTreeLifecycleOwner(this)
+        decorView.setViewTreeSavedStateRegistryOwner(this)
+        
+        val composeView = androidx.compose.ui.platform.ComposeView(this).apply {
+            setContent {
+                Real_madrid_museoTheme {
+                    PlayersInstructionsScreen(
+                        onStart = { dialog.dismiss() },
+                        onBack = { 
+                            dialog.dismiss()
+                            finish() 
+                        }
+                    )
+                }
+            }
+        }
+        
+        dialog.setContentView(composeView)
+        dialog.show()
     }
 
     // --------------------------------------------------------

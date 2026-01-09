@@ -53,6 +53,7 @@ dependencies {
 
     // Lifecycle & Navigation
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.savedstate.ktx)
     implementation(libs.androidx.navigation.compose)
 
     // Jetpack Compose

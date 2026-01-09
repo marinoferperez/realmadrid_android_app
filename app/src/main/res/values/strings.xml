@@ -199,6 +199,17 @@
     <string name="kahoot_instructions_shake_title">Control por Gesto</string>
     <string name="kahoot_instructions_shake_desc">Selecciona una opción y luego AGITA tu dispositivo para confirmar tu respuesta.</string>
     <string name="kahoot_instructions_start_button">¡A JUGAR!</string>
+    <string name="kahoot_instructions_back_button">Volver al menú</string>
+
+    <!-- Players Room Instructions -->
+    <string name="players_instructions_title">Instrucciones del Juego</string>
+    <string name="players_instructions_unlock_title">Desbloqueo</string>
+    <string name="players_instructions_unlock_desc">Pasa la mano por el sensor de proximidad para desbloquear la sala.</string>
+    <string name="players_instructions_shake_title">Ficha Técnica</string>
+    <string name="players_instructions_shake_desc">AGITA tu dispositivo para ver la ficha técnica del jugador.</string>
+    <string name="players_instructions_tilt_title">Vídeo</string>
+    <string name="players_instructions_tilt_desc">INCLINA el móvil hacia la derecha para lanzar el vídeo en pantalla grande.</string>
+
 
     <!-- Kahoot Questions -->
     <string name="kq1_question">¿En qué año se fundó el Real Madrid?</string>
