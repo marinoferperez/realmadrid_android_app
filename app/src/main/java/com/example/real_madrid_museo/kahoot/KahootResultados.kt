@@ -1,3 +1,5 @@
+// muestra los resultados finales del juego y gestiona puntos y notificaciones
+
 package com.example.real_madrid_museo.kahoot
 
 import android.app.NotificationChannel

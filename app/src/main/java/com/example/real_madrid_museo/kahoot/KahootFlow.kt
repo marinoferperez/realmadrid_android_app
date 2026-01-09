@@ -1,5 +1,8 @@
 package com.example.real_madrid_museo.kahoot
 
+// gestiona la navegacion y el flujo principal del juego kahoot
+
+
 import android.app.Activity
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -76,8 +79,7 @@ fun KahootFlow() {
                     respuestasCorrectas = correctAnswers,
                     preguntasFalladas = failedQuestions,
                     onReiniciar = { gameStarted = false }, // Vuelve a instrucciones
-                    onFinalizar = { 
-                        // MODIFICADO: Cierra la actividad Kahoot para volver al MainScreen
+                    onFinalizar = {
                         if (context is Activity) {
                             context.finish()
                         }

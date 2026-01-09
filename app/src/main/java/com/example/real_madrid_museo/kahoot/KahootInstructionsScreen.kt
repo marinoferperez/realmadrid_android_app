@@ -1,5 +1,8 @@
 package com.example.real_madrid_museo.kahoot
 
+// pantalla de inicio del kahoot que presenta al usuario las reglas y controles
+// informa sobre las diferentes formas de interactuar con el juego (táctil, voz, movimiento)
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,6 +28,7 @@ import com.example.real_madrid_museo.ui.onboarding.FondoAnimadoKahoot
 import com.example.real_madrid_museo.ui.theme.RealMadridBlue
 import com.example.real_madrid_museo.ui.theme.RealMadridGold
 
+// muestra la pantalla de bienvenida con las instrucciones detalladas
 @Composable
 fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -57,7 +61,7 @@ fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
                     
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    // INSTRUCCIÓN TÁCTIL
+                    // instrucción para el control mediante pantalla táctil convencional
                     InstructionItem(
                         icon = Icons.Default.TouchApp,
                         title = stringResource(R.string.kahoot_instructions_touch_title),
@@ -66,7 +70,8 @@ fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
                     
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // INSTRUCCIÓN TTS (Lector de preguntas)
+                    // instrucción sobre el lector de preguntas automático (tts)
+                    // informa al usuario de que puede acercarse el móvil al oído
                     InstructionItem(
                         icon = Icons.Default.Hearing,
                         title = stringResource(R.string.kahoot_instructions_tts_title),
@@ -75,7 +80,7 @@ fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // INSTRUCCIÓN AGITAR
+                    // instrucción sobre la validación de respuestas mediante movimiento
                     InstructionItem(
                         icon = Icons.Default.Vibration,
                         title = stringResource(R.string.kahoot_instructions_shake_title),
@@ -106,7 +111,7 @@ fun KahootInstructionsScreen(onStart: () -> Unit, onBack: () -> Unit) {
                         border = BorderStroke(1.dp, RealMadridGold)
                     ) {
                         Text(
-                            text = "Volver al menú",
+                            text = stringResource(R.string.kahoot_instructions_back_button),
                             color = RealMadridGold
                         )
                     }

@@ -113,13 +113,13 @@ fun ContenidoPreguntaUnica(
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
     var timeLeft by remember { mutableStateOf(question.tiempoLimite) }
 
-    /* ─────────────── 🔊 TTS ─────────────── */
+    /* ─────────────── TTS ─────────────── */
     val questionText = stringResource(question.pregunta)
     val lectorTTS = remember { LectorPreguntaTTS(context) }
     
     // NOTA: Se ha eliminado la lectura automática al inicio para restaurar el comportamiento original.
 
-    /* ─────────────── 📏 SENSOR DE PROXIMIDAD ─────────────── */
+    /* ─────────────── SENSOR DE PROXIMIDAD ─────────────── */
     // Solo si el sensor detecta cercanía (NEAR), se lee la pregunta
     val detectorProximidad = remember {
         DetectorProximidad(
@@ -142,7 +142,7 @@ fun ContenidoPreguntaUnica(
         }
     }
 
-    /* ─────────────── ⏱ TIMER LOGIC ─────────────── */
+    /* ─────────────── TIMER LOGIC ─────────────── */
     LaunchedEffect(Unit) {
         while (timeLeft > 0 && !answered) {
             delay(1000)
@@ -160,7 +160,7 @@ fun ContenidoPreguntaUnica(
         }
     }
 
-    /* ─────────────── 📳 ACELERÓMETRO ─────────────── */
+    /* ─────────────── ACELERÓMETRO ─────────────── */
     val shakeDetector = remember {
         DetectorAgitarAcelerometro(context) {
             if (!answered && selectedIndex != null) {
@@ -180,7 +180,7 @@ fun ContenidoPreguntaUnica(
 
     // SE HA ELIMINADO EL RECONOCEDOR DE VOZ (ReconocedorVozKahoot)
 
-    /* ─────────────── 🎨 UI DE LA PREGUNTA ─────────────── */
+    /* ─────────────── UI DE LA PREGUNTA ─────────────── */
 
     Column {
         question.respuestas.forEachIndexed { index, answerRes ->
@@ -227,7 +227,7 @@ fun ContenidoPreguntaUnica(
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 🔢 NÚMERO
+                // NÚMERO
                 Surface(
                     modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(14.dp),
@@ -246,7 +246,7 @@ fun ContenidoPreguntaUnica(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                // 🟦 BOTÓN DE RESPUESTA
+                // BOTÓN DE RESPUESTA
                 Card(
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(24.dp),
