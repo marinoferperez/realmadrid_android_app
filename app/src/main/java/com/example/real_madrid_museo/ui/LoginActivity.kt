@@ -18,6 +18,7 @@ import com.example.real_madrid_museo.ui.comun.idiomas.obtenerIdioma
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.example.real_madrid_museo.ui.linea.EraManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -100,8 +101,17 @@ class LoginActivity : AppCompatActivity() {
             val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
             with(sharedPref.edit()) {
                 clear()
-                apply()
+                commit()
             }
+
+            val museumPrefs = getSharedPreferences("museum_prefs", Context.MODE_PRIVATE)
+            with(museumPrefs.edit()) {
+                clear()
+                commit()
+            }
+
+            EraManager.reset(this, "INVITADO")
+
 
             irAlHome("INVITADO", null)
         }

@@ -185,6 +185,15 @@
     <string name="era8_periodo">2019 - Hoy</string>
     <string name="era8_info_corta">La recontrucción del Madrid moderno</string>
     <string name="era8_info_detallada">El Real Madrid actual afronta el futuro con la remodelación del Santiago Bernabéu, destinado a ser el mejor estadio del mundo. En lo deportivo, el club ha sabido realizar una transición ejemplar uniendo a veteranos de leyenda como Modric o Kroos con jóvenes estrellas como Vinícius Jr, Bellingham o Rodrygo. En 2022 se logró la 14ª Champions con una de las ediciones más épicas que se recuerdan, y en 2024 la 15ª, confirmando que la ambición del club no tiene límites.</string>
+    <!-- Sala Histórica (Instrucciones) -->
+    <string name="history_instructions_title">Instrucciones de la Sala Histórica</string>
+    <string name="history_instructions_unlock_title">Desbloqueo de Épocas</string>
+    <string name="history_instructions_unlock_desc">Usa los sensores de tu móvil (luz, proximidad, etc.) para desvelar las grandes épocas del club.</string>
+    <string name="history_instructions_puzzle_title">Puzzle Histórico</string>
+    <string name="history_instructions_puzzle_desc">Una vez desbloqueada una época, podrás ver una pieza de un puzzle. ¡Mueve el móvil para explorarla!</string>
+    <string name="history_instructions_start_button">ENTRAR A LA SALA</string>
+    <string name="history_instructions_back_button">Volver al Menú</string>
+
 
     <!-- Kahoot -->
     <string name="kahoot_instructions_title">Instrucciones del Juego</string>

@@ -176,6 +176,15 @@
     <string name="era8_info_corta">Rebuilding modern Madrid</string>
     <string name="era8_info_detallada">Current Real Madrid faces the future with the remodeling of the Santiago Bernabéu, destined to be the best stadium in the world. Sportingly, the club has managed an exemplary transition by joining legendary veterans like Modric or Kroos with young stars like Vinícius Jr, Bellingham, or Rodrygo. In 2022, the 14th Champions was achieved with one of the most epic editions remembered, and in 2024, the 15th, confirming that the club\'s ambition knows no limits.</string>
 
+    <!-- Historic Room (Instructions) -->
+    <string name="history_instructions_title">Historic Room Instructions</string>
+    <string name="history_instructions_unlock_title">Unlocking Eras</string>
+    <string name="history_instructions_unlock_desc">Use your phone\'s sensors (light, proximity, etc.) to unveil the great eras of the club.</string>
+    <string name="history_instructions_puzzle_title">Historic Puzzle</string>
+    <string name="history_instructions_puzzle_desc">Once an era is unlocked, you can view a puzzle piece. Move your phone to explore it!</string>
+    <string name="history_instructions_start_button">ENTER THE ROOM</string>
+    <string name="history_instructions_back_button">Back to Menu</string>
+
     <!-- Kahoot -->
     <string name="kahoot_instructions_title">Game Instructions</string>
     <string name="kahoot_instructions_touch_title">Touch Control</string>
@@ -192,6 +201,7 @@
     <string name="kahoot_instructions_back_button">Back to Menu</string>
 
     <!-- Players Room Instructions -->
+    <string name="players_instructions_start_button">START THE VISIT</string>
     <string name="players_instructions_title">Game Instructions</string>
     <string name="players_instructions_unlock_title">Unlock</string>
     <string name="players_instructions_unlock_desc">Wave your hand over the proximity sensor to unlock the room.</string>

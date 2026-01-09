@@ -99,11 +99,19 @@ val listaEras = listOf(
 )
 
 object EraManager {
-    private const val PREFS_NAME = "progreso_museo"
+    private const val PREFS_NAME = "museum_prefs"
     private const val KEY_SORPRESA = "sorpresa_reclamada"
+
+    private val DESBLOQUEADAS_KEY = "eras_desbloqueadas_"
 
     private fun getPrefs(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
+
+    fun reset(context: Context, email: String) {
+        val prefs = context.getSharedPreferences("museum_prefs", Context.MODE_PRIVATE)
+        val erasDesbloqueadas = "" // Un string vacío
+        prefs.edit().putString(DESBLOQUEADAS_KEY + email, erasDesbloqueadas).commit()
     }
 
     fun desbloquearEra(context: Context, email: String, id: Int) {

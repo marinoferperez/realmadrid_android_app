@@ -25,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
@@ -50,6 +52,24 @@ import kotlin.math.sqrt
 
 @Composable
 fun SalaHistorica(email: String, onBack: () -> Unit) {
+    var showInstructions by remember { mutableStateOf(true) }
+
+    if (showInstructions) {
+        // Llama a la nueva pantalla de instrucciones
+        LineaInstructionsScreen(
+            onStart = {
+                showInstructions = false
+            },
+            onBack = onBack // Le pasamos la función onBack para que pueda volver al menú
+        )
+    } else {
+        // Muestra el contenido principal de la sala
+        SalaHistoricaContent(email, onBack)
+    }
+}
+
+@Composable
+fun SalaHistoricaContent(email: String, onBack: () -> Unit) {
     val context = LocalContext.current
     val sensorManager = remember { context.getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     val proximitySensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) }
