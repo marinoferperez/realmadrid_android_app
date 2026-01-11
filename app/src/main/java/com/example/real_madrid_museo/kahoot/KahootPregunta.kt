@@ -12,5 +12,5 @@ data class KahootPregunta(
     val respuestaCorrecta: Int,
     // tiempo máximo en segundos para responder la pregunta
     // por defecto = 30
-    val tiempoLimite: Int = 1
+    val tiempoLimite: Int = 30
 )
