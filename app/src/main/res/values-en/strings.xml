@@ -202,7 +202,7 @@
 
     <!-- Players Room Instructions -->
     <string name="players_instructions_start_button">START THE VISIT</string>
-    <string name="players_instructions_title">Game Instructions</string>
+    <string name="players_instructions_title">Room Instructions</string>
     <string name="players_instructions_unlock_title">Unlock</string>
     <string name="players_instructions_unlock_desc">Wave your hand over the proximity sensor to unlock the room.</string>
     <string name="players_instructions_shake_title">Technical Sheet</string>
