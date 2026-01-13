@@ -292,10 +292,12 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                             TextButton(
                                 onClick = {
                                     showTrophyDialog = false
-                                    // Al elegir uno, marcamos el trofeo como visto (opcional)
-                                    // TrofeoManager.marcarTrofeoVisto(context, index)
 
-                                    // Lanzamos la actividad del trofeo con su índice
+                                    // 1. EL CAMBIO CLAVE: Registramos el trofeo como visto al seleccionarlo
+                                    // Esto hace que aparezca a color en el álbum y cuente para el progreso
+                                    com.example.real_madrid_museo.ui.vitrina.TrofeoManager.marcarTrofeoVisto(context, index)
+
+                                    // 2. Lanzamos la actividad como antes
                                     val intent = Intent(context, com.example.real_madrid_museo.ui.vitrina.TrofeoActivity::class.java)
                                     intent.putExtra("INDICE_TROFEO", index)
                                     context.startActivity(intent)

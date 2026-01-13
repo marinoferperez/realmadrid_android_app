@@ -30,6 +30,8 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
@@ -40,6 +42,19 @@ fun ScannerScreen(onResultFound: (String) -> Unit) { // <-- CAMBIO: Ahora recibe
 
     var lensFacing by remember { mutableStateOf(CameraSelector.LENS_FACING_BACK) }
     var hasScanned by remember { mutableStateOf(false) }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            // Si la pantalla vuelve a estar activa (Resumed), permitimos escanear otra vez
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasScanned = false
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     var hasCameraPermission by remember {
         mutableStateOf(
