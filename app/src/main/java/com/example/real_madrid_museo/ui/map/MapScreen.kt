@@ -251,8 +251,7 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                         onClick = { 
                             selectedRoomName?.let { name ->
                                 // CAMBIO AQUÍ: Añadimos la condición para PlayersActivity
-                                
-                                // 1. Si es la sala de Juegos -> Kahoot
+                                com.example.real_madrid_museo.ui.vitrina.TrofeoManager.registrarVisitaSeccion(context, name)                                // 1. Si es la sala de Juegos -> Kahoot
                                 if (name.equals(gameRoomName, ignoreCase = true)) {
                                     context.startActivity(Intent(context, KahootActivity::class.java))
                                 } 
@@ -260,9 +259,8 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                                 else if (name.equals(playersRoomName, ignoreCase = true)) {
                                     context.startActivity(Intent(context, PlayersActivity::class.java))
                                 }
-                                    else if (name.equals(showcaseRoomName, ignoreCase = true)){
-                                        showTrophyDialog = true
-
+                                else if (name.equals(showcaseRoomName, ignoreCase = true)){
+                                    showTrophyDialog = true
                                 }
                                 // 3. Si es otra sala -> Navegación normal
                                 else {
