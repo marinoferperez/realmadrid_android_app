@@ -109,6 +109,15 @@ fun Trofeo(
     val context = LocalContext.current
     var mostrarDialogo by remember { mutableStateOf(false) } // Estado para el diálogo
 
+    LaunchedEffect(Unit) {
+        // Buscamos el índice de este trofeo en la lista oficial
+        val indice = listaTrofeos.indexOf(trofeo)
+        if (indice != -1) {
+            // Llamamos al manager para que lo marque como visto en SharedPreferences
+            com.example.real_madrid_museo.ui.vitrina.TrofeoManager.marcarTrofeoVisto(context, indice)
+        }
+    }
+
     // --- 1. CONFIGURACIÓN DEL AUDIO (TTS) ---
     var tts: TextToSpeech? by remember { mutableStateOf(null) }
 
