@@ -145,10 +145,24 @@ fun MainScreen(nombre: String, perfil: String, esInvitado: Boolean, visitas: Int
                                         Toast.makeText(context, "¡Pieza número $numPieza desbloqueada!", Toast.LENGTH_SHORT).show()
                                     }
                                 }
-                                "11" -> {
-                                    TrofeoManager.marcarTrofeoVisto(context, 0)
+                                // --- SECCIÓN DE TROFEOS (Códigos 11 y del 15 al 20) ---
+                                "11", "15", "16", "17", "18", "19", "20" -> {
+                                    // Mapeamos el código QR al índice del trofeo en la lista
+                                    val indiceTrofeo = when(resultado) {
+                                        "11" -> 0 // Champions
+                                        "15" -> 1 // Copa Europa Antigua
+                                        "16" -> 2 // Liga
+                                        "17" -> 3 // Copa del Rey
+                                        "18" -> 4 // Mundialito
+                                        "19" -> 5 // Supercopa Europa
+                                        "20" -> 6 // Supercopa España
+                                        else -> 0
+                                    }
+
+                                    // Marcamos como visto y abrimos la actividad
+                                    TrofeoManager.marcarTrofeoVisto(context, indiceTrofeo)
                                     val intent = Intent(context, TrofeoActivity::class.java)
-                                    intent.putExtra("INDICE_TROFEO", 0)
+                                    intent.putExtra("INDICE_TROFEO", indiceTrofeo)
                                     context.startActivity(intent)
                                 }
                                 "12" -> {
@@ -421,6 +435,7 @@ fun PerfilContent(
     var puntosActuales by remember { mutableIntStateOf(puntosIniciales) }
     var rankingActual by remember { mutableIntStateOf(rankingInicial) }
     var mostrarRankingDialog by remember { mutableStateOf(false) }
+    val esExplorador = remember { TrofeoManager.esExplorador(context) }
 
     LaunchedEffect(Unit) {
         if (!esInvitado && email != null) {
@@ -520,7 +535,7 @@ fun PerfilContent(
                                 desbloqueado = tieneEras
                             )
                         }
-                        LogroItem(Icons.Default.Map, stringResource(R.string.achievement_explorer), false)
+                        LogroItem(Icons.Default.Map, stringResource(R.string.achievement_explorer), esExplorador)
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))

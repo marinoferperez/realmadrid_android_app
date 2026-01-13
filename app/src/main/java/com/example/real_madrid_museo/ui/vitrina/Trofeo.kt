@@ -113,7 +113,6 @@ fun Trofeo(
         // Buscamos el índice de este trofeo en la lista oficial
         val indice = listaTrofeos.indexOf(trofeo)
         if (indice != -1) {
-            // Llamamos al manager para que lo marque como visto en SharedPreferences
             com.example.real_madrid_museo.ui.vitrina.TrofeoManager.marcarTrofeoVisto(context, indice)
         }
     }
