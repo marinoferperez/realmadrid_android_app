@@ -153,7 +153,7 @@ fun Trofeo(
             val listener = object : SensorEventListener {
                 // Umbral de fuerza para detectar la agitación (Shake)
                 // 9.8 es la gravedad, así que buscamos algo mayor (ej: 12 o 15)
-                val umbralShake = 12f
+                val umbralShake = 30f
                 var ultimoTiempo = 0L
                 var cercaDeLaOreja = false
 
@@ -170,7 +170,7 @@ fun Trofeo(
                         val aceleracionTotal = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
                         val tiempoActual = System.currentTimeMillis()
 
-                        if (aceleracionTotal > 12f && (tiempoActual - ultimoTiempo > 1000)) {
+                        if (aceleracionTotal > umbralShake          && (tiempoActual - ultimoTiempo > 1000)) {
                             ultimoTiempo = tiempoActual
                             estaCelebrando = true
                             vibrarMovil(context)
