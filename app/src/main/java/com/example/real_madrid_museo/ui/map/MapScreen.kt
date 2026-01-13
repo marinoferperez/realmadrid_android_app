@@ -31,6 +31,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -120,8 +121,12 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
         room to room.icon?.let { rememberVectorPainter(it) }
     }
 
+    var showTrophyDialog by remember { mutableStateOf(false)}
+
     val gameRoomName = stringResource(R.string.map_game)
     val playersRoomName = stringResource(R.string.map_players)
+    val showcaseRoomName = stringResource(R.string.map_showcase)
+
 
     fun focusOnRoom(roomName: String) {
         val room = mapStructure.find { it.name == roomName } ?: return
@@ -254,7 +259,11 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                                 // 2. Si es la sala de Jugadores -> PlayersActivity
                                 else if (name.equals(playersRoomName, ignoreCase = true)) {
                                     context.startActivity(Intent(context, PlayersActivity::class.java))
-                                } 
+                                }
+                                    else if (name.equals(showcaseRoomName, ignoreCase = true)){
+                                        showTrophyDialog = true
+
+                                }
                                 // 3. Si es otra sala -> Navegación normal
                                 else {
                                     onNavigate(name)
@@ -269,7 +278,50 @@ fun MapScreen(onNavigate: (String) -> Unit = {}) {
                 }
             }
         }
-    }
+        // --- DIÁLOGO DE SELECCIÓN DE TROFEOS ---
+        if (showTrophyDialog) {
+            AlertDialog(
+                onDismissRequest = { showTrophyDialog = false },
+                title = {
+                    Text("Selecciona un Trofeo", fontWeight = FontWeight.Bold, color = MadridBlue)
+                },
+                text = {
+                    // Listamos los trofeos que definimos en Trofeo.kt
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        com.example.real_madrid_museo.ui.vitrina.listaTrofeos.forEachIndexed { index, trofeo ->
+                            TextButton(
+                                onClick = {
+                                    showTrophyDialog = false
+                                    // Al elegir uno, marcamos el trofeo como visto (opcional)
+                                    // TrofeoManager.marcarTrofeoVisto(context, index)
+
+                                    // Lanzamos la actividad del trofeo con su índice
+                                    val intent = Intent(context, com.example.real_madrid_museo.ui.vitrina.TrofeoActivity::class.java)
+                                    intent.putExtra("INDICE_TROFEO", index)
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                                    Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = MadridGold)
+                                    Spacer(Modifier.width(12.dp))
+                                    Text(trofeo.nombre, color = MadridBlue, textAlign = TextAlign.Start)
+                                }
+                            }
+                            Divider(color = Color.LightGray.copy(alpha = 0.5f))
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { showTrophyDialog = false }) {
+                        Text("Cancelar", color = Color.Gray)
+                    }
+                },
+                containerColor = Color.White,
+                shape = RoundedCornerShape(20.dp)
+            )
+        }
+    } // Fin de MapScreen
 }
 
 // --- DIBUJO PREMIUM ---
