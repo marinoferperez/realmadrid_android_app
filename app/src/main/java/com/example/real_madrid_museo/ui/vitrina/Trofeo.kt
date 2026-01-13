@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Hearing
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
@@ -148,37 +149,56 @@ fun Trofeo(
     DisposableEffect(Unit) {
         if (sensorManager != null) {
             val accelerometro = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+            val proximidad = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
             val listener = object : SensorEventListener {
                 // Umbral de fuerza para detectar la agitación (Shake)
                 // 9.8 es la gravedad, así que buscamos algo mayor (ej: 12 o 15)
                 val umbralShake = 12f
                 var ultimoTiempo = 0L
+                var cercaDeLaOreja = false
 
-                override fun onSensorChanged(event: SensorEvent?) {
-                    event?.let {
-                        val x = it.values[0]
-                        val y = it.values[1]
-                        val z = it.values[2]
+                override fun onSensorChanged(sensorEvent: SensorEvent?) {
+                    // Usamos 'sensorEvent' directamente para evitar confusiones con 'it'
+                    if (sensorEvent == null) return
 
-                        // Calculamos la magnitud total de la aceleración
-                        // Fórmula física: raíz cuadrada de (x² + y² + z²)
-                        val aceleracionTotal = sqrt((x*x + y*y + z*z).toDouble()).toFloat()
+                    // 1. LÓGICA DEL ACELERÓMETRO (SHAKE)
+                    if (sensorEvent.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+                        val x = sensorEvent.values[0]
+                        val y = sensorEvent.values[1]
+                        val z = sensorEvent.values[2]
 
-                        // Si la aceleración supera la gravedad + el umbral... ¡AGITACIÓN DETECTADA!
-                        // Y ponemos un pequeño retardo (500ms) para que no parpadee a lo loco
+                        val aceleracionTotal = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
                         val tiempoActual = System.currentTimeMillis()
-                        if (aceleracionTotal > umbralShake && (tiempoActual - ultimoTiempo > 1000)) {
+
+                        if (aceleracionTotal > 12f && (tiempoActual - ultimoTiempo > 1000)) {
                             ultimoTiempo = tiempoActual
                             estaCelebrando = true
-
-                            // Vibración para dar feedback físico
                             vibrarMovil(context)
                         }
                     }
+
+                    // 2. LÓGICA DEL SENSOR DE PROXIMIDAD (AUDIOGUÍA)
+                    if (sensorEvent.sensor.type == Sensor.TYPE_PROXIMITY) {
+                        val distancia = sensorEvent.values[0]
+                        // Comprobamos si la distancia es menor al rango máximo (significa "cerca")
+                        val estaCerca = distancia < sensorEvent.sensor.maximumRange
+
+                        if (estaCerca && !cercaDeLaOreja) {
+                            // El usuario se ha puesto el móvil en la oreja
+                            val textoLectura = "${trofeo.descripcion}. ${trofeo.infoExtra}"
+                            tts?.speak(textoLectura, TextToSpeech.QUEUE_FLUSH, null, null)
+                        } else if (!estaCerca && cercaDeLaOreja) {
+                            // El usuario ha separado el móvil de la oreja
+                            tts?.stop()
+                        }
+                        cercaDeLaOreja = estaCerca
+                    }
                 }
+
                 override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
             }
             sensorManager.registerListener(listener, accelerometro, SensorManager.SENSOR_DELAY_UI)
+            sensorManager.registerListener(listener, proximidad, SensorManager.SENSOR_DELAY_UI)
             onDispose { sensorManager.unregisterListener(listener) }
         } else {
             onDispose { }
@@ -204,11 +224,6 @@ fun Trofeo(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        tts?.speak(trofeo.descripcion, TextToSpeech.QUEUE_FLUSH, null, null)
-                    }) {
-                        Icon(Icons.Default.VolumeUp, contentDescription = "Escuchar audio", tint = MadridGold)
-                    }
                 }
             )
         }
@@ -237,6 +252,16 @@ fun Trofeo(
                     Text("¡CAMPEONES!", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black, color = MadridBlue)
                 } else {
                     Text(trofeo.nombre, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.ExtraBold, color = MadridBlue, textAlign = TextAlign.Center)
+                }
+
+                // Instrucción visual para el usuario
+                if (!estaCelebrando) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Hearing, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text("Acerca el móvil a tu oreja para escuchar la historia", fontSize = 11.sp, color = Color.Gray)
+                    }
                 }
 
                 Text(trofeo.subTitulo, style = MaterialTheme.typography.titleMedium, color = MadridGold)
